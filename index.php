@@ -1,3 +1,6 @@
 <?php
+include("setting.php");
+include(CLASS_MAIN);
 
-echo "Hello World!";
+new main();
+?>
