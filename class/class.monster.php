@@ -1,12 +1,12 @@
-<?php 
+﻿<?php 
 include_once("class.char.php");
 class monster extends char{
 
-	// 專用變數
+	// モンスター専用の変数
 	var $monster = true;
-	var $exphold;//經驗值
-	var $moneyhold;//金
-	var $itemdrop;//落
+	var $exphold;//経験値
+	var $moneyhold;//お金
+	var $itemdrop;//落とすアイテム
 	var $summon;
 //////////////////////////////////////////////////
 //	
@@ -15,25 +15,25 @@ class monster extends char{
 
 	}
 //////////////////////////////////////////////////
-//	保存
-	function SaveCharData() {
-		// 保存。
+//	キャラデータの保存
+	function SaveCharData($id="") {
+		// モンスターは保存しない。
 		return false;
 	}
 
 //////////////////////////////////////////////////
-//	生存狀態。
+//	生存状態にする。
 	function GetNormal($mes=false) {
 		if($this->STATE === ALIVE)
 			return true;
-		if($this->STATE === DEAD) {//死亡狀態
+		if($this->STATE === DEAD) {//死亡状態
 			if($this->summon) return true;
 			if($mes)
 				print($this->Name(bold).' <span class="recover">revived</span>!<br />'."\n");
 			$this->STATE = 0;
 			return true;
 		}
-		if($this->STATE === POISON) {//毒狀態
+		if($this->STATE === POISON) {//毒状態
 			if($mes)
 				print($this->Name(bold)."'s <span class=\"spdmg\">poison</span> has cured.<br />\n");
 			$this->STATE = 0;
@@ -41,9 +41,9 @@ class monster extends char{
 		}
 	}
 //////////////////////////////////////////////////
-//	確認。
+//	しぼーしてるかどうか確認する。
 	function CharJudgeDead() {
-		if($this->HP < 1 && $this->STATE !== DEAD) {//
+		if($this->HP < 1 && $this->STATE !== DEAD) {//しぼー
 			$this->STATE	= DEAD;
 			$this->HP	= 0;
 			$this->ResetExpect();
@@ -53,7 +53,7 @@ class monster extends char{
 		}
 	}
 //////////////////////////////////////////////////
-//	變數。
+//	キャラの変数をセットする。
 	function SetCharData($monster) {
 
 		$this->name		= $monster["name"];
@@ -83,7 +83,7 @@ class monster extends char{
 		if(is_array($monster["action"]))
 			$this->action	= $monster["action"];
 
-		//專用
+		//モンスター専用
 		//$this->monster		= $monster["monster"];
 		$this->monster		= true;
 		$this->summon		= $monster["summon"];
@@ -95,13 +95,13 @@ class monster extends char{
 		$this->SPECIAL	= $monster["SPECIAL"];
 	}
 //////////////////////////////////////////////////
-//	戰鬥用變數
+//	戦闘用の変数
 	function SetBattleVariable($team=false) {
-		// 再讀迂防止 ?
+		// 再読み込みを防止できる か?
 		if(isset($this->IMG))
 			return false;
 
-		$this->team		= $team;//必要?
+		$this->team		= $team;//これ必要か?
 		$this->IMG		= $this->img;
 		$this->MAXHP	= $this->maxhp;
 		$this->HP		= $this->hp;
@@ -113,11 +113,11 @@ class monster extends char{
 		$this->SPD		= $this->spd + $this->P_SPD;
 		$this->LUK		= $this->luk + $this->P_LUK;
 		$this->POSITION	= $this->position;
-		$this->STATE	= ALIVE;//生存狀態
+		$this->STATE	= ALIVE;//生存状態にする
 
-		$this->expect	= false;//(數值=詠唱中 false=待機中)
-		$this->ActCount	= 0;//行動回數
-		$this->JdgCount	= array();//決定判斷回數
+		$this->expect	= false;//(数値=詠唱中 false=待機中)
+		$this->ActCount	= 0;//行動回数
+		$this->JdgCount	= array();//決定した判断の回数
 	}
 }
 ?>

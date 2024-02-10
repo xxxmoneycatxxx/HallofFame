@@ -1,7 +1,7 @@
-<?php 
-function BaseCharStatus($no) { // input = 角色編號	; output = 角色state
+﻿<?php 
+function BaseCharStatus($no) {
 	switch($no) {
-		case "1"://戰士
+		case "1"://战士
 $stat	= array(
 "level"	=> "1",
 "exp"	=> "0",
@@ -23,7 +23,7 @@ $stat	= array(
 "position"	=> "front",
 "guard"	=> "always",
 ); break;
-		case "2"://法師
+		case "2"://法师
 $stat	= array(
 "level"	=> "1",
 "exp"	=> "0",
@@ -44,7 +44,7 @@ $stat	= array(
 "position"	=> "back",
 "guard"	=> "never",
 ); break;
-		case "3"://牧師
+		case "3"://牧师
 $stat	= array(
 "level"	=> "1",
 "exp"	=> "0",
@@ -65,7 +65,7 @@ $stat	= array(
 "position"	=> "back",
 "guard"	=> "never",
 ); break;
-		case "4"://獵人
+		case "4"://猎人
 $stat	= array(
 "level"	=> "1",
 "exp"	=> "0",

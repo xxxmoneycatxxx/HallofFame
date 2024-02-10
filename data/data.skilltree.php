@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 function LoadSkillTree($char) {
 /*
-	習得可能技返。
+	学习到附加特效的技能。
 */
-	// 習得濟。
-	// array_search()  使每回判定。
-	// 處理速、知。
+	// 掌握的技能。
+	// 使用散列而不是array_search()进行判定。
+	// 不知道哪样效果更好。
 	$lnd	= array_flip($char->skill);
-	$lnd[key($lnd)]++;//配列先頭值"0"1(isset使true)
-	$list	= array();//空配列
-	//////////////////////////////////// 劍技
+	$lnd[key($lnd)]++;//数组开头的值为"0"，所以设为1 (为了不使用isset而设为true )
+	$list	= array();//空数组
+	//////////////////////////////////// 剣技
 	if(	$char->job == 100
 	 ||	$char->job == 101
 	 ||	$char->job == 102
@@ -181,7 +181,7 @@ function LoadSkillTree($char) {
 		}
 		if($lnd["2050"])//VenomBlast
 			$list[]	= "2051";//PoisonSmog
-		/* // 設定簡單
+		/* // 設定が簡単すぎる
 		if($lnd["2031"])//LifeSqueeze
 			$list[]	= "2032";//DeathKnell
 		*/
@@ -333,7 +333,7 @@ function LoadSkillTree($char) {
 			$list[]	= "3306";//Nimble
 		if($lnd["3303"])//
 			$list[]	= "3307";//Fortify
-		// 糾Train 4庬棕
+		// 乣Train 4庬椶
 		if($lnd["3300"] && $lnd["3301"] && $lnd["3302"] && $lnd["3303"]) {
 			$list[]	= "3308";//FullSupport
 			$list[]	= "3310";//SuppressBeast
@@ -356,14 +356,14 @@ function LoadSkillTree($char) {
 		if($lnd["1205"])
 			$list[]	= "1206";//AcidMist
 	}
-	//////////////////////////////////// 他
+	//////////////////////////////////// その他
 	if(!$lnd["3010"] && $char->job == "200")//ManaRecharge
 		$list[]	= "3010";
 	//////////////////////////////////// 共通系
 	if(19 < $char->level)
-		$list[]	= "4000";//臨戰態勢
+		$list[]	= "4000";//臨戦態勢
 	if(4 < $char->level)
-		$list[]	= "9000";//複數判定(* think over)
+		$list[]	= "9000";//複数判定(* think over)
 	asort($list);
 	return $list;
 }

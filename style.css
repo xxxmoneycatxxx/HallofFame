@@ -1,6 +1,6 @@
-body{
-  background	: #98a0a5/*#bfbfbf*/;
-  color	: #bdc8d7;
+ï»¿body{
+  background  : #98a0a5/*#bfbfbf*/;
+  color : #bdc8d7;
 }
 h4{
   padding-left	: 5px;
@@ -15,7 +15,7 @@ h4{
 }
 .bgcolor{background-color	: #10151b;}
 .light{
-  /* Éğ´ï¼ïÎà */
+  /* ç»…è¾¾ç¡·æ¢§ */
   color	: #40526a;
   font-size	: 80%;
 }
@@ -110,13 +110,13 @@ a:hover{
   font-weight	: bold;
 }
 .a0{
-  /* ¥Ø¥ë¥×¡Ö?¡×¤Î¿§(¤À¤±) */
+  /* ãƒ˜ãƒ«ãƒ—â‰ˆ?âˆ½ã®å’–(ã ã‘) */
   text-decoration	: none;
   color	: #c69500;
   font-weight	: bold;
 }
 .a0:hover{
-  /* ¢¬ */
+  /* î§ */
   text-decoration	: underline;
   color	: #ffcc33;
   font-weight	: bold;
@@ -160,7 +160,7 @@ a:hover{
   padding	: 3px;
 }
 .td9{
-  background-color	: #283544;
+  background-color	: 283544;
   padding	: 3px;
 }
 .tdToggleBg{
@@ -191,7 +191,7 @@ select{
   border:1px solid #334357;
   background : url(image/btn_bk01.gif) repeat-x left top;
 }
-/*** ÀïÆ®²èÌÌÍÑ ***/
+/*** é‡Œé£˜èŒ¶çƒ«è„± ***/
 .btl_img{
   background	: #070b0e;
   padding	: 3px;
@@ -210,26 +210,26 @@ select{
 .hpsp{
   padding-left:20px;
 }
-/* º¸Â¦ */
+/* ç„Šå¨„ */
 .bl{
-  /* Ì¤»ÈÍÑ */
+  /* è¸è—è„± */
 	width:49%;
   float:left;
   border-right:1px solid #070b0e;
 }
-/* ±¦Â¦ */
+/* å®å¨„ */
 .br{
-  /* Ì¤»ÈÍÑ */
+  /* è¸è—è„± */
 	width:50%;
   float:right;
 }
-/* ±¦Â¦ */
+/* å®å¨„ */
 .ttd1{
   border-left	: 1px solid #070b0e;
   padding-left	: 10px;
 }
 .ttd2{
-  /* º¸Â¦ */
+  /* ç„Šå¨„ */
   padding-left	: 10px;
 }
 .town{

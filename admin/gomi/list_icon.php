@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $f	= "../image/icon/";
 $files	= array();
 $files	= @glob($f."*.png");

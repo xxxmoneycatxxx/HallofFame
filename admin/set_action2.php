@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>SetAction02</title>
 <style type="text/css">
 <!--
@@ -29,7 +29,7 @@ input{background-color:#dddddd;
 		return 1;
 	}
 
-	// 行數
+	// 行数
 	define("ROWS",$_POST["patternNum"]?$_POST["patternNum"]:8);
 	define("IMG","../image/char/");
 
@@ -96,7 +96,7 @@ input{background-color:#dddddd;
 		print($judgeString.$quantityString.$skillString);
 		print("</textarea>\n");
 	}
-	// 判定種類
+	// 判定の種類
 	include("../data/data.judge_setup.php");
 	for($i=1000; $i<10000; $i++) {
 		$judge	= LoadJudgeData($i);
@@ -107,7 +107,7 @@ input{background-color:#dddddd;
 			$judgeList["$i"]["css"]	= true;
 	}
 
-	// 全
+	// 全スキル
 	include("../data/data.skill.php");
 	for($i=1000; $i<10000; $i++) {
 		$skill	= LoadSkillData($i);
@@ -122,7 +122,7 @@ input{background-color:#dddddd;
 		print("<tr><td>\n");
 		print('<span style="font-weight:bold">'.sprintf("%2s",$i+1)."</span>");
 		print("</td><td>\n");
-		// 判定
+		// 判定リスト
 		print('<select name="judge'.$i.'">'."\n");
 		print('<option></option>'."\n");
 		foreach($judgeList as $key => $exp) {
@@ -134,7 +134,7 @@ input{background-color:#dddddd;
 		}
 		print("</select>\n");
 		print("</td><td>\n");
-		// 數值
+		// 数値
 		print('<input type="text" name="quantity'.$i.'" value="'.($_POST["quantity".$i]?$_POST["quantity".$i]:"0").'" size="10" />'."\n");
 		print("</td><td>\n");
 		// 技
@@ -152,12 +152,12 @@ input{background-color:#dddddd;
 		print("</td></tr>\n");
 	}
 	print("</table>\n");
-	print('判定次數: <input type="text" name="patternNum" size="10" value="'.($_POST["patternNum"]?$_POST["patternNum"]:"8").'" /><br />'."\n");
-	print('<input type="submit" value="創建" name="make">'."\n");
+	print('判定次数: <input type="text" name="patternNum" size="10" value="'.($_POST["patternNum"]?$_POST["patternNum"]:"8").'" /><br />'."\n");
+	print('<input type="submit" value="创建" name="make">'."\n");
 	print('<input type="hidden" value="make" name="make">'."\n");
 	print('<input type="submit" value="添加" name="add">'."\n");
-	print('<input type="submit" value="刪除" name="delete"><br />'."\n");
-	print('輸入怪物id: <input type="text" name="loadMob" size="10" /> <input type="submit" value="讀取" name="Load" />');
+	print('<input type="submit" value="删除" name="delete"><br />'."\n");
+	print('输入怪物id: <input type="text" name="loadMob" size="10" /> <input type="submit" value="读取" name="Load" />');
 	print("</form>\n");
 ?>
 </body>

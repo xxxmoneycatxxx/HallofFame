@@ -1,50 +1,50 @@
-<?php
+﻿<?php
 //print("<pre>".print_r(CreateMonster(1001),1)."</pre>");
 //////////////////////////////////////////////////
 /*
-	變數PC同內容。
-	返直前
-	"monster"	=> "1",//*區別。
-	追加。
-	裝備等無
+	変数はPCキャラとほぼ同じ内容。
+	返す直前に
+	"monster"	=> "1",//*モンスターと区別するため。
+	を追加する。
+	装備等が無いため
 	"atk"	=> array(*,*),
 	"def"	=> array(*,*,*,*),
-	atk,def 直接指定。
-	"exphold"	=> "**",//持經驗值
-	"guard"	=> "後列防禦方法",
+	atk,def は直接指定する。
+	"exphold"	=> "**",//持ってる経験値
+	"guard"	=> "後列の防御方法",
 	always,never,life25,life50,life75,prob25,prob50,prob75
-	"position"	=> "FRONT or BACK",//指定事位置後列or前列固定。
-	"itemtable"	=> array("番號"=>"確立","番號2"=>"確立2"),//落。
-		設定場合 → 何落。
-		設定場合。
-		確立 x/10000
+	"position"	=> "FRONT or BACK",//指定する事で位置を後列or前列に固定できる。
+	"itemtable"	=> array("アイテム番号"=>"確立","アイテム番号2"=>"確立2"),//落とすアイテム。
+		設定されていない場合 → 何も落とさない。
+		設定されている場合。
+		確立は x/10000
 		array("500"=>"1011", "1500"=>"2011", "3000"=>"10"),
-		1011=500/10000(5%), 2011=1000/10000(10%), 3000=10/10000(0.01%),落。
-		複數個落事無、1個落。
+		1011=500/10000(5%), 2011=1000/10000(10%), 3000=10/10000(0.01%),で落とす。
+		複数個落とす事は無く、1個しか落とさない。
 	特殊
 	"SPECIAL" = array(
-	特殊能力(毒耐性)
+	特殊能力(ユニオンの毒耐性とか)
 	);
 	
-	■ 專用變數
-	"cycle" = 出現週期
-	一緒出雜魚出現確率
-	2個目變數無視
+	■ ユニオンモンスター専用の変数
+	"cycle" = 出現周期
+	ユニオンと一緒に出る雑魚出現確率
+	2個目の変数は無視
 	"Slave" = array(
-	敵番號 => (確立,0)
+	敵番号 => (確立,0)
 	);
 	"land" = 土地(背景)	
-	必出現雜魚指定
-	"SlaveSpecify"	=> array(敵番號, ),
-	"UnionName" = 團體名稱
-	"LevelLimit" = 制限
-	雜魚出現數指定
-	省略OK
+	必ず出現する雑魚を指定する
+	"SlaveSpecify"	=> array(敵番号, ),
+	"UnionName" = ユニオンの団体の名称
+	"LevelLimit" = レベル制限
+	雑魚の出現数を指定する
+	省略してもOK
 	"SlaveAmount" => "6", 
 */
 //////////////////////////////////////////////////
 function CreateMonster($no,$over=false) {
-	//名前重複 Slime(A),Slime(B)變數
+	//名前が重複しないように Slime(A),Slime(B)みたいにするための変数
 	static $overlap;
 	switch($no) {
 		case 1000:
@@ -99,7 +99,7 @@ $monster	= array(
 );	break;
 		case 1002:
 $monster	= array(
-"name"	=> "哥布林豬騎手",
+"name"	=> "哥布林猪骑手",
 "img"	=> "mon_095.gif",
 "level"	=> "3",
 "exphold"	=> "30",
@@ -123,7 +123,7 @@ $monster	= array(
 );	break;
 		case 1003:
 $monster	= array(
-"name"	=> "哥布林騎士",
+"name"	=> "哥布林骑士",
 "img"	=> "mon_206.gif",
 "level"	=> "5",
 "exphold"	=> "40",
@@ -174,7 +174,7 @@ $monster	= array(
 
 		case 1005:
 $monster	= array(
-"name"	=> "哥布林魔術師",
+"name"	=> "哥布林魔术师",
 "img"	=> "mon_051.gif",
 "level"	=> "6",
 "exphold"	=> "50",
@@ -200,7 +200,7 @@ $monster	= array(
 );	break;
 		case 1006:
 $monster	= array(
-"name"	=> "哥布林僧侶",
+"name"	=> "哥布林僧侣",
 "img"	=> "mon_205.gif",
 "level"	=> "7",
 "exphold"	=> "60",
@@ -225,7 +225,7 @@ $monster	= array(
 );	break;
 		case 1007:
 $monster	= array(
-"name"	=> "哥布林領主",
+"name"	=> "哥布林领主",
 "img"	=> "mon_205r.gif",
 "level"	=> "10",
 "exphold"	=> "80",
@@ -251,7 +251,7 @@ $monster	= array(
 );	break;
 		case 1008:
 $monster	= array(
-"name"	=> "哥布林突擊者",
+"name"	=> "哥布林突击者",
 "img"	=> "mon_183r.gif",
 "level"	=> "10",
 "exphold"	=> "60",
@@ -396,7 +396,7 @@ $monster	= array(
 );	break;
 		case 1015:
 $monster	= array(
-"name"	=> "守靈者",
+"name"	=> "守灵者",
 "img"	=> "mon_034.gif",
 "level"	=> "14",
 "exphold"	=> "120",
@@ -422,7 +422,7 @@ $monster	= array(
 );	break;
 		case 1016:
 $monster	= array(
-"name"	=> "隱士",
+"name"	=> "隐士",
 "img"	=> "mon_034z.gif",
 "level"	=> "14",
 "exphold"	=> "120",
@@ -448,7 +448,7 @@ $monster	= array(
 );	break;
 		case 1017:
 $monster	= array(
-"name"	=> "蝙蝠首領",
+"name"	=> "蝙蝠首领",
 "img"	=> "mon_147z.gif",
 "level"	=> "20",
 "exphold"	=> "1500",
@@ -473,7 +473,7 @@ $monster	= array(
 );	break;
 		case 1018:
 $monster	= array(
-"name"	=> "骷髏勇士",
+"name"	=> "骷髅勇士",
 "img"	=> "mon_032.gif",
 "level"	=> "16",
 "exphold"	=> "160",
@@ -499,7 +499,7 @@ $monster	= array(
 );	break;
 		case 1019:
 $monster	= array(
-"name"	=> "骷髏士兵",
+"name"	=> "骷髅士兵",
 "img"	=> "mon_144.gif",
 "level"	=> "20",
 "exphold"	=> "200",
@@ -525,7 +525,7 @@ $monster	= array(
 );	break;
 		case 1020:
 $monster	= array(
-"name"	=> "骷髏箭手",
+"name"	=> "骷髅箭手",
 "img"	=> "mon_143r.gif",
 "level"	=> "16",
 "exphold"	=> "160",
@@ -551,7 +551,7 @@ $monster	= array(
 );	break;
 		case 1021:
 $monster	= array(
-"name"	=> "骨頭薩滿",
+"name"	=> "骨头萨满",
 "img"	=> "mon_108.gif",
 "level"	=> "15",
 "exphold"	=> "150",
@@ -603,7 +603,7 @@ $monster	= array(
 );	break;
 		case 1023:
 $monster	= array(
-"name"	=> "獨眼巨人",
+"name"	=> "独眼巨人",
 "img"	=> "mon_139.gif",
 "level"	=> "20",
 "exphold"	=> "250",
@@ -629,7 +629,7 @@ $monster	= array(
 );	break;
 		case 1024:
 $monster	= array(
-"name"	=> "哥布林鐵匠",
+"name"	=> "哥布林铁匠",
 "img"	=> "mon_053r.gif",
 "level"	=> "18",
 "exphold"	=> "200",
@@ -704,7 +704,7 @@ $monster	= array(
 );	break;
 		case 1027:
 $monster	= array(
-"name"	=> "骷髏隊長",
+"name"	=> "骷髅队长",
 "img"	=> "mon_144r.gif",
 "level"	=> "27",
 "exphold"	=> "460",
@@ -730,7 +730,7 @@ $monster	= array(
 );	break;
 		case 1028:
 $monster	= array(
-"name"	=> "邪惡巫師",
+"name"	=> "邪恶巫师",
 "img"	=> "mon_108z.gif",
 "level"	=> "26",
 "exphold"	=> "300",
@@ -806,7 +806,7 @@ $monster	= array(
 );	break;
 		case 1031:
 $monster	= array(
-"name"	=> "邪惡傭人",
+"name"	=> "邪恶佣人",
 "img"	=> "mon_107.gif",
 "level"	=> "37",
 "exphold"	=> "460",
@@ -832,7 +832,7 @@ $monster	= array(
 );	break;
 		case 1032:
 $monster	= array(
-"name"	=> "人馬獵手",
+"name"	=> "人马猎手",
 "img"	=> "mon_129.gif",
 "level"	=> "39",
 "exphold"	=> "520",
@@ -858,7 +858,7 @@ $monster	= array(
 );	break;
 		case 1033:
 $monster	= array(
-"name"	=> "人馬騎士",
+"name"	=> "人马骑士",
 "img"	=> "mon_129r.gif",
 "level"	=> "40",
 "exphold"	=> "580",
@@ -884,7 +884,7 @@ $monster	= array(
 );	break;
 		case 1034:
 $monster	= array(
-"name"	=> "巴風特",
+"name"	=> "巴风特",
 "img"	=> "mon_210r.gif",
 "level"	=> "46",
 "exphold"	=> "830",
@@ -909,7 +909,7 @@ $monster	= array(
 );	break;
 		case 1035:
 $monster	= array(
-"name"	=> "巴風特領主",
+"name"	=> "巴风特领主",
 "img"	=> "mon_210.gif",
 "level"	=> "57",
 "exphold"	=> "3480",
@@ -1140,7 +1140,7 @@ $monster	= array(
 );	break;
 		case 1044:
 $monster	= array(
-"name"	=> "靴精靈",
+"name"	=> "靴精灵",
 "img"	=> "mon_187.gif",
 "exphold"	=> "360",
 "moneyhold"	=> "230",
@@ -1165,7 +1165,7 @@ $monster	= array(
 );	break;
 		case 1045:
 $monster	= array(
-"name"	=> "雪精靈",
+"name"	=> "雪精灵",
 "img"	=> "mon_186.gif",
 "exphold"	=> "600",
 "moneyhold"	=> "400",
@@ -1191,7 +1191,7 @@ $monster	= array(
 );	break;
 		case 1046:
 $monster	= array(
-"name"	=> "聖誕老人",
+"name"	=> "圣诞老人",
 "img"	=> "mon_188.gif",
 "exphold"	=> "3000",
 "moneyhold"	=> "3000",
@@ -1216,7 +1216,7 @@ $monster	= array(
 );	break;
 		case 1047:
 $monster	= array(
-"name"	=> "馴鹿士兵",
+"name"	=> "驯鹿士兵",
 "img"	=> "mon_189.gif",
 "exphold"	=> "420",
 "moneyhold"	=> "210",
@@ -1242,7 +1242,7 @@ $monster	= array(
 );	break;
 		case 1048:
 $monster	= array(
-"name"	=> "馴鹿首領",
+"name"	=> "驯鹿首领",
 "img"	=> "mon_189r.gif",
 "exphold"	=> "480",
 "moneyhold"	=> "300",
@@ -1268,7 +1268,7 @@ $monster	= array(
 );	break;
 		case 1049:
 $monster	= array(
-"name"	=> "霜凍女皇",
+"name"	=> "霜冻女皇",
 "img"	=> "mon_190.gif",
 "exphold"	=> "2200",
 "moneyhold"	=> "800",
@@ -1294,7 +1294,7 @@ $monster	= array(
 );	break;
 		case 1050:
 $monster	= array(
-"name"	=> "暗黑精靈獵手",
+"name"	=> "暗黑精灵猎手",
 "img"	=> "mon_042r.gif",
 "exphold"	=> "500",
 "moneyhold"	=> "200",
@@ -1318,7 +1318,7 @@ $monster	= array(
 );	break;
 		case 1051:
 $monster	= array(
-"name"	=> "暗黑精靈女戰神",
+"name"	=> "暗黑精灵女战神",
 "img"	=> "mon_215r.gif",
 "exphold"	=> "630",
 "moneyhold"	=> "230",
@@ -1342,7 +1342,7 @@ $monster	= array(
 );	break;
 		case 1052:
 $monster	= array(
-"name"	=> "暗黑精靈薩滿",
+"name"	=> "暗黑精灵萨满",
 "img"	=> "mon_220r.gif",
 "exphold"	=> "600",
 "moneyhold"	=> "300",
@@ -1366,7 +1366,7 @@ $monster	= array(
 );	break;
 		case 1053:
 $monster	= array(
-"name"	=> "沼澤狂戰士",
+"name"	=> "沼泽狂战士",
 "img"	=> "mon_102.gif",
 "exphold"	=> "440",
 "moneyhold"	=> "40",
@@ -1390,7 +1390,7 @@ $monster	= array(
 );	break;
 		case 1054:
 $monster	= array(
-"name"	=> "詛咒石像鬼",
+"name"	=> "诅咒石像鬼",
 "img"	=> "mon_104r.gif",
 "exphold"	=> "400",
 "moneyhold"	=> "100",
@@ -1413,7 +1413,7 @@ $monster	= array(
 );	break;
 		case 1055:
 $monster	= array(
-"name"	=> "邪惡植物",
+"name"	=> "邪恶植物",
 "img"	=> "mon_127.gif",
 "exphold"	=> "390",
 "moneyhold"	=> "90",
@@ -1436,7 +1436,7 @@ $monster	= array(
 );	break;
 		case 1056:
 $monster	= array(
-"name"	=> "邪惡巨木",
+"name"	=> "邪恶巨木",
 "img"	=> "mon_128.gif",
 "exphold"	=> "430",
 "moneyhold"	=> "210",
@@ -1459,7 +1459,7 @@ $monster	= array(
 );	break;
 		case 1057:
 $monster	= array(
-"name"	=> "煙巨人",
+"name"	=> "烟巨人",
 "img"	=> "mon_130.gif",
 "exphold"	=> "470",
 "moneyhold"	=> "10",
@@ -1482,7 +1482,7 @@ $monster	= array(
 );	break;
 		case 1058:
 $monster	= array(
-"name"	=> "地獄哨兵",
+"name"	=> "地狱哨兵",
 "img"	=> "mon_174.gif",
 "exphold"	=> "1000",
 "moneyhold"	=> "500",
@@ -1551,7 +1551,7 @@ $monster	= array(
 );	break;
 		case 1061:
 $monster	= array(
-"name"	=> "小海盜",
+"name"	=> "小海盗",
 "img"	=> "mon_063.gif",
 "exphold"	=> "170",
 "moneyhold"	=> "30",
@@ -1598,7 +1598,7 @@ $monster	= array(
 );	break;
 		case 1063:
 $monster	= array(
-"name"	=> "瘋狂章魚",
+"name"	=> "疯狂章鱼",
 "img"	=> "mon_118.gif",
 "exphold"	=> "300",
 "moneyhold"	=> "120",
@@ -1621,7 +1621,7 @@ $monster	= array(
 );	break;
 		case 1064:
 $monster	= array(
-"name"	=> "海鷗",
+"name"	=> "海鸥",
 "img"	=> "mon_223.gif",
 "exphold"	=> "220",
 "moneyhold"	=> "100",
@@ -1669,7 +1669,7 @@ $monster	= array(
 );	break;
 		case 1066:
 $monster	= array(
-"name"	=> "巨型鯨魚",
+"name"	=> "巨型鲸鱼",
 "img"	=> "mon_227.gif",
 "exphold"	=> "3100",
 "moneyhold"	=> "1200",
@@ -1693,7 +1693,7 @@ $monster	= array(
 );	break;
 		case 1067:
 $monster	= array(
-"name"	=> "海神尼普頓",
+"name"	=> "海神尼普顿",
 "img"	=> "mon_162.gif",
 "exphold"	=> "2400",
 "moneyhold"	=> "3000",
@@ -1717,7 +1717,7 @@ $monster	= array(
 );	break;
 		case 1068:
 $monster	= array(
-"name"	=> "人魚",
+"name"	=> "人鱼",
 "img"	=> "mon_116.gif",
 "exphold"	=> "450",
 "moneyhold"	=> "210",
@@ -1740,7 +1740,7 @@ $monster	= array(
 );	break;
 		case 1069:
 $monster	= array(
-"name"	=> "人魚巫師",
+"name"	=> "人鱼巫师",
 "img"	=> "mon_117.gif",
 "exphold"	=> "420",
 "moneyhold"	=> "230",
@@ -1764,7 +1764,7 @@ $monster	= array(
 );	break;
 		case 1070:
 $monster	= array(
-"name"	=> "人魚士兵",
+"name"	=> "人鱼士兵",
 "img"	=> "mon_116r.gif",
 "exphold"	=> "480",
 "moneyhold"	=> "280",
@@ -1788,7 +1788,7 @@ $monster	= array(
 );	break;
 		case 1071:
 $monster	= array(
-"name"	=> "人魚戰士",
+"name"	=> "人鱼战士",
 "img"	=> "mon_117r.gif",
 "exphold"	=> "560",
 "moneyhold"	=> "300",
@@ -1835,7 +1835,7 @@ $monster	= array(
 );	break;
 		case 1073:
 $monster	= array(
-"name"	=> "衝鋒犀牛",
+"name"	=> "冲锋犀牛",
 "img"	=> "mon_134.gif",
 "exphold"	=> "470",
 "moneyhold"	=> "200",
@@ -1882,7 +1882,7 @@ $monster	= array(
 );	break;
 		case 1075:
 $monster	= array(
-"name"	=> "岩漿巨人",
+"name"	=> "岩浆巨人",
 "img"	=> "mon_138.gif",
 "exphold"	=> "670",
 "moneyhold"	=> "370",
@@ -1906,7 +1906,7 @@ $monster	= array(
 );	break;
 		case 1076:
 $monster	= array(
-"name"	=> "火鳳凰",
+"name"	=> "火凤凰",
 "img"	=> "mon_140.gif",
 "exphold"	=> "1800",
 "moneyhold"	=> "1200",
@@ -1930,7 +1930,7 @@ $monster	= array(
 );	break;
 		case 1077:
 $monster	= array(
-"name"	=> "火焰頭",
+"name"	=> "火焰头",
 "img"	=> "mon_193.gif",
 "exphold"	=> "600",
 "moneyhold"	=> "200",
@@ -1954,7 +1954,7 @@ $monster	= array(
 );	break;
 		case 1078:
 $monster	= array(
-"name"	=> "惡狼",
+"name"	=> "恶狼",
 "img"	=> "mon_249.gif",
 "exphold"	=> "320",
 "moneyhold"	=> "300",
@@ -2049,7 +2049,7 @@ $monster	= array(
 );	break;
 		case 1082:
 $monster	= array(
-"name"	=> "雷鳥",
+"name"	=> "雷鸟",
 "img"	=> "mon_208r.gif",
 "exphold"	=> "1050",
 "moneyhold"	=> "300",
@@ -2097,7 +2097,7 @@ $monster	= array(
 );	break;
 		case 1084:
 $monster	= array(
-"name"	=> "風元素",
+"name"	=> "风元素",
 "img"	=> "mon_030.gif",
 "exphold"	=> "1000",
 "moneyhold"	=> "1000",
@@ -2120,7 +2120,7 @@ $monster	= array(
 );	break;
 		case 1085:
 $monster	= array(
-"name"	=> "沙漠蠍",
+"name"	=> "沙漠蝎",
 "img"	=> "mon_101.gif",
 "exphold"	=> "360",
 "moneyhold"	=> "190",
@@ -2143,7 +2143,7 @@ $monster	= array(
 );	break;
 		case 1086:
 $monster	= array(
-"name"	=> "響尾蛇",
+"name"	=> "响尾蛇",
 "img"	=> "mon_068.gif",
 "exphold"	=> "320",
 "moneyhold"	=> "200",
@@ -2267,7 +2267,7 @@ $monster	= array(
 
 		case 1091:
 $monster	= array(
-"name"	=> "獵狼",
+"name"	=> "猎狼",
 "img"	=> "mon_184rz.gif",
 "exphold"	=> "400",
 "moneyhold"	=> "100",
@@ -2293,7 +2293,7 @@ $monster	= array(
 
 		case 1092:
 $monster	= array(
-"name"	=> "盜賊",
+"name"	=> "盗贼",
 "img"	=> "mon_216r.gif",
 "exphold"	=> "500",
 "moneyhold"	=> "60",
@@ -2319,7 +2319,7 @@ $monster	= array(
 
 		case 1093:
 $monster	= array(
-"name"	=> "女盜賊",
+"name"	=> "女盗贼",
 "img"	=> "mon_217.gif",
 "exphold"	=> "400",
 "moneyhold"	=> "70",
@@ -2345,7 +2345,7 @@ $monster	= array(
 
 		case 1094:
 $monster	= array(
-"name"	=> "馴狼者",
+"name"	=> "驯狼者",
 "img"	=> "mon_217r.gif",
 "exphold"	=> "420",
 "moneyhold"	=> "80",
@@ -2371,7 +2371,7 @@ $monster	= array(
 
 		case 1095:
 $monster	= array(
-"name"	=> "鏈錘兵",
+"name"	=> "链锤兵",
 "img"	=> "mon_194.gif",
 "exphold"	=> "800",
 "moneyhold"	=> "300",
@@ -2398,7 +2398,7 @@ $monster	= array(
 
 		case 1096:
 $monster	= array(
-"name"	=> "巨劍兵",
+"name"	=> "巨剑兵",
 "img"	=> "mon_194r.gif",
 "exphold"	=> "1000",
 "moneyhold"	=> "400",
@@ -2425,7 +2425,7 @@ $monster	= array(
 
 		case 1097:
 $monster	= array(
-"name"	=> "黑暗桃樂斯",
+"name"	=> "黑暗桃乐斯",
 "img"	=> "mon_018r.gif",
 "exphold"	=> "800",
 "moneyhold"	=> "100",
@@ -2452,7 +2452,7 @@ $monster	= array(
 
 		case 1098:
 $monster	= array(
-"name"	=> "墮落女祭司",
+"name"	=> "堕落女祭司",
 "img"	=> "mon_214rzz.gif",
 "exphold"	=> "700",
 "moneyhold"	=> "350",
@@ -2577,7 +2577,7 @@ $monster	= array(
 );	break;
 		case 1103:
 $monster	= array(
-"name"	=> "雷鳥王",
+"name"	=> "雷鸟王",
 "img"	=> "mon_208rz.gif",
 "level"	=> "35",
 "exphold"	=> "500",
@@ -2648,7 +2648,7 @@ $monster	= array(
 );	break;
 		case 1106:
 $monster	= array(
-"name"	=> "人魚復仇者",
+"name"	=> "人鱼复仇者",
 "img"	=> "mon_116r.gif",
 "level"	=> "33",
 "exphold"	=> "400",
@@ -2672,7 +2672,7 @@ $monster	= array(
 );	break;
 		case 1107:
 $monster	= array(
-"name"	=> "人魚召喚師",
+"name"	=> "人鱼召唤师",
 "img"	=> "mon_116.gif",
 "level"	=> "32",
 "exphold"	=> "400",
@@ -2696,7 +2696,7 @@ $monster	= array(
 );	break;
 		case 1108:
 $monster	= array(
-"name"	=> "人魚巫師",
+"name"	=> "人鱼巫师",
 "img"	=> "mon_117.gif",
 "level"	=> "30",
 "exphold"	=> "400",
@@ -2720,7 +2720,7 @@ $monster	= array(
 );	break;
 		case 1109:
 $monster	= array(
-"name"	=> "食人魔伊萊扎",
+"name"	=> "食人魔伊莱扎",
 "img"	=> "mon_169.gif",
 "level"	=> "59",
 "exphold"	=> "800",
@@ -2804,7 +2804,7 @@ $hp	= 30000 + 400 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "暗黑龍",
+"name"	=> "暗黑龙",
 "img"	=> "mon_013r.gif",//"mon_260.gif",//"mon_013r.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -2827,7 +2827,7 @@ $monster	= array(
 "def"	=> array(60,30,50,30),
 "itemtable"	=> array("6800"=>"5000","6801"=>"5000",),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*24*3,
 "Slave"	=> array(
 1028	=> array(100,0),
@@ -2837,8 +2837,8 @@ $monster	= array(
 1033	=> array(100,0),
 ),
 "land"	=> "swamp",
-"UnionName"	=> "龍之軍團",
-"LevelLimit"=> "250",//圭紛擴嘎
+"UnionName"	=> "龙之军团",
+"LevelLimit"=> "250",//圭纷レベルの扩嘎
 );	break;
 
 		case 2001:
@@ -2846,7 +2846,7 @@ $hp	= 15000 + 200 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "牛頭怪",
+"name"	=> "牛头怪",
 "img"	=> "mon_014.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -2869,14 +2869,14 @@ $monster	= array(
 "def"	=> array(80,50,50,70),
 "itemtable"	=> array("5500"=>"3000","5501"=>"3000","5600"=>"4000",),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*8,
 "Slave"	=> array(
 1023	=> array(300,0),
 1024	=> array(100,0),
 ),
 "land"	=> "mount",
-"UnionName"	=> "金牛衝鋒隊",
+"UnionName"	=> "金牛冲锋队",
 "LevelLimit"=> "200",
 );	break;
 
@@ -2908,7 +2908,7 @@ $monster	= array(
 "def"	=> array(70,50,40,40),
 "itemtable"	=> array("1021"=>"9000","6802"=>"1000",),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*12,
 "Slave"	=> array(
 1095	=> array(100,0),
@@ -2926,7 +2926,7 @@ $hp	= 5000 + 100 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "土匪頭",
+"name"	=> "土匪头",
 "img"	=> "mon_216.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -2949,7 +2949,7 @@ $monster	= array(
 "def"	=> array(60,40,40,40),
 "itemtable"	=> array("5510"=>"2000","5515"=>"2000","5520"=>"2000","5525"=>"2000","5530"=>"2000",),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*10,
 "Slave"	=> array(
 1092	=> array(100,0),
@@ -2967,7 +2967,7 @@ $hp	= 1000 + 20 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "早餐時間",
+"name"	=> "早餐时间",
 "img"	=> "mon_054rz.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -2990,7 +2990,7 @@ $monster	= array(
 "def"	=> array(40,20,30,20),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "SlaveSpecify"	=> array(1099, ),//花蝶回年
 "SlaveAmount" => "3",
 "Slave"	=> array(
@@ -3007,7 +3007,7 @@ $monster	= array(
 1099	=> array(100,0),
 ),
 "land"	=> "grass",
-"UnionName"	=> "早餐時間",
+"UnionName"	=> "早餐时间",
 "LevelLimit"=> "50",
 );
 if(date("H") == 7)
@@ -3021,7 +3021,7 @@ $hp	= 1000 + 20 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "午餐時間",
+"name"	=> "午餐时间",
 "img"	=> "mon_054ry.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -3044,7 +3044,7 @@ $monster	= array(
 "def"	=> array(40,20,30,20),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "SlaveSpecify"	=> array(1099, ),//花蝶回年
 "SlaveAmount" => "3",
 "Slave"	=> array(
@@ -3061,7 +3061,7 @@ $monster	= array(
 1099	=> array(100,0),
 ),
 "land"	=> "grass",
-"UnionName"	=> "午餐時間",
+"UnionName"	=> "午餐时间",
 "LevelLimit"=> "50",
 );
 if(date("H") == 12)
@@ -3075,7 +3075,7 @@ $hp	= 1000 + 30 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "晚餐時間",
+"name"	=> "晚餐时间",
 "img"	=> "mon_054r.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -3098,7 +3098,7 @@ $monster	= array(
 "def"	=> array(40,20,30,20),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "SlaveSpecify"	=> array(1099, ),//花蝶回年
 "SlaveAmount" => "3",
 "Slave"	=> array(
@@ -3115,7 +3115,7 @@ $monster	= array(
 1099	=> array(100,0),
 ),
 "land"	=> "grass01",
-"UnionName"	=> "晚餐時間",
+"UnionName"	=> "晚餐时间",
 "LevelLimit"=> "50",
 );
 if(date("H") == 19)
@@ -3153,14 +3153,14 @@ $monster	= array(
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
 "itemtable"	=> array("6601"=>"7000","6602"=>"3000",),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*15,
 "Slave"	=> array(
 1100	=> array(100,0),
 1101	=> array(100,0),
 ),
 "land"	=> "jungle",
-"UnionName"	=> "猿猴的憤怒",
+"UnionName"	=> "猿猴的愤怒",
 "LevelLimit"=> "100",
 );
 if(date("H") == 19)
@@ -3174,7 +3174,7 @@ $hp	= 10000 + 100 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "雷鳥王",
+"name"	=> "雷鸟王",
 "img"	=> "mon_208r.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -3197,7 +3197,7 @@ $monster	= array(
 "def"	=> array(60,30,30,200),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*27,
 "Slave"	=> array(
 1092	=> array(100,0),
@@ -3205,7 +3205,7 @@ $monster	= array(
 1094	=> array(100,0),
 ),
 "land"	=> "nest",
-"UnionName"	=> "鳥巢",
+"UnionName"	=> "鸟巢",
 "LevelLimit"=> "150",
 );	break;
 
@@ -3214,7 +3214,7 @@ $hp	= 5000 + 30 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "徘徊幽靈",
+"name"	=> "徘徊幽灵",
 "img"	=> "mon_238.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -3237,7 +3237,7 @@ $monster	= array(
 "def"	=> array(90,150,40,70),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>80,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*21,
 "Slave"	=> array(
 1092	=> array(100,0),
@@ -3245,7 +3245,7 @@ $monster	= array(
 1094	=> array(100,0),
 ),
 "land"	=> "build01",
-"UnionName"	=> "冥界鬥士",
+"UnionName"	=> "冥界斗士",
 "LevelLimit"=> "150",
 );	break;
 
@@ -3254,7 +3254,7 @@ $hp	= 10000 + 70 * UserAmount();
 $exp	= round($hp/2);
 $money	= round($hp/3);
 $monster	= array(
-"name"	=> "人魚將軍",
+"name"	=> "人鱼将军",
 "img"	=> "mon_117r.gif",
 "exphold"	=> $exp,
 "moneyhold"	=> $money,
@@ -3277,7 +3277,7 @@ $monster	= array(
 "def"	=> array(50,50,50,50),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>60,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*17,
 "Slave"	=> array(
 1092	=> array(100,0),
@@ -3285,7 +3285,7 @@ $monster	= array(
 1094	=> array(100,0),
 ),
 "land"	=> "ocean",
-"UnionName"	=> "藍色哨兵",
+"UnionName"	=> "蓝色哨兵",
 "LevelLimit"=> "150",
 );	break;
 
@@ -3317,7 +3317,7 @@ $monster	= array(
 "def"	=> array(60,40,50,50),
 "itemtable"	=> array(),
 "SPECIAL"	=> array("PoisonResist"=>50,),
-// union 漓脫
+// union 漓脱
 "cycle"	=> 60*60*19,
 "Slave"	=> array(
 1092	=> array(100,0),
@@ -3325,7 +3325,7 @@ $monster	= array(
 1094	=> array(100,0),
 ),
 "land"	=> "mount",
-"UnionName"	=> "食人魔軍團",
+"UnionName"	=> "食人魔军团",
 "LevelLimit"=> "150",
 );	break;
 
@@ -3343,10 +3343,10 @@ $monster	= array(
 
 
 
-//------------------------------------ 召喚專用 5000
+//------------------------------------ 召唤专用 5000
 		case 5000:
 $monster	= array(
-"name"	=> "治癒兔",
+"name"	=> "治愈兔",
 "img"	=> "mon_111.gif",
 "level"	=> "15",
 "maxhp"	=> "80",
@@ -3413,7 +3413,7 @@ $monster	= array(
 );	break;
 		case 5003:
 $monster	= array(
-"name"	=> "骷髏",
+"name"	=> "骷髅",
 "img"	=> "mon_143.gif",
 "exphold"	=> "60",
 "moneyhold"	=> "0",
@@ -3438,7 +3438,7 @@ $monster	= array(
 );	break;
 		case 5004:
 $monster	= array(
-"name"	=> "殭屍",
+"name"	=> "僵尸",
 "img"	=> "mon_141.gif",
 "level"	=> "5",
 "maxhp"	=> "260",
@@ -3461,7 +3461,7 @@ $monster	= array(
 );	break;
 		case 5005:
 $monster	= array(
-"name"	=> "食屍鬼",
+"name"	=> "食尸鬼",
 "img"	=> "mon_142.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3536,7 +3536,7 @@ $monster	= array(
 );	break;
 		case 5008:
 $monster	= array(
-"name"	=> "小豬",
+"name"	=> "小猪",
 "img"	=> "mon_095r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3560,7 +3560,7 @@ $monster	= array(
 );	break;
 		case 5009:
 $monster	= array(
-"name"	=> "瘋豬",
+"name"	=> "疯猪",
 "img"	=> "mon_078r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3585,7 +3585,7 @@ $monster	= array(
 );	break;
 		case 5010:
 $monster	= array(
-"name"	=> "地恐龍",
+"name"	=> "地恐龙",
 "img"	=> "mon_228.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3610,7 +3610,7 @@ $monster	= array(
 );	break;
 		case 5011:
 $monster	= array(
-"name"	=> "馴化獅",
+"name"	=> "驯化狮",
 "img"	=> "mon_114r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3635,7 +3635,7 @@ $monster	= array(
 );	break;
 		case 5012:
 $monster	= array(
-"name"	=> "馴化熊",
+"name"	=> "驯化熊",
 "img"	=> "mon_085r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3710,7 +3710,7 @@ $monster	= array(
 );	break;
 		case 5015:
 $monster	= array(
-"name"	=> "調皮鬼",
+"name"	=> "调皮鬼",
 "img"	=> "mon_124.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3735,7 +3735,7 @@ $monster	= array(
 );	break;
 		case 5016:
 $monster	= array(
-"name"	=> "飛河馬",
+"name"	=> "飞河马",
 "img"	=> "mon_172r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3760,7 +3760,7 @@ $monster	= array(
 );	break;
 		case 5017:
 $monster	= array(
-"name"	=> "龍",
+"name"	=> "龙",
 "img"	=> "mon_013.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3785,7 +3785,7 @@ $monster	= array(
 );	break;
 		case 5100:
 $monster	= array(
-"name"	=> "天使長",
+"name"	=> "天使长",
 "img"	=> "mon_239.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3810,7 +3810,7 @@ $monster	= array(
 );	break;
 		case 5101:
 $monster	= array(
-"name"	=> "墮落天使",
+"name"	=> "堕落天使",
 "img"	=> "mon_239r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3835,7 +3835,7 @@ $monster	= array(
 );	break;
 		case 5102:
 $monster	= array(
-"name"	=> "托爾",
+"name"	=> "托尔",
 "img"	=> "mon_240r.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3860,7 +3860,7 @@ $monster	= array(
 );	break;
 		case 5103:
 $monster	= array(
-"name"	=> "伊弗裡特",
+"name"	=> "伊弗里特",
 "img"	=> "mon_170rz.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3885,7 +3885,7 @@ $monster	= array(
 );	break;
 		case 5104:
 $monster	= array(
-"name"	=> "利維坦",
+"name"	=> "利维坦",
 "img"	=> "mon_120.gif",
 "exphold"	=> "0",
 "moneyhold"	=> "0",
@@ -3912,25 +3912,25 @@ $monster	= array(
 
 	if(!$monster)
 		return false;
-	// 色變數追加?編集
+	// 色々変数追加?編集
 	if($no < 2000) {
 		$monster["moneyhold"]	= 100;
 	}
-	//名前重複 Slime(A),Slime(B)
+	//名前が重複しないように Slime(A),Slime(B)みたいにする
 	if($over) {
-		$letter	= "A";//文字(數字ｋ)
+		$letter	= "A";//文字(数字でもおｋ)
 		$letter	= chr(ord($letter) + $overlap[$no]);
-		$overlap[$no]++;//繰上
-		$style	= "({$letter})";//感加 "(B)"
-		$monster["name"]	.= $style;//實際名前後付加
+		$overlap[$no]++;//繰上げ
+		$style	= "({$letter})";//どんな感じで加えるか これだと"(B)"みたいになる
+		$monster["name"]	.= $style;//実際に名前の後ろに付け加える
 	}
-	//前衛後衛設定設定
-	mt_srand();//亂數初期化
-	if(!$monster["position"]) {//前列後列設定
+	//前衛後衛が設定されていなければ設定する
+	mt_srand();//乱数初期化
+	if(!$monster["position"]) {//前列後列の設定
 		$monster["position"]	= (mt_rand(0,1) ? "front" : "back" );
 		$monster["posed"]	= true;
 	}
-	// 落
+	// 落とすアイテムをもたせる
 	if(is_array($monster["itemtable"])) {
 		$prob	= mt_rand(1,10000);
 		$sum	= 0;

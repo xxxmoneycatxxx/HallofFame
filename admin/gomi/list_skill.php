@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include("./data.skill.php");
 
 //print("<table><tbody>");

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class Ranking {
 
@@ -9,7 +9,7 @@ class Ranking {
 	var $UserRecord;
 
 //////////////////////////////////////////////
-// 讀迂配列
+// ファイルから読み込んでランキングを配列にする
 /*
 
 	$this->Ranking[0][0]= *********;// 首位
@@ -53,9 +53,9 @@ class Ranking {
 		}
 	}
 //////////////////////////////////////////////
-// 戰。戰。
-	function Challenge(&$user) {
-		// 無(1位)
+// ランキング戦する。戦う。
+	function Challenge($user) {
+		// ランキングが無いとき(1位になる)
 		if(!$this->Ranking) {
 			$this->JoinRanking($user->id);
 			$this->SaveRanking();
@@ -63,24 +63,24 @@ class Ranking {
 			//return array($message,true);
 			return false;
 		}
-		//自分順位
+		//自分の順位
 		$MyRank	= $this->SearchID($user->id);
 
-		// 1位場合。
+		// 1位の場合。
 		if($MyRank["0"] === 0) {
-			SHowError("第一名不可再挑戰.");
+			SHowError("第一名不可再挑战.");
 			//return array($message,true);
 			return false;
 		}
 
-		// 自分外 ////////////////////////////////////
+		// 自分がランク外なら ////////////////////////////////////
 		if(!$MyRank)
 		{
-			$this->JoinRanking($user->id);//自分最下位。
-			$MyPlace	= count($this->Ranking) - 1;//自分(最下位)
+			$this->JoinRanking($user->id);//自分を最下位にする。
+			$MyPlace	= count($this->Ranking) - 1;//自分のランク(最下位)
 			$RivalPlace	= (int)($MyPlace - 1);
 
-			// 相手首位
+			// 相手が首位なのかどうか
 			if($RivalPlace === 0)
 				$DefendMatch	= true;
 			else
@@ -88,24 +88,24 @@ class Ranking {
 
 			//$MyID	= $id;
 
-			//自分1個上人相手。
+			//自分より1個上の人が相手。
 			$RivalRankKey	= array_rand($this->Ranking[$RivalPlace]);
-			$RivalID	= $this->Ranking[$RivalPlace][$RivalRankKey]["id"];//對戰相手ID
+			$RivalID	= $this->Ranking[$RivalPlace][$RivalRankKey]["id"];//対戦する相手のID
 			$Rival	= new user($RivalID);
 
 			/*
 			dump($this->Ranking);
 			dump($RivalID);
 			dump($MyID);
-			dump($MyRank);//頑張
+			dump($MyRank);//エラーでたら頑張れ
 			return 0;
 			*/
 
 			$Result	= $this->RankBattle($user,$Rival,$MyPlace,$RivalPlace);
-			$Return	= $this->ProcessByResult($Result,&$user,&$Rival,$DefendMatch);
+			$Return	= $this->ProcessByResult($Result,$user,$Rival,$DefendMatch);
 			
 			return $Return;
-			// 勝利順位交代
+			// 勝利なら順位交代
 			//if($message == "Battle" && $result === 0) {
 			//	$this->ChangePlace($user,$Rival);
 			//}
@@ -114,17 +114,17 @@ class Ranking {
 			//return array($message,$result);
 		}
 
-		// 2位-最下位人處理。////////////////////////////////
+		// 2位-最下位の人の処理。////////////////////////////////
 		if($MyRank) {
-			$RivalPlace	= (int)($MyRank["0"] - 1);//自分順位1個上人。
+			$RivalPlace	= (int)($MyRank["0"] - 1);//自分より順位が1個上の人。
 
-			// 相手首位
+			// 相手が首位なのかどうか
 			if($RivalPlace === 0)
 				$DefendMatch	= true;
 			else
 				$DefendMatch	= false;
 
-			//自分1個上人相手
+			//自分より1個上の人が相手
 			$RivalRankKey	= array_rand($this->Ranking[$RivalPlace]);
 			$RivalID	= $this->Ranking[$RivalPlace][$RivalRankKey]["id"];
 			$Rival	= new user($RivalID);
@@ -132,13 +132,13 @@ class Ranking {
 			//$MyID		= $id;
 			//list($message,$result)	= $this->RankBattle($MyID,$RivalID);
 			$Result	= $this->RankBattle($user,$Rival,$MyRank["0"],$RivalPlace);
-			$Return	= $this->ProcessByResult($Result,&$user,&$Rival,$DefendMatch);
+			$Return	= $this->ProcessByResult($Result,$user,$Rival,$DefendMatch);
 			
 			return $Return;
 			//if($message != "Battle")
 			//	return array($message,$result);
 
-			// 戰鬥行勝利順位交代
+			// 戦闘を行って勝利なら順位交代
 			/*
 			if($message == "Battle" && $result === 0) {
 				$this->ChangePlace($MyID,$RivalID);
@@ -151,42 +151,42 @@ class Ranking {
 	}
 
 //////////////////////////////////////////////
-// 戰
-	function RankBattle(&$user,&$Rival,$UserPlace,$RivalPlace) {
+// 戦わせる
+	function RankBattle($user,$Rival,$UserPlace,$RivalPlace) {
 
 		$UserPlace	= "[".($UserPlace+1)."位]";
 		$RivalPlace	= "[".($RivalPlace+1)."位]";
 
 		/*
-			■ 相手自體既存在場合處理
-			削除處理時消
-			本來出。
+			■ 相手のユーザ自体が既に存在しない場合の処理
+			アカウントが削除処理された時にランキングからも消えるようにしたから
+			本来出ないエラーかもしれない。
 		*/
 		if($Rival->is_exist() == false) {
-			ShowError("對手不存在(不戰而勝)");
+			ShowError("对手不存在(不战而胜)");
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
 			//return array(true);
 			return "DEFENDER_NO_ID";
 		}
 
-		// 互用讀迂
+		// お互いのランキンぐ用のパーティーを読み込む
 		$Party_Challenger	= $user->RankParty();
 		$Party_Defender		= $Rival->RankParty();
 
 
-		// 用！！！
+		// ランク用パーティーがありません！！！
 		if($Party_Challenger === false) {
-			ShowError("戰（？）。");
+			ShowError("戦うメンバーがいません（？）。");
 			return "CHALLENGER_NO_PARTY";
 		}
 
-		// 用！！！
+		// ランク用パーティーがありません！！！
 		if($Party_Defender === false) {
 			//$defender->RankRecord(0,"DEFEND",$DefendMatch);
 			//$defender->SaveData();
-			ShowError($Rival->name." 對戰的人物還未決定<br />(不戰而勝)");
-			return "DEFENDER_NO_PARTY";//不戰而勝
+			ShowError($Rival->name." 对战的人物还未决定<br />(不战而胜)");
+			return "DEFENDER_NO_PARTY";//不战而胜とする
 		}
 
 		//dump($Party_Challenger);
@@ -194,13 +194,13 @@ class Ranking {
 		include(CLASS_BATTLE);
 		$battle	= new battle($Party_Challenger,$Party_Defender);
 		$battle->SetBackGround("colosseum");
-		$battle->SetResultType(1);// 決著場合生存者數決
+		$battle->SetResultType(1);// 決着つかない場合は生存者の数で決めるようにする
 		$battle->SetTeamName($user->name.$UserPlace,$Rival->name.$RivalPlace);
-		$battle->Process();//戰鬥開始
+		$battle->Process();//戦闘開始
 		$battle->RecordLog("RANK");
-		$Result	= $battle->ReturnBattleResult();// 戰鬥結果
+		$Result	= $battle->ReturnBattleResult();// 戦闘結果
 
-		// 戰鬥受立側成績變。
+		// 戦闘を受けて立った側の成績はここで変える。
 		//$defender->RankRecord($Result,"DEFEND",$DefendMatch);
 		//$defender->SaveData();
 
@@ -212,15 +212,15 @@ class Ranking {
 		} else if ($Result === DRAW) {
 			return "DRAW_GAME";
 		} else {
-			return "DRAW_GAME";//()予定出(迴避用)
+			return "DRAW_GAME";//(エラー)予定では出ないエラー(回避用)
 		}
 	}
 //////////////////////////////////////////////////
-//	結果處理變
-	function ProcessByResult($Result,&$user,&$Rival,$DefendMatch) {
+//	結果によって処理を変える
+	function ProcessByResult($Result,$user,$Rival,$DefendMatch) {
 		switch($Result) {
 
-			// 受側ID存在
+			// 受けた側のIDが存在しない
 			case "DEFENDER_NO_ID":
 				$this->ChangePlace($user->id,$Rival->id);
 				$this->DeleteRank($Rival->id);
@@ -228,12 +228,12 @@ class Ranking {
 				return false;
 				break;
 
-			// 挑戰側PT無
+			// 挑戦側PT無し
 			case "CHALLENGER_NO_PARTY":
 				return false;
 				break;
 
-			// 受側PT無
+			// 受けた側PT無し
 			case "DEFENDER_NO_PARTY":
 				$this->ChangePlace($user->id,$Rival->id);
 				$this->SaveRanking();
@@ -244,7 +244,7 @@ class Ranking {
 				return true;
 				break;
 
-			// 挑戰者勝
+			// 挑戦者勝ち
 			case "CHALLENGER_WIN":
 				$this->ChangePlace($user->id,$Rival->id);
 				$this->SaveRanking();
@@ -255,7 +255,7 @@ class Ranking {
 				return "BATTLE";
 				break;
 
-			// 受側勝
+			// 受けた側勝ち
 			case "DEFENDER_WIN":
 				//$this->SaveRanking();
 				$user->RankRecord(1,"CHALLENGER",$DefendMatch);
@@ -265,7 +265,7 @@ class Ranking {
 				return "BATTLE";
 				break;
 
-			// 引分
+			// 引分け
 			case "DRAW_GAME":
 				//$this->SaveRanking();
 				$user->RankRecord("d","CHALLENGER",$DefendMatch);
@@ -280,7 +280,7 @@ class Ranking {
 		}
 	}
 //////////////////////////////////////////////////
-//	引數順位  同順位人數
+//	引数の順位 と 同じ順位の人数
 	function SamePlaceAmount($Place) {
 		switch(true) {
 			case ($Place == 0): return 1;//1位
@@ -291,22 +291,22 @@ class Ranking {
 		}
 	}
 //////////////////////////////////////////////
-// 最下位參加
+// ランキングの最下位に参加させる
 	function JoinRanking($id) {
 		$last	= count($this->Ranking) - 1;
-		// 存在場合
+		// ランキングが存在しない場合
 		if(!$this->Ranking) {
 			$this->Ranking["0"]["0"]["id"]	= $id;
-		// 最下位順位定員場合
+		// 最下位の順位が定員オーバーになる場合
 		} else if(count($this->Ranking[$last]) == $this->SamePlaceAmount($last)) {
 			$this->Ranking[$last+1]["0"]["id"]	= $id;
-		// 場合
+		// ならない場合
 		} else {
 			$this->Ranking[$last][]["id"]	= $id;
 		}
 	}
 //////////////////////////////////////////////////
-// 消
+// ランキングから消す
 	function DeleteRank($id) {
 		$place	= $this->SearchID($id);
 		if($place === false) return false;//削除失敗
@@ -314,7 +314,7 @@ class Ranking {
 		return true;//削除成功
 	}
 //////////////////////////////////////////////////
-// 保存
+// ランキングを保存する
 	function SaveRanking() {
 		foreach($this->Ranking as $rank => $val) {
 			foreach($val as $key => $val2) {
@@ -334,7 +334,7 @@ class Ranking {
 		}
 	}
 //////////////////////////////////////////////////
-//	順位入替
+//	順位を入れ替える
 	function ChangePlace($id_0,$id_1) {
 		$Place_0	= $this->SearchID($id_0);
 		$Place_1	= $this->SearchID($id_1);
@@ -343,38 +343,38 @@ class Ranking {
 		$this->Ranking[$Place_1["0"]][$Place_1["1"]]	= $temp;
 	}
 //////////////////////////////////////////////////
-// $id 位置探
+// $id のランク位置を探す
 	function SearchID($id) {
 		foreach($this->Ranking as $rank => $val) {
 			foreach($val as $key => $val2) {
 				if($val2["id"] == $id)
-					return array((int)$rank,(int)$key);// 順位無何番目。
+					return array((int)$rank,(int)$key);// 順位無いの何番目か。
 			}
 		}
 		return false;
 	}
 //////////////////////////////////////////////////
-// 表示
+// ランキングの表示
 	function ShowRanking($from=false,$to=false,$bold_id=false) {
-		// 範圍無場合全表示
+		// 範囲が無い場合は全ランキングを表示
 		if($from === false or $to === false) {
 			$from	= 0;//首位
 			$to		= count($this->Ranking);//最下位
 		}
 
-		// 太字
+		// 太字にするランク
 		if($bold_id)
 			$BoldRank	= $this->SearchID($bold_id);
 
 		$LastPlace	= count($this->Ranking) - 1;// 最下位
 
 		print("<table cellspacing=\"0\">\n");
-		print("<tr><td class=\"td6\" style=\"text-align:center\">排位</td><td  class=\"td6\" style=\"text-align:center\">隊伍</td></tr>\n");
+		print("<tr><td class=\"td6\" style=\"text-align:center\">排位</td><td  class=\"td6\" style=\"text-align:center\">队伍</td></tr>\n");
 		for($Place=$from; $Place<$to + 1; $Place++) {
 			if(!$this->Ranking["$Place"])
 				break;
 			print("<tr><td class=\"td7\" valign=\"middle\" style=\"text-align:center\">\n");
-			// 順位
+			// 順位アイコン
 			switch($Place) {
 				case 0:
 					print('<img src="'.IMG_ICON.'crown01.png" class="vcent" />'); break;
@@ -390,14 +390,14 @@ class Ranking {
 			}
 			print("</td><td class=\"td8\">\n");
 			foreach($this->Ranking["$Place"] as $SubRank => $data) {
-				list($Name,$R)	= $this->LoadUserName($data["id"],true);//成績讀迂
+				list($Name,$R)	= $this->LoadUserName($data["id"],true);//成績も読み込む
 				$WinProb	= $R[all]?sprintf("%0.0f",($R[win]/$R[all])*100):"--";
-				$Record	= "(".($R[all]?$R[all]:"0")."戰 ".
-						($R[win]?$R[win]:"0")."勝".
-						($R[lose]?$R[lose]:"0")."敗 ".
+				$Record	= "(".($R[all]?$R[all]:"0")."战 ".
+						($R[win]?$R[win]:"0")."胜".
+						($R[lose]?$R[lose]:"0")."败 ".
 						($R[all]-$R[win]-$R[lose])."引 ".
 						($R[defend]?$R[defend]:"0")."防 ".
-						"勝率".$WinProb.'%'.
+						"胜率".$WinProb.'%'.
 						")";
 				if(isset($BoldRank) && $BoldRank["0"] == $Place && $BoldRank["1"] == $SubRank) {
 					print('<span class="bold u">'.$Name."</span> {$Record}");
@@ -411,12 +411,12 @@ class Ranking {
 		print("</table>\n");
 	}
 //////////////////////////////////////////////
-//	± 對像ID
+//	±ランク 対象ID
 	function ShowRankingRange($id,$Amount) {
 		$RankAmount	= count($this->Ranking);
 		$Last	= $RankAmount - 1;
 		do {
-			// Amount以上
+			// ランキングがAmount以上ないとき
 			if($RankAmount <= $Amount) {
 				$start	= 0;
 				$end	= $Last;
@@ -429,15 +429,15 @@ class Ranking {
 				return 0;
 			}
 			$Range	= floor($Amount/2);
-			// 首位近首位
+			// 首位に近いか首位
 			if( ($Rank[0] - $Range) <= 0 ) {
 				$start	= 0;
 				$end	= $Amount - 1;
-			// 最下位最下位
+			// 最下位にちかいか最下位
 			} else if( $Last < ($Rank[0] + $Range) ) {
 				$start	= $RankAmount - $Amount;
 				$end	= $RankAmount;
-			// 範圍內
+			// 範囲内におさまる
 			} else {
 				$start	= $Rank[0]-$Range;
 				$end	= $Rank[0]+$Range;
@@ -447,7 +447,7 @@ class Ranking {
 		$this->ShowRanking($start,$end,$id);
 	}
 //////////////////////////////////////////////
-//	名前呼出
+//	ユーザの名前を呼び出す
 	function LoadUserName($id,$rank=false) {
 
 		if(!$this->UserName["$id"]) {

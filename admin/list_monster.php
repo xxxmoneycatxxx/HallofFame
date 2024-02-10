@@ -1,7 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Monster List</title>
 <link rel="stylesheet" href="../basis.css" type="text/css">
 <link rel="stylesheet" href="../style.css" type="text/css">
@@ -11,7 +11,7 @@
 	padding	: 0;
 	margin	: 0;
 	line-height	: 140%;
-	font-family	: Osaka,Verdana,"ＭＳ Ｐ";
+	font-family	: Osaka,Verdana,"ＭＳ Ｐゴシック";
 	overflow:inherit;
 }
 body{
@@ -41,18 +41,18 @@ include("../class/global.php");
 define("IMG_ICON","../image/icon/");
 
 $det	= '<tr><td class="a">ID</td>
-<td class="a">名稱</td>
+<td class="a">名称</td>
 <td class="a">Lv</td>
-<td class="a">圖</td>
-<td class="a">經驗值</td>
-<td class="a">錢</td>
+<td class="a">图</td>
+<td class="a">经验值</td>
+<td class="a">钱</td>
 <td class="a">hp</td>
 <td class="a">sp</td>
 <td class="a">atk</td>
 <td class="a">def</td>
 <td class="a">str / int / dex / spd / luk</td>
 <td class="a">位置</td>
-<td class="a">保護</td>'."\n";
+<td class="a">保护</td>'."\n";
 $img_f	= "../image/char/";
 
 print('<table border="0" cellspacing="1"><tbody>');
@@ -103,7 +103,7 @@ for($no=1000; $no<5999; $no++) {
 		ShowSkillDetail($skill);
 		print("</td></tr>");
 	}
-	// 落
+	// 落とすアイテム
 	if($m[itemtable]) {
 		print('<tr><td colspan="3">');
 		print("<table><tbody>");
@@ -141,12 +141,12 @@ print("</tbody></table>");
 
 		if($item["type"])
 			print("<span class=\"light\"> ({$item[type]})</span>");
-		if($amount) {//數量
+		if($amount) {//数量
 			print(" x{$amount}");
 		}
-		if($item["atk"]["0"])//物理攻擊
+		if($item["atk"]["0"])//物理攻撃
 			print(' / <span class="dmg">Atk:'.$item[atk][0].'</span>');
-		if($item["atk"]["1"])//魔法攻擊
+		if($item["atk"]["1"])//魔法攻撃
 			print(' / <span class="spdmg">Matk:'.$item[atk][1].'</span>');
 		if($item["def"]) {
 			print(" / <span class=\"recover\">Def:{$item[def][0]}+{$item[def][1]}</span>");
@@ -154,9 +154,9 @@ print("</tbody></table>");
 		}
 		if($item["handle"])
 			print(' / <span class="charge">h:'.$item[handle].'</span>');
-		//print("\n");//？(IE6)
+		//print("\n");//なんでバグるん？(IE6)
 	}
-//	技詳細表示
+//	技の詳細を表示
 	function ShowSkillDetail2($skill,$radio=false) {
 		$file	= "../image/icon/";
 		if(!$skill) return false;
@@ -170,7 +170,7 @@ print("</tbody></table>");
 		if($radio)
 			print(" / <span class=\"bold\">{$skill[learn]}</span>pt");
 
-		if($skill[target][0] == "all")//對像
+		if($skill[target][0] == "all")//対象
 			print(" / <span class=\"charge\">{$skill[target][0]}</span>");
 		else if($skill[target][0] == "enemy")
 			print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
@@ -181,7 +181,7 @@ print("</tbody></table>");
 		else if(isset($skill[target][0]))
 			print(" / {$skill[target][0]}");
 
-		if($skill[target][1] == "all")//單體or複數or全體
+		if($skill[target][1] == "all")//単体or複数or全体
 			print(" - <span class=\"charge\">{$skill[target][1]}</span>");
 		else if($skill[target][1] == "individual")
 			print(" - <span class=\"recover\">{$skill[target][1]}</span>");

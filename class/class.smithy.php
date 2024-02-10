@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // 鍛冶屋
 class Item {
 	var $item;
@@ -13,13 +13,13 @@ class Item {
 		$this->SetItem($no);
 	}
 //////////////////////////////////////////////////
-//	渡場合解析?
+//	アイテムが渡された場合データを解析する?
 	function SetItem($no) {
 		if(!$no) return false;
 		$this->item	= $no;
 
-		$this->base	= substr($no,0,4);//基本番號
-		// 精鍊值
+		$this->base	= substr($no,0,4);//アイテムの基本番号
+		// 精錬値
 		$this->refine	= (int)substr($no,4,2);
 		if(!$this->refine)
 			$this->refine	= 0;
@@ -33,7 +33,7 @@ class Item {
 		}
 	}
 //////////////////////////////////////////////////
-//	製作。
+//	アイテムを製作する。
 	function CreateItem() {
 		$this->refine	= false;
 		$this->option0	= false;
@@ -42,7 +42,7 @@ class Item {
 		list($low,$high)	= ItemAbilityPossibility($this->type);
 
 		// 2:3:4
-		// 付加能力確率。
+		// 付加能力がつく確率。
 		$prob	= mt_rand(1,9);
 		switch($prob) {
 			case 1:
@@ -63,7 +63,7 @@ class Item {
 				break;
 		}
 
-		// array_rand() 微妙敬遠。
+		// array_rand() は微妙なので敬遠する。
 
 		if($AddHigh) {
 			$prob	= mt_rand(0,count($high)-1);
@@ -75,12 +75,12 @@ class Item {
 		}
 	}
 //////////////////////////////////////////////////
-//	特殊？3番目付加？
+//	特殊なあれ？3番目の付加？
 	function AddSpecial($opt) {
 		$this->option0	= $opt;
 	}
 //////////////////////////////////////////////////
-//	精鍊可能物。
+//	精錬可能な物かどうか。
 	function CanRefine() {
 		$possible	= CanRefineType();
 		if (REFINE_LIMIT <= $this->refine)
@@ -91,7 +91,7 @@ class Item {
 			return false;
 	}
 //////////////////////////////////////////////////
-//	精鍊
+//	精錬をする
 	function ItemRefine() {
 		if($this->RefineProb($this->refine)) {
 			print("+".$this->refine." -> ");
@@ -100,15 +100,15 @@ class Item {
 			return true;
 		} else {
 			print("+".$this->refine." -> ");
-			print("+".($this->refine + 1)." <span class=\"dmg\">失敗</span>.<br />\n");
+			print("+".($this->refine + 1)." <span class=\"dmg\">失败</span>.<br />\n");
 			return false;
 		}
 	}
 //////////////////////////////////////////////////
-//	精鍊度別精鍊成功否確率
+//	精錬度別に精錬成功か否かとその確率
 	function RefineProb($now) {
 		$prob	= mt_rand(0,99);
-		//return true;// 取成功率100%
+		//return true;// コメント取ると成功率100%
 		switch($now) {
 			case 0:
 			case 1:
@@ -137,13 +137,13 @@ class Item {
 		return false;
 	}
 //////////////////////////////////////////////////
-//	返。
+//	アイテムを返す。
 	function ReturnItem() {
-		// 精鍊無場合先頭4文字返。
+		// 精錬もオプションも無い場合は先頭4文字だけ返す。
 		if(!$this->refine && !$this->option0 && !$this->option1 && !$this->option2 )
 			return $this->base;
 		
-		// 少精鍊、有場合
+		// 少なくとも精錬されているか、オプションが有る場合
 		$item	= $this->base.
 				sprintf("%02d",$this->refine).
 				$this->option0.

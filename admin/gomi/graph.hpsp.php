@@ -1,4 +1,4 @@
-<table><tbody>
+﻿<table><tbody>
 <?php
 $coe	= 3;
 $str	= 1;

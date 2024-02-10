@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
-	畫像?領域?反轉可能思出
-	用戰鬥畫面作。
-	上手表示思。
+	スタイルシートで画像?領域?反転可能だったのを思い出したので
+	それを用いて戦闘画面を作る。
+	ただしブラウザによっては上手く表示されないと思う。
 
-	GD違反轉濟畫像用意必要無。
-	IE表示。
+	GDと違って反転済みの画像を用意する必要無し。
+	IEは表示できる。
 */
 class cssimage {
 
@@ -18,21 +18,21 @@ class cssimage {
 	var $team1_mc;
 	var $team2_mc;
 
-	var $img_x, $img_y;//幅
+	var $img_x, $img_y;//イメージ幅
 	var $size;
 
-	var $div; //</div>個數
+	var $div; //</div>の個数
 
 	var $NoFlip	= false;
 
 //////////////////////////////////////////////////
-//	CSS image.flip() 使使。
+//	CSSで image.flip() を使うか使わないか。
 	function NoFlip() {
 		$this->NoFlip	= true;
 	}
 //////////////////////////////////////////////////
-//	背景畫像。
-//	大取得。
+//	背景画像をセット。
+//	ついでに大きさも取得する。
 	function SetBackGround($bg) {
 		$this->background	= IMG_OTHER."bg_".$bg.".gif";
 
@@ -40,11 +40,11 @@ class cssimage {
 		$this->size	= "width:{$this->img_x};height:{$this->img_y};";
 	}
 //////////////////////////////////////////////////
-//	情報
-//	前衛後衛分
+//	チームの情報をセット
+//	前衛後衛に分ける
 	function SetTeams($team1,$team2) {
 		foreach($team1 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 			if($char->POSITION == "front")
@@ -53,7 +53,7 @@ class cssimage {
 				$this->team1_back[]	= $char;
 		}
 		foreach($team2 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 			if($char->POSITION == "front")
@@ -63,29 +63,29 @@ class cssimage {
 		}
 	}
 //////////////////////////////////////////////////
-//	魔方陣數
+//	魔方陣の数
 	function SetMagicCircle($team1_mc, $team2_mc) {
 		$this->team1_mc	= $team2_mc;
 		$this->team2_mc	= $team1_mc;
 	}
 //////////////////////////////////////////////////
-//	CSS( 畫像 ,x座標 ,y座標 )
+//	CSS( キャラ画像 ,x座標 ,y座標 )
 	function det($url,$x,$y) {
 		return "height:200px;background-image:url({$url});background-repeat:no-repeat;background-position:{$x}px {$y}px;";
 	}
 
 //////////////////////////////////////////////////
-//	戰鬥畫面表示
+//	戦闘画面を表示
 	function Show() {
 
 		//print("<div style=\"postion:relative;height:{$this->img_x}px;\">\n");
 		//$this->div++;
-		// 背景表示 ( 中央表示為左 )
+		// 背景を表示 ( 中央表示の為に左にずらす )
 		$margin	= (-1) * round($this->img_x / 2);
 		print("<div style=\"position:relative;left:50%;margin-left:{$margin}px;{$this->size}".$this->det($this->background,0,0)."\">\n");
 		$this->div++;
 
-		// 魔方陣表示
+		// 魔方陣を表示する
 		if(0 < $this->team1_mc) {
 			print("<div style=\"{$this->size}".$this->det(IMG_OTHER."mc0_".$this->team1_mc.".gif",280,0)."\">\n");
 			$this->div++;
@@ -95,15 +95,15 @@ class cssimage {
 			$this->div++;
 		}
 
-		$cell_width		= ($this->img_x)/6;//橫幅6分割長
-		$y	= $this->img_y/2;//高中心
+		$cell_width		= ($this->img_x)/6;//横幅を6分割した長さ
+		$y	= $this->img_y/2;//高さの中心
 
-		// team1 表示(後列→前列)
+		// team1 を表示(後列→前列)
 		$this->CopyRow($this->team1_back, 0, $cell_width*1, $cell_width, $y, $this->img_y);
 		$this->CopyRow($this->team1_front, 0, $cell_width*2, $cell_width, $y, $this->img_y);
 
 		if(!$this->NoFlip) {
-			// 反轉用CSS
+			// 反転用のCSS
 			print("<div style=\"{$this->size}filter:FlipH();\">\n");
 			$this->div++;
 			$dir	= 0;
@@ -124,7 +124,7 @@ class cssimage {
 	}
 
 //////////////////////////////////////////////////
-//	列描出
+//	列のキャラを描き出す
 	function CopyRow($teams,$direction,$axis_x,$cell_width,$axis_y,$cell_height) {
 		$number	= count($teams);
 		if($number == 0) return false;

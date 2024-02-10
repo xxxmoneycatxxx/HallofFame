@@ -1,8 +1,8 @@
-*{
+ï»¿*{
   padding	: 0;
   margin	: 0;
   line-height	: 140%;
-  font-family	: ËÎÌå;
+  font-family	: å¾®è½¯é›…é»‘;
   font-size:14px;
   overflow:inherit;
 }
@@ -169,7 +169,7 @@ li{
   font-weight:bold;
   color:#ffff33;
 }
-/* ±Ó¾§¤äÃù¤á¤Î¿§ */
+/* åº‡æ™¶ã‚„é¸£ã‚ã®å’– */
 .charge{
   color:#ffcc33;
 }

@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 //////////////////////////////////////////////////
 //	商店列表
 	function ShopList() {
@@ -14,50 +14,50 @@
 		);
 	}
 //////////////////////////////////////////////////
-//	可以拍賣的道具類型
+//	可以拍卖的道具类型
 	function CanExhibitType() {
 		return array(
-		"劍"	=> "1",
-		"雙手劍"	=> "1",
+		"剑"	=> "1",
+		"双手剑"	=> "1",
 		"匕首"	=> "1",
 		"魔杖"	=> "1",
 		"杖"	=> "1",
 		"弓"	=> "1",
 		"鞭"	=> "1",
 		"盾"	=> "1",
-		"書"	=> "1",
+		"书"	=> "1",
 		"甲"	=> "1",
 		"衣服"	=> "1",
-		"長袍"	=> "1",
+		"长袍"	=> "1",
 		"道具"	=> "1",
 		"材料"	=> "1",
 		);
 	}
 //////////////////////////////////////////////////
-//	可以精煉的道具類型
+//	可以精炼的道具类型
 	function CanRefineType() {
 		return array(
-		"劍","雙手劍","匕首",
+		"剑","双手剑","匕首",
 		"魔杖","杖","弓",
 		"鞭",
-		"盾","書",
-		"甲","衣服","長袍",
+		"盾","书",
+		"甲","衣服","长袍",
 		);
 	}
 //////////////////////////////////////////////////
-//	刪除過期用戶
+//	删除过期用户
 	function DeleteAbandonAccount() {
 		$list	= glob(USER."*");
 		$now	= time();
-		// 用戶列表
+		// 用户列表
 		foreach($list as $file) {
 			if(!is_dir($file)) continue;
 			$UserID	= substr($file,strrpos($file,"/")+1);
 			$user	= new user($UserID,true);
-			// 用戶將被刪除
+			// 用户将被删除
 			if($user->IsAbandoned())
 			{
-				// 排行榜相關
+				// 排行榜相关
 				if(!isset($Ranking))
 				{
 					include_once(CLASS_RANKING);
@@ -69,16 +69,16 @@
 					$RankChange	= true;// 排行榜可以修改了
 				}
 				RecordManage(date("Y M d G:i:s",$now).": user ".$user->id." deleted.");
-				$user->DeleteUser(false);//消false
+				$user->DeleteUser(false);//设置false则不可从排行榜删除
 			}
-			// 不可刪除
+			// 不可删除
 				else
 			{
 				$user->fpCloseAll();
 				unset($user);
 			}
 		}
-		// 一通終
+		// 用户验证后对排行榜的处理
 		if($RankChange === true)
 			$Ranking->SaveRanking();
 		else if($RankChange === false)
@@ -86,12 +86,12 @@
 		//print("<pre>".print_r($list,1)."</pre>");
 	}
 //////////////////////////////////////////////////
-//	定期自動管理相關
+//	定期自动管理相关
 	function RegularControl($value=null) {
 		/*
-			重(混)時間帶後回。
-			PM 7:00 - AM 2:00 處理。
-			※時刻 or 注意！
+			服务器负载过大则时间段推迟。
+			PM 7:00 - AM 2:00不处理。
+			※时间设置请慎重！
 		*/
 		if(19 <= date("H") || date("H") <= 1)
 			 return false;
@@ -101,33 +101,33 @@
 			return false;
 		//$ctrltime	= file_get_contents(CTRL_TIME_FILE);
 		$ctrltime	= trim(fgets($fp, 1024));
-		// 週期終了
+		// 如果未到周期，则结束
 		if($now < $ctrltime)
 		{
 			fclose($fp);
 			unset($fp);
 			return false;
 		}
-		// 管理處理
+		// 管理の処理
 		RecordManage(date("Y M d G:i:s",$now).": auto regular control by {$value}.");
-		DeleteAbandonAccount();//1 放棄掃除
-		// 定期管理終次管理時刻書迂終了。
+		DeleteAbandonAccount();//设置为1 清除过期用户
+		// 定期管理结束后，写入下一个管理时间并结束。
 		WriteFileFP($fp,$now + CONTROL_PERIOD);
 		fclose($fp);
 		unset($fp);
 	}
 //////////////////////////////////////////////////
-//	$id 過去登錄
+//	$id 是否登录过
 	function is_registered($id) {
 		if($registered = @file(REGISTER)):
-			if(array_search($id."\n",$registered)!==false && !ereg("[\.\/]+",$id) )//改行記號必須
+			if(array_search($id."\n",$registered)!==false && !mb_ereg("[\.\/]+",$id) )//改行記号必須
 				return true;
 			else
 				return false;
 		endif;
 	}
 //////////////////////////////////////////////////
-//	鎖文件並返回文件指針
+//	锁文件并返回文件指针
 	function FileLock($file,$noExit=false) {
 		if(!file_exists($file))
 			return false;
@@ -140,7 +140,7 @@
 				stream_set_write_buffer($fp, 0);
 				return $fp;
 			} else {
-				usleep(10000);//0.01秒為單位
+				usleep(10000);//0.01秒为单位
 				$i++;
 			}
 		}while($i<5);
@@ -151,14 +151,14 @@
 		//	exit("file lock error.");
 		//}
 		//flock($fp, LOCK_EX);//排他
-		//flock($fp, LOCK_SH);//共有
+		//flock($fp, LOCK_SH);//共有ロック
 		//flock($fp,LOCK_EX);
 		return $fp;
 	}
 //////////////////////////////////////////////////
-//文件寫入（參數：文件指針）
+//文件写入（参数：文件指针）
 	function WriteFileFP($fp,$text,$check=false) {
-		if(!$check && !trim($text))//空白的話結束
+		if(!$check && !trim($text))//空白的话结束
 			return false;
 		/*if(file_exists($file)):
 			ftruncate()
@@ -172,9 +172,9 @@
 		//print("<br>"."<br>".$text);
 	}
 //////////////////////////////////////////////////
-//	書迂
+//	写入文件
 	function WriteFile($file,$text,$check=false) {
-		if(!$check && !$text)//$text空欄終
+		if(!$check && !$text)//如果$text为空，则结束
 			return false;
 		/*if(file_exists($file)):
 			ftruncate()
@@ -186,7 +186,7 @@
 	}
 
 //////////////////////////////////////////////////
-//	讀配列格納(引數:)
+//	读取文件并将其存储在数组中(参数:文件指针)
 	function ParseFileFP($fp) {
 
 		if(!$fp) return false;
@@ -210,7 +210,7 @@
 			return false;
 	}
 //////////////////////////////////////////////////
-//	粕芹誤呈羌
+//	ファイルを粕んで芹误に呈羌
 	function ParseFile($file) {
 
 		$fp		= fopen($file,"r+");
@@ -251,14 +251,14 @@
 //	
 	function JudgeList(){
 
-		// 極瓢粕哈(for【痰綠借妄)
+		// 极瓢粕み哈み(forでル〖プさせてるから痰绿な借妄)
 		if(JUDGE_LIST_AUTO_LOAD) {
 			for($i=1000; $i<2500; $i++) {
 				if( LoadJudgeData($i) !== false)
 					$list[]=$i;
 			}
 			return $list;
-		// 緘瓢(納裁冉們極屍今顱)
+		// 缄瓢(纳裁した冉们は极尸で今き颅せ)
 		} else {
 		return array(
 1000, 1001, 1099, 1100, 1101,
@@ -288,7 +288,7 @@
 	}
 
 //////////////////////////////////////////////////
-//	垛山績數及
+//	お垛の山绩数及
 	function MoneyFormat($number) {
 		return '$&nbsp;'.number_format($number);
 	}
@@ -300,24 +300,24 @@
 	}
 
 //////////////////////////////////////////////////
-//	裡飄山績
+//	里飘ログの山绩
 function ShowLogList() {
 	print("<div style=\"margin:15px\">\n");
-	/*// 警鏈嬸山績。
+	/*// ログ警ないなら链婶山绩すればいい。
 	// common
-	print("<h4>最近的戰鬥(Recent Battles)</h4>\n");
+	print("<h4>最近的战斗(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
 	}
 	// union
-	print("<h4>BOSS戰(Union Battle Log)</h4>\n");
+	print("<h4>BOSS战(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"UNION");
 	}
 	// rank
-	print("<h4>裡(Rank Battle Log)</h4>\n");
+	print("<h4>ランキング里(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"RANK");
@@ -326,11 +326,11 @@ function ShowLogList() {
 
 	print("<a href=\"?log\" class=\"a0\">全部</a> ");
 	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS戰</a> ");
-	print("<a href=\"?rlog\">排行戰</a>");
+	print("<a href=\"?ulog\">BOSS战</a> ");
+	print("<a href=\"?rlog\">排行战</a>");
 
 	// common
-	print("<h4>最近的戰鬥 - <a href=\"?clog\">全表示</a>(Recent Battles)</h4>\n");
+	print("<h4>最近的战斗 - <a href=\"?clog\">全部显示</a>(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
@@ -341,7 +341,7 @@ function ShowLogList() {
 	}
 	// union
 	$limit	= 0;
-	print("<h4>BOSS戰 - <a href=\"?ulog\">全表示</a>(Union Battle Log)</h4>\n");
+	print("<h4>BOSS战 - <a href=\"?ulog\">全部显示</a>(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"UNION");
@@ -352,7 +352,7 @@ function ShowLogList() {
 	}
 	// rank
 	$limit	= 0;
-	print("<h4>排名戰 - <a href=\"?rlog\">全表示</a>(Rank Battle Log)</h4>\n");
+	print("<h4>排名战 - <a href=\"?rlog\">全部显示</a>(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"RANK");
@@ -365,16 +365,16 @@ function ShowLogList() {
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	裡飄山績
+//	里飘ログの山绩
 function LogShowCommon() {
 	print("<div style=\"margin:15px\">\n");
 	
 	print("<a href=\"?log\">全部</a> ");
 	print("<a href=\"?clog\" class=\"a0\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS戰</a> ");
-	print("<a href=\"?rlog\">排行戰</a>");
+	print("<a href=\"?ulog\">BOSS战</a> ");
+	print("<a href=\"?rlog\">排行战</a>");
 	// common
-	print("<h4>最近的戰鬥 - 全記錄(Recent Battles)</h4>\n");
+	print("<h4>最近的战斗 - 全记录(Recent Battles)</h4>\n");
 	$log	= @glob(LOG_BATTLE_NORMAL."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file);
@@ -382,16 +382,16 @@ function LogShowCommon() {
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	裡飄山績(union)
+//	里飘ログの山绩(union)
 function LogShowUnion() {
 	print("<div style=\"margin:15px\">\n");
 
 	print("<a href=\"?log\">全部</a> ");
 	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\" class=\"a0\">BOSS戰</a> ");
-	print("<a href=\"?rlog\">排行戰</a>");
+	print("<a href=\"?ulog\" class=\"a0\">BOSS战</a> ");
+	print("<a href=\"?rlog\">排行战</a>");
 	// union
-	print("<h4>BOSS戰 - 全記錄(Union Battle Log)</h4>\n");
+	print("<h4>BOSS战 - 全记录(Union Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_UNION."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"UNION");
@@ -399,16 +399,16 @@ function LogShowUnion() {
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	裡飄山績(ranking)
+//	里飘ログの山绩(ranking)
 function LogShowRanking() {
 	print("<div style=\"margin:15px\">\n");
 
 	print("<a href=\"?log\">全部</a> ");
 	print("<a href=\"?clog\">普通</a> ");
-	print("<a href=\"?ulog\">BOSS戰</a> ");
-	print("<a href=\"?rlog\" class=\"a0\">排行戰</a>");
+	print("<a href=\"?ulog\">BOSS战</a> ");
+	print("<a href=\"?rlog\" class=\"a0\">排行战</a>");
 	// rank
-	print("<h4>排名賽-全記錄(Rank Battle Log)</h4>\n");
+	print("<h4>排名赛-全记录(Rank Battle Log)</h4>\n");
 	$log	= @glob(LOG_BATTLE_RANK."*");
 	foreach(array_reverse($log) as $file) {
 		BattleLogDetail($file,"RANK");
@@ -416,34 +416,34 @@ function LogShowRanking() {
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	裡飄拒嘿山績()
+//	里飘ログの拒嘿を山绩(リンク)
 function BattleLogDetail($log,$type=false) {
 	$fp	= fopen($log,"r");
 
-	// 眶乖粕哈。
-	$time	= fgets($fp);//倡幌箕粗 1乖謄
-	$team	= explode("<>",fgets($fp));//【歎 2乖謄
-	$number	= explode("<>",trim(fgets($fp)));//客眶 3乖謄
-	$avelv	= explode("<>",trim(fgets($fp)));//士堆 4乖謄
-	$win	= trim(fgets($fp));// 盡網【 5乖謄
-	$act	= trim(fgets($fp));// 另乖瓢眶 6乖謄
+	// 眶乖だけ粕み哈む。
+	$time	= fgets($fp);//倡幌箕粗 1乖誊
+	$team	= explode("<>",fgets($fp));//チ〖ム叹 2乖誊
+	$number	= explode("<>",trim(fgets($fp)));//客眶 3乖誊
+	$avelv	= explode("<>",trim(fgets($fp)));//士堆レベル 4乖誊
+	$win	= trim(fgets($fp));// 尽网チ〖ム 5乖誊
+	$act	= trim(fgets($fp));// 另乖瓢眶 6乖誊
 	fclose($fp);
 
 	$date	= date("m/d H:i:s",substr($time,0,10));
-	// 盡網【咖屍山績
+	// 尽网チ〖ムによって咖を尸けて山绩
 	if($type == "RANK")
 		print("[ <a href=\"?rlog={$time}\">{$date}</a> ]&nbsp;\n");
 	else if($type == "UNION")
 		print("[ <a href=\"?ulog={$time}\">{$date}</a> ]&nbsp;\n");
 	else
 		print("[ <a href=\"?log={$time}\">{$date}</a> ]&nbsp;\n");
-	print("<span class=\"bold\">$act</span>turns&nbsp;\n");//另【眶
+	print("<span class=\"bold\">战斗$act</span>回合&nbsp;\n");//另タ〖ン眶
 	if($win === "0")
-		print("<span class=\"recover\">{$team[0]}</span>");
+		print("[胜]&nbsp;<span class=\"recover\">{$team[0]}</span>");
 	else if($win === "1")
-		print("<span class=\"dmg\">{$team[0]}</span>");
+		print("[败]&nbsp;<span class=\"dmg\">{$team[0]}</span>");
 	else
-		print("{$team[0]}");
+		print("[平]&nbsp;{$team[0]}");
 
 	print("({$number[0]}:{$avelv[0]})");
 
@@ -459,7 +459,7 @@ function BattleLogDetail($log,$type=false) {
 	print("({$number[1]}:{$avelv[1]})<br />");
 }
 //////////////////////////////////////////////////
-//	裡飄攙枉
+//	里飘ログを搀枉する
 function ShowBattleLog($no,$type=false) {
 	if($type == "RANK")
 		$file	= LOG_BATTLE_RANK.$no.".dat";
@@ -467,19 +467,19 @@ function ShowBattleLog($no,$type=false) {
 		$file	= LOG_BATTLE_UNION.$no.".dat";
 	else
 		$file	= LOG_BATTLE_NORMAL.$no.".dat";
-	if(!file_exists($file)) {//痰
-		print("log doesnt exists");
+	if(!file_exists($file)) {//ログが痰い
+		print("没有找到记录");
 		return false;
 	}
 
 	$log	= file($file);
-	$row	= 6;//部乖謄今叫?
+	$row	= 6;//ログの部乖誊から今き叫すか?
 	$time	= substr($log[0],0,10);
 
 	//print('<table style="width:100%;text-align:center" class="break"><tr><td>'."\n");
 	print('<div style="padding:15px 0;width:100%;text-align:center" class="break">');
-	print("<h2>battle log*</h2>");
-	print("\nthis battle starts at<br />");
+	print("<h2>战斗记录*</h2>");
+	print("\n战斗开始于<br />");
 	print(date("m/d H:i:s",substr($time,0,10)));
 	print("</div>\n");
 	//print("</td></tr></table>\n");
@@ -490,7 +490,7 @@ function ShowBattleLog($no,$type=false) {
 	}
 }
 //////////////////////////////////////////////////
-//	禱拒嘿山績
+//	显示技能描述内容
 	function ShowSkillDetail($skill,$radio=false) {
 		if(!$skill) return false;
 		
@@ -501,9 +501,10 @@ function ShowBattleLog($no,$type=false) {
 		print("{$skill[name]}");
 
 		if($radio)
-			print(" / <span class=\"bold\">{$skill[learn]}</span>pt");
+			print(" / <span class=\"bold\">需要 {$skill[learn]} 点技能</span>");
 
-		if($skill[target][0] == "all")//灤據
+/*原版英文内容
+		if($skill[target][0] == "all")//滦据
 			print(" / <span class=\"charge\">{$skill[target][0]}</span>");
 		else if($skill[target][0] == "enemy")
 			print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
@@ -513,8 +514,20 @@ function ShowBattleLog($no,$type=false) {
 			print(" / <span class=\"support\">{$skill[target][0]}</span>");
 		else if(isset($skill[target][0]))
 			print(" / {$skill[target][0]}");
+*/
 
-		if($skill[target][1] == "all")//帽攣or剩眶or鏈攣
+		if($skill[target][0] == "all")//转换技能对象为中文表述
+			print(" / <span class=\"charge\">战场</span>");
+		else if($skill[target][0] == "enemy")
+			print(" / <span class=\"dmg\">敌方</span>");
+		else if($skill[target][0] == "friend")
+			print(" / <span class=\"recover\">友方</span>");
+		else if($skill[target][0] == "self")
+			print(" / <span class=\"support\">自己</span>");
+		else if(isset($skill[target][0]))
+			print(" / {$skill[target][0]}");
+/*未翻译原版英文表述
+		if($skill[target][1] == "all")//帽挛or剩眶or链挛
 			print(" - <span class=\"charge\">{$skill[target][1]}</span>");
 		else if($skill[target][1] == "individual")
 			print(" - <span class=\"recover\">{$skill[target][1]}</span>");
@@ -522,13 +535,22 @@ function ShowBattleLog($no,$type=false) {
 			print(" - <span class=\"spdmg\">{$skill[target][1]}</span>");
 		else if(isset($skill[target][1]))
 			print(" - {$skill[target][1]}");
+*/
+		if($skill[target][1] == "all")//转换技能效果范围为中文表述
+			print(" - <span class=\"charge\">全体</span>");
+		else if($skill[target][1] == "individual")
+			print(" - <span class=\"recover\">单体</span>");
+		else if($skill[target][1] == "multi")
+			print(" - <span class=\"spdmg\">群体</span>");
+		else if(isset($skill[target][1]))
+			print(" - {$skill[target][1]}");
 
 		if(isset($skill["sacrifice"]))
 			print(" / <span class=\"dmg\">Sacrifice:{$skill[sacrifice]}%</span>");
-		// 久銳SP
+		// 消耗SP
 		if(isset($skill["sp"]))
-			print(" / <span class=\"support\">{$skill[sp]}sp</span>");
-		// 久銳蒜數控
+			print(" / <span class=\"support\">消耗 {$skill[sp]} 魔力</span>");
+		// 久锐蒜数控
 		if($skill["MagicCircleDeleteTeam"])
 			print(" / <span class=\"support\">MagicCircle x".$skill["MagicCircleDeleteTeam"]."</span>");
 		if($skill["pow"]) {
@@ -536,86 +558,86 @@ function ShowBattleLog($no,$type=false) {
 			print(( $skill["target"][2] ? $skill["target"][2] : "1" ) );
 		}
 		if($skill["type"] == 1)
-			print(" / <span class=\"spdmg\">Magic</span>");
+			print(" / <span class=\"spdmg\">魔法</span>");
 		if($skill["quick"])
 			print(" / <span class=\"charge\">Quick</span>");
 		if($skill["invalid"])
-			print(" / <span class=\"charge\">invalid</span>");
+			print(" / <span class=\"charge\">攻击后排</span>");
 		if($skill["priority"] == "Back")
-			print(" / <span class=\"support\">BackAttack</span>");
+			print(" / <span class=\"support\">以牙还牙</span>");
 		if($skill["CurePoison"])
 			print(" / <span class=\"support\">CurePoison</span>");
 
 		if($skill["delay"])
-			print(" / <span class=\"support\">Delay-".$skill[delay]."%</span>");
+			print(" / <span class=\"support\">延迟 -".$skill[delay]."%</span>");
 //		if($skill["support"])
 //			print(" / <span class=\"charge\">support</span>");
 
 		if($skill["UpMAXHP"])
-			print(" / <span class=\"charge\">MaxHP+".$skill[UpMAXHP]."%</span>");
+			print(" / <span class=\"charge\">生命上限 +".$skill[UpMAXHP]."%</span>");
 		if($skill["UpMAXSP"])
-			print(" / <span class=\"charge\">MaxSP+".$skill[UpMAXSP]."%</span>");
+			print(" / <span class=\"charge\">魔力上限 +".$skill[UpMAXSP]."%</span>");
 		if($skill["UpSTR"])
-			print(" / <span class=\"charge\">Str+".$skill[UpSTR]."%</span>");
+			print(" / <span class=\"charge\">力量 +".$skill[UpSTR]."%</span>");
 		if($skill["UpINT"])
-			print(" / <span class=\"charge\">Int+".$skill[UpINT]."%</span>");
+			print(" / <span class=\"charge\">智慧 +".$skill[UpINT]."%</span>");
 		if($skill["UpDEX"])
-			print(" / <span class=\"charge\">Dex+".$skill[UpDEX]."%</span>");
+			print(" / <span class=\"charge\">敏捷 +".$skill[UpDEX]."%</span>");
 		if($skill["UpSPD"])
-			print(" / <span class=\"charge\">Spd+".$skill[UpSPD]."%</span>");
+			print(" / <span class=\"charge\">速度 +".$skill[UpSPD]."%</span>");
 		if($skill["UpLUK"])
-			print(" / <span class=\"charge\">Luk+".$skill[UpLUK]."%</span>");
+			print(" / <span class=\"charge\">幸运 +".$skill[UpLUK]."%</span>");
 		if($skill["UpATK"])
-			print(" / <span class=\"charge\">Atk+".$skill[UpATK]."%</span>");
+			print(" / <span class=\"charge\">物理攻击 +".$skill[UpATK]."%</span>");
 		if($skill["UpMATK"])
-			print(" / <span class=\"charge\">Matk+".$skill[UpMATK]."%</span>");
+			print(" / <span class=\"charge\">魔法攻击 +".$skill[UpMATK]."%</span>");
 		if($skill["UpDEF"])
-			print(" / <span class=\"charge\">Def+".$skill[UpDEF]."%</span>");
+			print(" / <span class=\"charge\">物理防御 +".$skill[UpDEF]."%</span>");
 		if($skill["UpMDEF"])
-			print(" / <span class=\"charge\">Mdef+".$skill[UpMDEF]."%</span>");
+			print(" / <span class=\"charge\">魔法防御 +".$skill[UpMDEF]."%</span>");
 
 		if($skill["DownMAXHP"])
-			print(" / <span class=\"dmg\">MaxHP-".$skill[DownMAXHP]."%</span>");
+			print(" / <span class=\"dmg\">生命上限 -".$skill[DownMAXHP]."%</span>");
 		if($skill["DownMAXSP"])
-			print(" / <span class=\"dmg\">MaxSP-".$skill[DownMAXSP]."%</span>");
+			print(" / <span class=\"dmg\">魔力上限 -".$skill[DownMAXSP]."%</span>");
 		if($skill["DownSTR"])
-			print(" / <span class=\"dmg\">Str-".$skill[DownSTR]."%</span>");
+			print(" / <span class=\"dmg\">力量 -".$skill[DownSTR]."%</span>");
 		if($skill["DownINT"])
-			print(" / <span class=\"dmg\">Int-".$skill[DownINT]."%</span>");
+			print(" / <span class=\"dmg\">智慧 -".$skill[DownINT]."%</span>");
 		if($skill["DownDEX"])
-			print(" / <span class=\"dmg\">Dex-".$skill[DownDEX]."%</span>");
+			print(" / <span class=\"dmg\">敏捷 -".$skill[DownDEX]."%</span>");
 		if($skill["DownSPD"])
-			print(" / <span class=\"dmg\">Spd-".$skill[DownSPD]."%</span>");
+			print(" / <span class=\"dmg\">速度 -".$skill[DownSPD]."%</span>");
 		if($skill["DownLUK"])
-			print(" / <span class=\"dmg\">Luk-".$skill[DownLUK]."%</span>");
+			print(" / <span class=\"dmg\">幸运 -".$skill[DownLUK]."%</span>");
 		if($skill["DownATK"])
-			print(" / <span class=\"dmg\">Atk-".$skill[DownATK]."%</span>");
+			print(" / <span class=\"dmg\">物理攻击 -".$skill[DownATK]."%</span>");
 		if($skill["DownMATK"])
-			print(" / <span class=\"dmg\">Matk-".$skill[DownMATK]."%</span>");
+			print(" / <span class=\"dmg\">魔法攻击 -".$skill[DownMATK]."%</span>");
 		if($skill["DownDEF"])
-			print(" / <span class=\"dmg\">Def-".$skill[DownDEF]."%</span>");
+			print(" / <span class=\"dmg\">物理防御 -".$skill[DownDEF]."%</span>");
 		if($skill["DownMDEF"])
-			print(" / <span class=\"dmg\">Mdef-".$skill[DownMDEF]."%</span>");
+			print(" / <span class=\"dmg\">魔法防御 -".$skill[DownMDEF]."%</span>");
 
 		if($skill["PlusSTR"])
-			print(" / <span class=\"charge\">Str+".$skill[PlusSTR]."</span>");
+			print(" / <span class=\"charge\">力量 +".$skill[PlusSTR]."</span>");
 		if($skill["PlusINT"])
-			print(" / <span class=\"charge\">Int+".$skill[PlusINT]."</span>");
+			print(" / <span class=\"charge\">智慧 +".$skill[PlusINT]."</span>");
 		if($skill["PlusDEX"])
-			print(" / <span class=\"charge\">Dex+".$skill[PlusDEX]."</span>");
+			print(" / <span class=\"charge\">敏捷 +".$skill[PlusDEX]."</span>");
 		if($skill["PlusSPD"])
-			print(" / <span class=\"charge\">Spd+".$skill[PlusSPD]."</span>");
+			print(" / <span class=\"charge\">速度 +".$skill[PlusSPD]."</span>");
 		if($skill["PlusLUK"])
-			print(" / <span class=\"charge\">Luk+".$skill[PlusLUK]."</span>");
+			print(" / <span class=\"charge\">幸运 +".$skill[PlusLUK]."</span>");
 
 		if($skill["charge"]["0"] || $skill["charge"]["1"]) {
 			print(" / (".($skill["charge"]["0"]?$skill["charge"]["0"]:"0").":");
 			print(($skill["charge"]["1"]?$skill["charge"]["1"]:"0").")");
 		}
 
-		// 紳達擴嘎山績
+		// 装备需求
 		if($skill["limit"]) {
-			$Limit	= " / Limit:";
+			$Limit	= " / 装备需求：";
 			foreach($skill["limit"] as $type => $bool) {
 				$Limit .= $type.", ";
 			}
@@ -626,35 +648,35 @@ function ShowBattleLog($no,$type=false) {
 		print("\n");
 	}
 //////////////////////////////////////////////////
-//	拒嘿手...餞賴。
+//	显示道具描述内容
 	function ShowItemDetail($item,$amount=false,$text=false,$need=false) {
 		if(!$item) return false;
 
 		$html	= "<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">";
-		// 籃希猛
+		// 篮希猛
 		if($item["refine"])
 			$html	.= "+{$item[refine]} ";
 		if($item["AddName"])
 			$html	.= "{$item[AddName]} ";
-		$html	.= "{$item[base_name]}";// 歎漣
+		$html	.= "{$item[base_name]}";// 叹涟
 
 		if($item["type"])
 			$html	.= "<span class=\"light\"> ({$item[type]})</span>";
 		if($amount) {//眶翁
 			$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
 		}
-		if($item["atk"]["0"])//濕妄苟封
-			$html	.= ' / <span class="dmg">Atk:'.$item[atk][0].'</span>';
+		if($item["atk"]["0"])//湿妄苟封
+			$html	.= ' / <span class="dmg">物理攻击：'.$item[atk][0].'</span>';
 		if($item["atk"]["1"])//蒜恕苟封
-			$html	.= ' / <span class="spdmg">Matk:'.$item[atk][1].'</span>';
+			$html	.= ' / <span class="spdmg">魔法攻击：'.$item[atk][1].'</span>';
 		if($item["def"]) {
-			$html	.= " / <span class=\"recover\">Def:{$item[def][0]}+{$item[def][1]}</span>";
-			$html	.= " / <span class=\"support\">Mdef:{$item[def][2]}+{$item[def][3]}</span>";
+			$html	.= " / <span class=\"recover\">物理防御：{$item[def][0]}+{$item[def][1]}</span>";
+			$html	.= " / <span class=\"support\">魔法防御：{$item[def][2]}+{$item[def][3]}</span>";
 		}
 		if($item["P_SUMMON"])
-			$html	.= ' / <span class="support">Summon+'.$item["P_SUMMON"].'%</span>';
+			$html	.= ' / <span class="support">召唤 +'.$item["P_SUMMON"].'%</span>';
 		if(isset($item["handle"]))
-			$html	.= ' / <span class="charge">h:'.$item[handle].'</span>';
+			$html	.= ' / <span class="charge">重量：'.$item[handle].'</span>';
 		if($item["option"])
 			$html	.= ' / <span style="font-size:80%">'.substr($item["option"],0,-2)."</span>";
 
@@ -663,7 +685,7 @@ function ShowBattleLog($no,$type=false) {
 			foreach($item["need"] as $M_itemNo => $M_amount) {
 				$M_item	= LoadItemData($M_itemNo);
 				$html	.= "<img src=\"".IMG_ICON.$M_item["img"]."\" class=\"vcent\">";
-				$html	.= "{$M_item[base_name]}";// 歎漣
+				$html	.= "{$M_item[base_name]}";// 叹涟
 				$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
 				if($need["$M_itemNo"])
 				$html	.= "<span class=\"light\">(".$need["$M_itemNo"].")</span>";
@@ -677,7 +699,7 @@ function ShowBattleLog($no,$type=false) {
 	}
 
 //////////////////////////////////////////////////
-//	樂焚桂矢【山績
+//	乐い焚桂矢でエラ〖山绩
 	function ShowResult($message,$add=false) {
 		if($add)
 			$add	= " ".$add;
@@ -685,7 +707,7 @@ function ShowBattleLog($no,$type=false) {
 			print('<div class="result'.$add.'">'.$message.'</div>'."\n");
 	}
 //////////////////////////////////////////////////
-//	樂焚桂矢【山績
+//	乐い焚桂矢でエラ〖山绩
 	function ShowError($message,$add=false) {
 		if($add)
 			$add	= " ".$add;
@@ -693,25 +715,25 @@ function ShowBattleLog($no,$type=false) {
 			print('<div class="error'.$add.'">'.$message.'</div>'."\n");
 	}
 //////////////////////////////////////////////////
-//	山績
+//	マニュアルを山绩する
 	function ShowManual() {
 		include(MANUAL);
 		return true;
 	}
 //////////////////////////////////////////////////
-//	山績
+//	マニュアルを山绩する
 	function ShowManual2() {
 		include(MANUAL_HIGH);
 		return true;
 	}
 //////////////////////////////////////////////////
-//	【山績
+//	チュ〖トリアルを山绩する
 	function ShowTutorial() {
 		include(TUTORIAL);
 		return true;
 	}
 //////////////////////////////////////////////////
-//	構糠柒推山績
+//	构糠柒推の山绩
 	function ShowUpDate() {
 		print('<div style="margin:15px">');
 		print("<p><a href=\"?\">Back</a><br><a href=\"#btm\">to bottom</a></p>");
@@ -749,13 +771,13 @@ EOD;
 		print("<p><a href=\"?\">Back</a></p></div>");
 	}
 //////////////////////////////////////////////////
-//	【【
+//	げ〖むで〖た
 	function ShowGameData() {
 		?>
 <div style="margin:15px">
 <h4>GameData</h4>
 <div style="margin:0 20px">
-| <a href="?gamedata=job">職業(Job)</a> | 
+| <a href="?gamedata=job">职业(Job)</a> | 
 <a href="?gamedata=item">道具(item)</a> | 
 <a href="?gamedata=judge">判定</a> | 
 </div>
@@ -797,7 +819,7 @@ EOD;
 		fclose($fp);
 	}
 //////////////////////////////////////////////////
-//	鏈山績
+//	链ランキングの山绩
 	function RankAllShow() {
 		print('<div style="margin:15px">'."\n");
 		print('<h4>Ranking - '.date("Y年n月j日 G:i:s").'</h4>'."\n");
@@ -819,10 +841,10 @@ EOD;
 	}
 
 	/*
-	*	掐蝸矢機誤澄千
-	*	手猛
+	*	掐蜗された矢机误を澄千する
+	*	手り猛
 	*	喇根 = array(true,恃垂($string));
-	*	己竊 = array(false,己竊妄統);
+	*	己窃 = array(false,己窃妄统);
 	*/
 	function CheckString($string,$maxLength=16) {
 		$string	= trim($string);
@@ -834,17 +856,17 @@ EOD;
 			return array(false,"非法字符");
 		}
 		if (!$string) {
-			return array(false,"不能為空");
+			return array(false,"不能为空");
 		}
 		$length	= strlen($string);
 		if ( 0 == $length || $maxLength < $length) {
-			return array(false,"過短或過長");
+			return array(false,"过短或过长");
 		}
 		$string	= htmlspecialchars($string,ENT_QUOTES);
 		return array(true,$string);
 	}
 ///////////////////////////////////////////////////
-//	眉瑣冉們。
+//	眉琐を冉们。
 	function isMobile() {
 		if(strstr($_SERVER['HTTP_USER_AGENT'],"DoCoMo")){
 			$env = 'i';

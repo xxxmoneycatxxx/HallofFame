@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include_once("class.char.php");
 class union extends char{
 
@@ -15,35 +15,35 @@ class union extends char{
 	var $UnionLand;
 	var $LevelLimit;
 /*
-	Union受經驗值渡。
-	、全開HP差分取死亡判定時經驗值渡。
+	Unionモンスターはダメージを受けると経験値を渡す。
+	なので、全開のHPと差分を取って死亡判定時に経験値を渡すことにする。
 */
 	var $LastHP;
 
-	// 專用變數
+	// モンスター専用の変数
 	var $monster = true;
-	var $exphold;//經驗值
-	var $moneyhold;//金
-	var $itemdrop;//落
+	var $exphold;//経験値
+	var $moneyhold;//お金
+	var $itemdrop;//落とすアイテム
 
 //////////////////////////////////////////////////
-//	
+//	コンストラクタ
 	function union($file=false) {
 		$this->LoadData($file);
 	}
 //////////////////////////////////////////////////
-//	毒
+//	毒ダメージ
 	function PoisonDamage($multiply=1) {
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." 由於中毒受到 ");
-		print("<span class=\"bold\">$poison</span> 傷害.\n");
+		print("<span class=\"spdmg\">".$this->Name(bold)." 由于中毒受到 ");
+		print("<span class=\"bold\">$poison</span> 伤害.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
 	}
 //////////////////////////////////////////////////
-//	毒公式
+//	毒ダメージの公式
 	function PoisonDamageFormula($multiply=1) {
 		$damage	= round($this->HP * 0.01);
 		$damage	*= mt_rand(50,150)/100;
@@ -54,12 +54,12 @@ class union extends char{
 	}
 
 //////////////////////////////////////////////////
-//	生存狀態。
+//	生存状態にする。
 	function GetNormal($mes=false) {
 		if($this->STATE === ALIVE)
 			return true;
-		if($this->STATE === DEAD) {//死亡狀態
-			// 復活事。
+		if($this->STATE === DEAD) {//死亡状態
+			// ユニオンは復活しない事とする。
 			return true;
 			/*
 			if($mes)
@@ -68,22 +68,22 @@ class union extends char{
 			return true;
 			*/
 		}
-		if($this->STATE === POISON) {//毒狀態
+		if($this->STATE === POISON) {//毒状態
 			if($mes)
-				print($this->Name(bold)." 的<span class=\"spdmg\">毒</span> 被治癒.<br />\n");
+				print($this->Name(bold)." 的<span class=\"spdmg\">毒</span> 被治愈.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
 	}
 //////////////////////////////////////////////////
-//	行動遲(Rate)
+//	行動を遅らせる(Rate)
 	function DelayByRate($No,$BaseDelay,$Show=false) {
 		if(DELAY_TYPE === 0) {
 			if($Show) {
 				print("(".sprintf("%0.1f",$this->delay));
 				print('<span style="font-size:80%"> >>> </span>');
 			}
-			$Delay	= ($BaseDelay - $this->SPD) * ($No/100);//遲間隔
+			$Delay	= ($BaseDelay - $this->SPD) * ($No/100);//遅らせる間隔
 			$this->delay	-= $Delay;
 			if($Show) {
 				print(sprintf("%0.1f",$this->delay)."/".sprintf("%0.1f",$BaseDelay).")");
@@ -93,7 +93,7 @@ class union extends char{
 				print("(".sprintf("%0.0f",$this->delay));
 				print('<span style="font-size:80%"> >>> </span>');
 			}
-			$Delay	= round($No/3);//遲間隔
+			$Delay	= round($No/3);//遅らせる間隔
 			$this->delay	-= $Delay;
 			if($Show) {
 				print(sprintf("%0.0f",$this->delay)."/".sprintf("%d",100).")");
@@ -101,8 +101,8 @@ class union extends char{
 		}
 	}
 //////////////////////////////////////////////////
-//	戰鬥中名,HP,SP 色分表示
-//	以外必要物表示。
+//	戦闘中のキャラ名,HP,SP を色を分けて表示する
+//	それ以外にも必要な物があれば表示するようにした。
 	function ShowHpSp() {
 		if($this->STATE === 1)
 			$sub	= " dmg";
@@ -110,7 +110,7 @@ class union extends char{
 			$sub	= " spdmg";
 		//名前
 		print("<span class=\"bold{$sub}\">{$this->name}</span>\n");
-		// or詠唱
+		// チャージor詠唱
 		if($this->expect_type === 0)
 			print('<span class="charge">(charging)</span>'."\n");
 		else if($this->expect_type === 1)
@@ -125,12 +125,14 @@ class union extends char{
 		print("</div>\n");//SP
 	}
 //////////////////////////////////////////////////
-//	值變化表示(受時)
+//	値の変化を表示する(ダメージ受けた時とか)
+/*
 	function ShowValueChange() {
 		print("(??? > ???)");
 	}
+*/
 //////////////////////////////////////////////////
-//	番號呼出
+//	番号で呼び出す
 	function UnionNumber($no) {
 		$file	= UNION.$no."_Union.dat";
 		if($this->LoadData($file))
@@ -139,7 +141,7 @@ class union extends char{
 			return false;
 	}
 //////////////////////////////////////////////////
-//	自體生確認(戰鬥外)
+//	ユニオン自体が生きてるかどうか確認する(戦闘外で)
 	function is_Alive() {
 		if(0 < $this->hp)
 			return true;
@@ -167,7 +169,7 @@ class union extends char{
 	<div class="carpet_frame">
 	<div class="land" style="background-image : url(<?php print IMG_OTHER."land_".$this->UnionLand.".gif"?>);">
 	<a href="?union=<?php print $this->UnionNo?>"><?php $this->ShowImage();?></a></div>
-	<div class="bold dmg"><?php print $this->UnionName?></div>限制級別:<?php print $this->LevelLimit?>級
+	<div class="bold dmg"><?php print $this->UnionName?></div>限制级别:<?php print $this->LevelLimit?>级
 	</div><?php 
 	}
 //////////////////////////////////////////////////
@@ -218,7 +220,7 @@ class union extends char{
 		print($this->Name(bold)." MDEF down {$no}%<br />\n");
 	}
 //////////////////////////////////////////////////
-//	差分經驗值
+//	差分経験値
 	function HpDifferenceEXP() {
 		$dif	= $this->LastHP - $this->HP;
 		$this->LastHP	= $this->HP;
@@ -227,8 +229,8 @@ class union extends char{
 		return $exp;
 	}
 //////////////////////////////////////////////////
-//	變數。
-	function SetCharData(&$data) {
+//	キャラの変数をセットする。
+	function SetCharData($data) {
 		$this->MonsterNumber	= $data["MonsterNumber"];
 		$this->LastDefeated		= $data["LastDefeated"];
 
@@ -265,7 +267,7 @@ class union extends char{
 		if(is_array($monster["action"]))
 			$this->action	= $monster["action"];
 
-		//專用
+		//モンスター専用
 		$this->monster		= true;
 		$this->exphold		= $monster["exphold"];
 		$this->moneyhold	= $monster["moneyhold"];
@@ -278,24 +280,24 @@ class union extends char{
 		$this->UnionLand	= $monster["land"];
 		$this->LevelLimit	= $monster["LevelLimit"];
 
-		// 時間經過復活處理。
+		// 時間が経過して復活する処理。
 		$Now	= time();
 		$Passed	= $this->LastDefeated + $monster["cycle"];
 		if($Passed < $Now && !$this->hp) {
 			$this->hp	= $this->maxhp;
 			$this->sp	= $this->maxsp;
 		}
-		$this->LastHP	= $data["HP"];//差分取HP。
+		$this->LastHP	= $data["HP"];//差分を取るためのHP。
 	}
 
 //////////////////////////////////////////////////
-//	戰鬥用變數
+//	戦闘用の変数
 	function SetBattleVariable($team=false) {
-		// 再讀迂防止 ?
+		// 再読み込みを防止できる か?
 		if(isset($this->IMG))
 			return false;
 
-		$this->team		= $team;//必要?
+		$this->team		= $team;//これ必要か?
 		$this->IMG		= $this->img;
 		$this->MAXHP	= $this->maxhp;
 		$this->HP		= $this->hp;
@@ -307,16 +309,16 @@ class union extends char{
 		$this->SPD		= $this->spd + $this->P_SPD;
 		$this->LUK		= $this->luk + $this->P_LUK;
 		$this->POSITION	= $this->position;
-		$this->STATE	= ALIVE;//生存狀態
+		$this->STATE	= ALIVE;//生存状態にする
 
-		$this->expect	= false;//(數值=詠唱中 false=待機中)
-		$this->ActCount	= 0;//行動回數
-		$this->JdgCount	= array();//決定判斷回數
+		$this->expect	= false;//(数値=詠唱中 false=待機中)
+		$this->ActCount	= 0;//行動回数
+		$this->JdgCount	= array();//決定した判断の回数
 	}
 //////////////////////////////////////////////////
-//	確認。
+//	しぼーしてるかどうか確認する。
 	function CharJudgeDead() {
-		if($this->HP < 1 && $this->STATE !== 1) {//
+		if($this->HP < 1 && $this->STATE !== 1) {//しぼー
 			$this->STATE	= 1;
 			$this->HP	= 0;
 			$this->ResetExpect();
@@ -326,8 +328,8 @@ class union extends char{
 		}
 	}
 //////////////////////////////////////////////////
-//	保存
-	function SaveCharData() {
+//	キャラデータの保存
+	function SaveCharData($id="") {
 		if(!file_exists($this->file))
 			return false;
 		$string	 = "MonsterNumber=".$this->MonsterNumber."\n";

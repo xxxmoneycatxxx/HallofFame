@@ -1,10 +1,10 @@
-<?php 
+﻿<?php 
 include(CLASS_SKILL_EFFECT);
 class battle extends ClassSkillEffect{
 /*
  * $battle	= new battle($MyParty,$EnemyParty);
  * $battle->SetTeamName($this->name,$party["name"]);
- * $battle->Process();//戰鬥開始
+ * $battle->Process();//戦闘開始
  */
 	// teams
 	var $team0, $team1;
@@ -17,64 +17,64 @@ class battle extends ClassSkillEffect{
 	var $team0_mc = 0;
 	var $team1_mc = 0;
 
-	// 戰鬥最大回合數(延長回合可能性)
+	// 戦闘の最大ターン数(延長される可能性のある)
 	var $BattleMaxTurn	= BATTLE_MAX_TURNS;
 	var $NoExtends	= false;
 
 	//
 	var $NoResult	= false;
 
-	// 戰鬥背景
+	// 戦闘背景
 	var $BackGround = "grass";
 
-	//  ( << >> ← 變數)
+	// スクロール ( << >> ← これの変数)
 	var $Scroll = 0;
 
-	// 總傷害數
+	// 総ダメージ
 	var $team0_dmg = 0;
 	var $team1_dmg = 0;
-	// 總行動回數
+	// 総行動回数
 	var $actions = 0;
-	// 戰鬥延遲基準
+	// 戦闘における基準ディレイ
 	var $delay;
-	// 勝利
+	// 勝利チーム
 	var $result;
-	// 金
+	// もらえるお金
 	var $team0_money, $team1_money;
-	// 
+	// げっとしたアイテム
 	var $team0_item=array(), $team1_item=array();
-	var $team0_exp=0, $team1_exp=0;// 總經驗值。
+	var $team0_exp=0, $team1_exp=0;// 総経験値。
 
-	// 特殊變數
-	var $ChangeDelay	= false;//SPD變化際DELAY再計算。
+	// 特殊な変数
+	var $ChangeDelay	= false;//キャラのSPDが変化した際にDELAYを再計算する。
 
-	var $BattleResultType	= 0;// 0=決著著Draw 1=生存者數勝敗決
-	var $UnionBattle;// 殘HP總HP隱(????/????)
+	var $BattleResultType	= 0;// 0=決着着かなければDraw 1=生存者の数で勝敗を決める
+	var $UnionBattle;// 残りHP総HPを隠す(????/????)
 //////////////////////////////////////////////////
-//	。
+//	コンストラクタ。
 
-	//各配列受。
+	//各チームの配列を受けとる。
 	function battle($team0,$team1) {
 		include(DATA_JUDGE);
 		include_once(DATA_SKILL);
 
-		//參戰召喚場合
+		//モンスターが参戦してなくても召喚される場合があるので
 		include_once(CLASS_MONSTER);
 
 		$this->team0	= $team0;
 		$this->team1	= $team1;
 
-		// 各戰鬥專用變數設定(class.char.php)
-		// 裝備特殊機能等計算設定。
-		// 戰鬥專用變數大文字英語。class.char.php參照。
-		//  $this->team["$key"] 渡.(引數番號)
+		// 各チームに戦闘専用の変数を設定する(class.char.php)
+		// 装備の特殊機能等を計算して設定する。
+		// 戦闘専用の変数は大文字英語だったりする。class.char.phpを参照。
+		//  $this->team["$key"] で渡すこと.(引数はチーム番号)
 		foreach($this->team0 as $key => $char)
 			$this->team0["$key"]->SetBattleVariable(TEAM_0);
 		foreach($this->team1 as $key => $char)
 			$this->team1["$key"]->SetBattleVariable(TEAM_1);
 		//dump($this->team0[0]);
-		// delay關連
-		$this->SetDelay();//計算
+		// delay関連
+		$this->SetDelay();//ディレイ計算
 		$this->DelayResetAll();//初期化
 	}
 //////////////////////////////////////////////////
@@ -83,17 +83,17 @@ class battle extends ClassSkillEffect{
 		$this->BattleResultType	= $var;
 	}
 //////////////////////////////////////////////////
-//	UnionBattle事。
+//	UnionBattleである事にする。
 	function SetUnionBattle() {
 		$this->UnionBattle	= true;
 	}
 //////////////////////////////////////////////////
-//	背景畫像。
+//	背景画像をセットする。
 	function SetBackGround($bg) {
 		$this->BackGround	= $bg;
 	}
 //////////////////////////////////////////////////
-//	戰鬥途中參加。
+//	戦闘にキャラクターを途中参加させる。
 	function JoinCharacter($user,$add) {
 		foreach($this->team0 as $char) {
 			if($user === $char) {
@@ -116,10 +116,10 @@ class battle extends ClassSkillEffect{
 		}
 	}
 //////////////////////////////////////////////////
-//	設定最大戰鬥回和數。
+//	限界ターン数を決めちゃう。
 	function LimitTurns($no) {
 		$this->BattleMaxTurn	= $no;
-		$this->NoExtends		= true;//以上延長。
+		$this->NoExtends		= true;//これ以上延長はしない。
 	}
 //////////////////////////////////////////////////
 //	
@@ -127,9 +127,9 @@ class battle extends ClassSkillEffect{
 		$this->NoResult	= true;
 	}
 //////////////////////////////////////////////////
-//	戰鬥最大回合數增加
+//	戦闘の最大ターン数を増やす。
 	function ExtendTurns($no,$notice=false) {
-		// 延長變數設定延長。
+		// 延長しない変数が設定されていれば延長しない。
 		if($this->NoExtends === true) return false;
 
 		$this->BattleMaxTurn	+= $no;
@@ -138,14 +138,14 @@ class battle extends ClassSkillEffect{
 		if($notice) {
 print <<< HTML
 	<tr><td colspan="2" class="break break-top bold" style="text-align:center;padding:20px 0;">
-	超出戰鬥回合數.
+	超出战斗回合数.
 	</td></tr>
 HTML;
 		}
 		return true;
 	}
 //////////////////////////////////////////////////
-//	戰鬥中獲得物品返迴。
+//	戦闘中獲得したアイテムを返す。
 	function ReturnItemGet($team) {
 		if($team == TEAM_0) {
 			if(count($this->team0_item) != 0)
@@ -160,12 +160,12 @@ HTML;
 		}
 	}
 //////////////////////////////////////////////////
-//	返回戰鬥結果
+//	挑戦者側が勝利したか？
 	function ReturnBattleResult() {
 		return $this->result;
 	}
 //////////////////////////////////////////////////
-//	戰鬥記錄保存
+//	戦闘記録を保存する
 	function RecordLog($type=false) {
 		if($type == "RANK") {
 			$file	= LOG_BATTLE_RANK;
@@ -181,7 +181,7 @@ HTML;
 			$logAmount = MAX_BATTLE_LOG;
 		}
 
-		// 舊紀錄消除
+		// 古いログを消す
 		$i	= 0;
 		while($logAmount <= count($log) ) {
 			unlink($log["$i"]);
@@ -189,72 +189,72 @@ HTML;
 			$i++;
 		}
 
-		// 新紀錄生成
+		// 新しいログを作る
 		$time	= time().substr(microtime(),2,6);
 		$file	.= $time.".dat";
 
 		$head	= $time."\n";//開始時間(1行目)
-		$head	.= $this->team0_name."<>".$this->team1_name."\n";//參加(2行目)
-		$head	.= count($this->team0)."<>".count($this->team1)."\n";//參加人數(3行目)
-		$head	.= $this->team0_ave_lv."<>".$this->team1_ave_lv."\n";//平均(4行目)
-		$head	.= $this->result."\n";//勝利(5行目)
-		$head	.= $this->actions."\n";//總數(6行目)
+		$head	.= $this->team0_name."<>".$this->team1_name."\n";//参加チーム(2行目)
+		$head	.= count($this->team0)."<>".count($this->team1)."\n";//参加人数(3行目)
+		$head	.= $this->team0_ave_lv."<>".$this->team1_ave_lv."\n";//平均レベル(4行目)
+		$head	.= $this->result."\n";//勝利チーム(5行目)
+		$head	.= $this->actions."\n";//総ターン数(6行目)
 		$head	.= "\n";// 改行(7行目)
 
 		WriteFile($file,$head.ob_get_contents());
 	}
 //////////////////////////////////////////////////
-//	戰鬥處理(實行戰鬥過程處理)
+//	戦闘処理(これを実行して戦闘が処理される)
 	function Process() {
 		$this->BattleHeader();
 
-		//戰鬥終
+		//戦闘が終わるまで繰り返す
 		do {
-			if($this->actions % BATTLE_STAT_TURNS == 0)//一定間隔狀況表示
-				$this->BattleState();//狀況表示
+			if($this->actions % BATTLE_STAT_TURNS == 0)//一定間隔で状況を表示
+				$this->BattleState();//状況の表示
 
-			// 行動
+			// 行動キャラ
 			if(DELAY_TYPE === 0)
-				$char	= &$this->NextActer();
+				$char	= $this->NextActer();
 			else if(DELAY_TYPE === 1)
-				$char	= &$this->NextActerNew();
+				$char	= $this->NextActerNew();
 
 			$this->Action($char);//行動
-			$result	= $this->BattleResult();//↑行動戰鬥終了判定
+			$result	= $this->BattleResult();//↑の行動で戦闘が終了したかどうかの判定
 
-			//技使用等SPD變化場合DELAY再計算。
+			//技の使用等でSPDが変化した場合DELAYを再計算する。
 			if($this->ChangeDelay)
 				$this->SetDelay();
 
 		} while(!$result);
 
-		$this->ShowResult($result);//戰鬥結果表示
+		$this->ShowResult($result);//戦闘の結果表示
 		$this->BattleFoot();
 
 		//$this->SaveCharacters();
 	}
 //////////////////////////////////////////////////
-//	戰鬥後狀況保存。
+//	戦闘後のキャラクター状況を保存する。
 	function SaveCharacters() {
-		//0
+		//チーム0
 		foreach($this->team0 as $char) {
 			$char->SaveCharData();
 		}
-		//1
+		//チーム1
 		foreach($this->team1 as $char) {
 			$char->SaveCharData();
 		}
 	}
 
 //////////////////////////////////////////////////
-//	戰鬥終了判定
-//	全員死=draw(?)
+//	戦闘終了の判定
+//	全員死んでる=draw(?)
 	function BattleResult() {
-		if(CountAlive($this->team0) == 0)//全員負。
+		if(CountAlive($this->team0) == 0)//全員しぼーなら負けにする。
 			$team0Lose	= true;
-		if(CountAlive($this->team1) == 0)//全員負。
+		if(CountAlive($this->team1) == 0)//全員しぼーなら負けにする。
 			$team1Lose	= true;
-		//勝者番號引分返
+		//勝者のチーム番号か引き分けを返す
 		if( $team0Lose && $team1Lose ) {
 			$this->result	= DRAW;
 			return "draw";
@@ -265,11 +265,11 @@ HTML;
 			$this->result	= TEAM_0;
 			return "team0";
 
-		// 兩生存最大行動數達時。
+		// 両チーム生存していて最大行動数に達した時。
 		} else if($this->BattleMaxTurn <= $this->actions) {
-			// 生存者數差。
+			// 生存者数の差。
 			/*
-				// 生存者數差1人以上延長
+				// 生存者数の差が1人以上なら延長
 			$AliveNumDiff	= abs(CountAlive($this->team0) - CountAlive($this->team1));
 			if(0 < $AliveNumDiff && $this->BattleMaxTurn < BATTLE_MAX_EXTENDS) {
 			*/
@@ -282,16 +282,16 @@ HTML;
 					return false;
 			}
 
-			// 決著著引分。
+			// 決着着かなければただ引き分けにする。
 			if($this->BattleResultType == 0) {
-				$this->result	= DRAW;//引分。
+				$this->result	= DRAW;//引き分け。
 				return "draw";
-			// 決著著生存者數勝敗。
+			// 決着着かなければ生存者の数で勝敗をつける。
 			} else if($this->BattleResultType == 1) {
-				// 引分設定
-				// (1) 生存者數多勝
-				// (2) (1) 同總多勝
-				// (3) (2) 同引分…???(or防衛側勝)
+				// とりあえず引き分けに設定
+				// (1) 生存者数が多いほうが勝ち
+				// (2) (1) が同じなら総ダメージが多いほうが勝ち
+				// (3) (2) でも同じなら引き分け…???(or防衛側の勝ち)
 	
 				$team0Alive	= CountAliveChars($this->team0);
 				$team1Alive	= CountAliveChars($this->team1);
@@ -307,54 +307,54 @@ HTML;
 				}
 			} else {
 				$this->result	= DRAW;
-				print("error321708.<br />請報告出錯了...（？）。");
-				return "draw";// 迴避。
+				print("error321708.<br />请报告出错了...（？）。");
+				return "draw";// エラー回避。
 			}
 
 			$this->result	= DRAW;
-			print("error321709.<br />請報告出錯了...（？）。");
-			return "draw";// 迴避。
+			print("error321709.<br />请报告出错了...（？）。");
+			return "draw";// エラー回避。
 		}
 	}
 //////////////////////////////////////////////////
-//	戰鬥結果表示
+//	戦闘の結果表示
 	function ShowResult($result) {
 
-		// 左側(戰鬥受側)
+		// 左側のチーム(戦闘を受けた側)
 		$TotalAlive2	= 0;
-		// 殘HP / 合計HP  表示
-		foreach($this->team1 as $char) {//1
+		// 残りHP / 合計HP の 表示
+		foreach($this->team1 as $char) {//チーム1
 			if($char->STATE !== DEAD)
 				$TotalAlive2++;
 			$TotalHp2	+= $char->HP;//合計HP
 			$TotalMaxHp2	+= $char->MAXHP;//合計最大HP
 		}
 
-		// 右側(戰鬥仕掛側)
+		// 右側のチーム(戦闘を仕掛けた側)
 		$TotalAlive1	= 0;
-		foreach($this->team0 as $char) {//0
+		foreach($this->team0 as $char) {//チーム0
 			if($char->STATE !== DEAD)
 				$TotalAlive1++;
 			$TotalHp1	+= $char->HP;//合計HP
 			$TotalMaxHp1	+= $char->MAXHP;//合計最大HP
 		}
 
-		// 結果表示。
+		// 結果を表示しない。
 		if($this->NoResult) {
 			print('<tr><td colspan="2" style="text-align:center;padding:10px 0px" class="break break-top">');
-			//print("<a name=\"s{$this->Scroll}\"></a>");// 最後
-			print("模擬戰結束");
+			//print("<a name=\"s{$this->Scroll}\"></a>");// スクロールの最後
+			print("模拟战结束");
 			print("</td></tr>\n");
 			print('<tr><td class="teams break">'."\n");
-			// 左側
-			print("殘留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
+			// 左側チーム
+			print("残留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
 			print("存活 : {$TotalAlive2}/".count($this->team1)."<br />\n");
-			print("總傷害 : {$this->team1_dmg}<br />\n");
-			// 右側
+			print("总伤害 : {$this->team1_dmg}<br />\n");
+			// 右側チーム
 			print('</td><td class="teams break">'."\n");
-			print("殘留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+			print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
 			print("存活 : {$TotalAlive1}/".count($this->team0)."<br />\n");
-			print("總傷害 : {$this->team0_dmg}<br />\n");
+			print("总伤害 : {$this->team0_dmg}<br />\n");
 			print("</td></tr>\n");
 			return false;
 		}
@@ -364,35 +364,35 @@ HTML;
 		$BreakTop	= " break-top";
 		print('<tr><td colspan="2" style="text-align:center;padding:10px 0px" class="break'.$BreakTop.'">'."\n");
 		//print($this->actions."%".BATTLE_STAT_TURNS."<br>");
-		print("<a name=\"s{$this->Scroll}\"></a>\n");// 最後
+		print("<a name=\"s{$this->Scroll}\"></a>\n");// スクロールの最後
 		if($result == "draw") {
 			print("<span style=\"font-size:150%\">平局</span><br />\n");
 		} else {
-			$Team	= &$this->{$result};
+			$Team	= $this->{$result};
 			$TeamName	= $this->{$result."_name"};
-			print("<span style=\"font-size:200%\">{$TeamName} 勝利!</span><br />\n");
+			print("<span style=\"font-size:200%\">{$TeamName} 胜利!</span><br />\n");
 		}
 
 		print('<tr><td class="teams">'."\n");
-		// Union
-		print("殘留HP : ");
+		// Unionとそうでないのでわける
+		print("残留HP : ");
 		print($this->UnionBattle?"????/????":"{$TotalHp2}/{$TotalMaxHp2}");
 		print("<br />\n");
 /*
 		if($this->UnionBattle) {
-			print("殘留HP : ????/????<br />\n");
+			print("残留HP : ????/????<br />\n");
 		} else {
-			print("殘留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
+			print("残留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
 		}
 */
-		// 左側
+		// 左側チーム
 		print("存活 : {$TotalAlive2}/".count($this->team1)."<br />\n");
-		print("總傷害 : {$this->team1_dmg}<br />\n");
-		if($this->team1_exp)//得經驗值
-			print("總經驗值 : ".$this->team1_exp."<br />\n");
-		if($this->team1_money)//得金
-			print("金錢 : ".MoneyFormat($this->team1_money)."<br />\n");
-		if($this->team1_item) {//得
+		print("总伤害 : {$this->team1_dmg}<br />\n");
+		if($this->team1_exp)//得た経験値
+			print("总经验值 : ".$this->team1_exp."<br />\n");
+		if($this->team1_money)//得たお金
+			print("金钱 : ".MoneyFormat($this->team1_money)."<br />\n");
+		if($this->team1_item) {//得たアイテム
 			print("<div class=\"bold\">道具</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
@@ -401,17 +401,17 @@ HTML;
 			}
 		}
 
-		// 右側
+		// 右側チーム
 		print('</td><td class="teams">');
-		print("殘留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+		print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
 		print("存活 : {$TotalAlive1}/".count($this->team0)."<br />\n");
-		print("總傷害 : {$this->team0_dmg}<br />\n");
-		if($this->team0_exp)//得經驗值
-			print("總經驗值 : ".$this->team0_exp."<br />\n");
-		if($this->team0_money)//得金
-			print("金錢 : ".MoneyFormat($this->team0_money)."<br />\n");
-		if($this->team0_item) {//得
-			print("<div class=\"bold\">Items</div>\n");
+		print("总伤害 : {$this->team0_dmg}<br />\n");
+		if($this->team0_exp)//得た経験値
+			print("总经验值 : ".$this->team0_exp."<br />\n");
+		if($this->team0_money)//得たお金
+			print("金钱 : ".MoneyFormat($this->team0_money)."<br />\n");
+		if($this->team0_item) {//得たアイテム
+			print("<div class=\"bold\">获得战利品：</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
@@ -423,43 +423,43 @@ HTML;
 	}
 
 //////////////////////////////////////////////////
-//	行動
-	function Action(&$char) {
-		// $char->judge 設定飛
+//	キャラの行動
+	function Action($char) {
+		// $char->judge が設定されてなければ飛ばす
 		if($char->judge === array()) {
 			$char->delay	= $char->SPD;
 			return false;
 		}
 
-		// 0人右側
-		// 1人左側 行動內容結果 表示
+		// チーム0の人はセルの右側に
+		// チーム1の人は左側に 行動内容と結果 を表示する
 		print("<tr><td class=\"ttd2\">\n");
 		if($char->team === TEAM_0)
 			print("</td><td class=\"ttd1\">\n");
-		// 自分?
+		// 自分のチームはどちらか?
 		foreach($this->team0 as $val) {
 			if($val === $char) {
-				$MyTeam	= &$this->team0;
-				$EnemyTeam	= &$this->team1;
+				$MyTeam	= $this->team0;
+				$EnemyTeam	= $this->team1;
 				break;
 			}
 		}
-		//01
+		//チーム0でないならチーム1
 		if(!$MyTeam) {
-			$MyTeam	= &$this->team1;
-			$EnemyTeam	= &$this->team0;
+			$MyTeam	= $this->team1;
+			$EnemyTeam	= $this->team0;
 		}
 
-		//行動判定(使用技判定)
-		if($char->expect) {// 詠唱,貯 完了
+		//行動の判定(使用する技の判定)
+		if($char->expect) {// 詠唱,貯め 完了
 			$skill	= $char->expect;
-			$return	= &$char->target_expect;
-		} else {//待機→判定→
+			$return	= $char->target_expect;
+		} else {//待機→判定→スキル
 			$JudgeKey	= -1;
 
-			// 持續回復系
+			// 持続回復系
 			$char->AutoRegeneration();
-			// 毒狀態受。
+			// 毒状態ならダメージを受ける。
 			$char->PoisonDamage();
 
 			//判定
@@ -468,7 +468,7 @@ HTML;
 				do {
 					$JudgeKey++;
 					$Keys[]	= $JudgeKey;
-				// 重複判定次加
+				// 重複判定なら次も加える
 				} while($char->action["$JudgeKey"] == 9000 && $char->judge["$JudgeKey"]);
 
 				//$return	= MultiFactJudge($Keys,$char,$MyTeam,$EnemyTeam);
@@ -477,48 +477,48 @@ HTML;
 				if($return) {
 					$skill	= $char->action["$JudgeKey"];
 					foreach($Keys as $no)
-						$char->JdgCount[$no]++;//決定判斷ｐ
+						$char->JdgCount[$no]++;//決定した判断のカウントうｐ
 					break;
 				}
 			} while($char->judge["$JudgeKey"]);
 
 			/* // (2007/10/15)
 			foreach($char->judge as $key => $judge){
-				// $return  true,false,配列
-				// 配列場合判定條件一致返()。
+				// $return は true,false,配列のいづれか
+				// 配列の場合は判定の条件に一致したキャラが返る(ハズ)。
 				$return	=& DecideJudge($judge,$char,$MyTeam,$EnemyTeam,$key);
 				if($return) {
 					$skill	= $char->action["$key"];
-					$char->JdgCount[$key]++;//決定判斷ｐ
+					$char->JdgCount[$key]++;//決定した判断のカウントうｐ
 					break;
 				}
 			}
 			*/
 		}
 
-		// 戰鬥總行動回數增。
+		// 戦闘の総行動回数を増やす。
 		$this->actions++;
 
 		if($skill) {
 			$this->UseSkill($skill,$return,$char,$MyTeam,$EnemyTeam);
-		// 行動場合處理
+		// 行動できなかった場合の処理
 		} else {
-			print($char->Name(bold)." 陷入沉思結果忘了行動.<br />(無更多行動模式)<br />\n");
+			print($char->Name(bold)." 陷入沉思结果忘了行动.<br />(无更多行动模式)<br />\n");
 			$char->DelayReset();
 		}
 
-		//
+		//ディレイリセット
 		//if($ret	!== "DontResetDelay")
 		//	$char->DelayReset;
 
 		//echo $char->name." ".$skill."<br>";//確認用
-		//終
+		//セルの終わり
 		if($char->team === TEAM_1)
 			print("</td><td class=\"ttd1\"> \n");
 		print("</td></tr>\n");
 	}
 //////////////////////////////////////////////////
-//	總加算
+//	総ダメージを加算する
 	function AddTotalDamage($team,$dmg) {
 		if(!is_numeric($dmg)) return false;
 		if($team == $this->team0)
@@ -529,136 +529,136 @@ HTML;
 
 //////////////////////////////////////////////////
 //
-	function UseSkill($skill_no,&$JudgedTarget,&$My,&$MyTeam,&$Enemy) {
-		$skill	= LoadSkillData($skill_no);//技讀
+	function UseSkill($skill_no,$JudgedTarget,$My,$MyTeam,$Enemy) {
+		$skill	= LoadSkillData($skill_no);//技データ読む
 
-		// 武器不一致
+		// 武器タイプ不一致
 		if($skill["limit"] && !$My->monster) {
 			if(!$skill["limit"][$My->WEAPON]) {
 				print('<span class="u">'.$My->Name(bold));
-				print('<span class="dmg"> 失敗</span> 因為 ');
+				print('<span class="dmg"> 失败</span> 因为 ');
 				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
 				print($skill[name]."</span><br />\n");
 				//print($My->Name(bold)." Failed to use ".$skill["name"]."<br />\n");
-				print("(武器類型不符)<br />\n");
-				$My->DelayReset();// 行動順
+				print("(武器类型不符)<br />\n");
+				$My->DelayReset();// 行動順をリセット
 				return true;
 			}
 		}
 
 		// SP不足
 		if($My->SP < $skill["sp"]) {
-			print($My->Name(bold).$skill["name"]."失敗(SP不足)");
-			if($My->expect) {//詠唱貯途中SP不足場合
+			print($My->Name(bold).$skill["name"]."失败(SP不足)");
+			if($My->expect) {//もし詠唱や貯め途中でSPが不足した場合
 				$My->ResetExpect();
 			}
-			$My->DelayReset();// 行動順
+			$My->DelayReset();// 行動順をリセット
 			return true;
 		}
 
-		//  "詠唱"  "貯" 必要技(+詠唱開始場合)→詠唱,貯開始
+		// もし "詠唱" や "貯め" が必要な技なら(+詠唱開始してない場合)→詠唱,貯め開始
 		if($skill["charge"]["0"] && $My->expect === false) {
-			// 貯詠唱開始場合 /////////////////////
-			// 物理魔法文變
+			// こちらは貯めと詠唱を開始する場合 /////////////////////
+			// 物理か魔法によって文を変える
 			if($skill["type"] == 0) {//物理
-				print('<span class="charge">'.$My->Name(bold).' 開始蓄力.</span>');
+				print('<span class="charge">'.$My->Name(bold).' 开始蓄力.</span>');
 				$My->expect_type	= CHARGE;
 			} else {//魔法
-				print('<span class="charge">'.$My->Name(bold).' 開始詠唱.</span>');
+				print('<span class="charge">'.$My->Name(bold).' 开始咏唱.</span>');
 				$My->expect_type	= CAST;
 			}
-			$My->expect	= $skill_no;//詠唱?貯完了同時使用技
-			// ↓使。
-			//$My->target_expect	= $JudgedTarget;//一應保存
-			//詠唱?貯時間設定。
+			$My->expect	= $skill_no;//詠唱?貯め完了と同時に使用する技
+			// ↓使ってないのでコメントにした。
+			//$My->target_expect	= $JudgedTarget;//一応ターゲットも保存
+			//詠唱?貯め時間の設定。
 			$My->DelayByRate($skill["charge"]["0"],$this->delay,1);
 			print("<br />\n");
 
-			// 戰鬥總行動回數減(貯or詠唱 行動入)
+			// 戦闘の総行動回数を減らす(貯めor詠唱 は行動に入れない)
 			$this->actions--;
 
-			return true;//變更。
+			return true;//ディレイ変更したからリセットしないように。
 		} else {
-			// 技實際使用 ///////////////////////////////////
+			// 技を実際に使用する ///////////////////////////////////
 
-			// 行動回數
+			// 行動回数をプラスする
 			$My->ActCount++;
 
-			// 行動內容表示(行動)
+			// 行動内容の表示(行動する)
 			print('<div class="u">'.$My->Name(bold));
 			print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
 			print($skill[name]."</div>\n");
 
-			// 魔法陣消費(味方)
+			// 魔法陣を消費(味方)
 			if($skill["MagicCircleDeleteTeam"])
 			{
 				if($this->MagicCircleDelete($My->team,$skill["MagicCircleDeleteTeam"])) {
-					print($My->Name(bold).'<span class="charge"> 使用魔法陣 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
+					print($My->Name(bold).'<span class="charge"> 使用魔法阵 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
 				// 魔法陣消費失敗
 				} else {
-					print('<span class="dmg">失敗!(魔法陣不足)</span><br />'."\n");
-					$My->DelayReset();// 行動順
+					print('<span class="dmg">失败!(魔法阵不足)</span><br />'."\n");
+					$My->DelayReset();// 行動順をリセット
 					return true;
 				}
 			}
 
-			// SP消費(位置貯?詠唱完了同時消費)
+			// SPの消費(この位置だと貯め?詠唱完了と同時に消費する)
 			$My->SpDamage($skill["sp"],false);
 
-			// (詠唱)完了同時使用技情報消。
+			// チャージ(詠唱)完了と同時に使用する技の情報を消す。
 			if($My->expect)
 				$My->ResetExpect();
 
-			// HP犧牲技場合(Sacrifice)
+			// HP犠牲技の場合(Sacrifice)
 			if($skill["sacrifice"])
 				$My->SacrificeHp($skill["sacrifice"]);
 
 		}
 
-		// 選(候補)
+		// ターゲットを選ぶ(候補)
 		if($skill["target"]["0"] == "friend"):
-			$candidate	= &$MyTeam;
+			$candidate	= $MyTeam;
 		elseif($skill["target"]["0"] == "enemy"):
-			$candidate	= &$Enemy;
+			$candidate	= $Enemy;
 		elseif($skill["target"]["0"] == "self"):
-			$candidate[]	= &$My;
+			$candidate[]	= $My;
 		elseif($skill["target"]["0"] == "all"):
 			//$candidate	= $MyTeam + $Enemy;//???
-			$candidate	= array_merge_recursive(&$MyTeam,&$Enemy);//結合後,並方??
+			$candidate	= array_merge_recursive($MyTeam,$Enemy);//結合の後,並びをランダムにした方がいい??
 		endif;
 
-		// 候補使用對像選 → (使用)
+		// 候補から使用する対象を選ぶ → (スキル使用)
 
-		// 單體使用
+		// 単体に使用
 		if($skill["target"]["1"] == "individual") {
-			$target	=& $this->SelectTarget($candidate,$skill);//對像選擇
-			if($defender =& $this->Defending($target,$candidate,$skill) )//守入
-				$target	= &$defender;
-			for($i=0; $i<$skill["target"]["2"]; $i++) {//單體複數回實行
+			$target	= $this->SelectTarget($candidate,$skill);//対象を選択
+			if($defender = $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
+				$target	= $defender;
+			for($i=0; $i<$skill["target"]["2"]; $i++) {//単体に複数回実行
 				$dmg	= $this->SkillEffect($skill,$skill_no,$My,$target);
 				$this->AddTotalDamage($MyTeam,$dmg);
 			}
 
-		// 複數使用
+		// 複数に使用
 		} else if($skill["target"]["1"] == "multi") {
 			for($i=0; $i<$skill["target"]["2"]; $i++) {
-				$target	=& $this->SelectTarget($candidate,$skill);//對像選擇
-				if($defender =& $this->Defending($target,$candidate,$skill) )//守入
-					$target	= &$defender;
+				$target	= $this->SelectTarget($candidate,$skill);//対象を選択
+				if($defender = $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
+					$target	= $defender;
 				$dmg	= $this->SkillEffect($skill,$skill_no,$My,$target);
 				$this->AddTotalDamage($MyTeam,$dmg);
 			}
 
-		// 全體使用
+		// 全体に使用
 		} else if($skill["target"]["1"] == "all") {
 			foreach($candidate as $key => $char) {
-				$target	= &$candidate[$key];
-				//if($char->STATE === DEAD) continue;//死亡者。
-				if($skill["priority"] != "死亡") {//一時的。
-					if($char->STATE === DEAD) continue;//死亡者。
+				$target	= $candidate[$key];
+				//if($char->STATE === DEAD) continue;//死亡者はパス。
+				if($skill["priority"] != "死亡") {//一時的に。
+					if($char->STATE === DEAD) continue;//死亡者はパス。
 				}
-				// 全體攻擊守入()
+				// 全体攻撃は守りに入れない(とする)
 				for($i=0; $i<$skill["target"]["2"]; $i++) {
 					$dmg	= $this->SkillEffect($skill,$skill_no,$My,$target);
 					$this->AddTotalDamage($MyTeam,$dmg);
@@ -666,40 +666,40 @@ HTML;
 			}
 		}
 
-		// 使用後使用者影響效果等
+		// 使用後使用者に影響する効果等
 		if($skill["umove"])
 			$My->Move($skill["umove"]);
 
-		// 攻擊對像達確(HP=0)。
-		if($skill["sacrifice"]) { // Sacri系技使場合。
-			$Sacrier[]	= &$My;
+		// 攻撃対象になったキャラ達がどうなったか確かめる(とりあえずHP=0になったかどうか)。
+		if($skill["sacrifice"]) { // Sacri系の技を使った場合。
+			$Sacrier[]	= $My;
 			$this->JudgeTargetsDead($Sacrier);
 		}
-		list($exp,$money,$itemdrop)	= $this->JudgeTargetsDead($candidate);//又、取得經驗值得
+		list($exp,$money,$itemdrop)	= $this->JudgeTargetsDead($candidate);//又、取得する経験値を得る
 
 		$this->GetExp($exp,$MyTeam);
 		$this->GetItem($itemdrop,$MyTeam);
 		$this->GetMoney($money,$MyTeam);
 
-		// 技使用等SPD變化場合DELAY再計算。
+		// 技の使用等でSPDが変化した場合DELAYを再計算する。
 		if($this->ChangeDelay)
 			$this->SetDelay();
 
-		// 行動後硬直(設定)
+		// 行動後の硬直(があれば設定する)
 		if($skill["charge"]["1"]) {
 			$My->DelayReset();
-			print($My->Name(bold)." 行動推遲了");
+			print($My->Name(bold)." 行动推迟了");
 			$My->DelayByRate($skill["charge"]["1"],$this->delay,1);
 			print("<br />\n");
 			return false;
 		}
 
-		// 最後行動順。
+		// 最後に行動順をリセットする。
 		$My->DelayReset();
 	}
 //////////////////////////////////////////////////
-//	經驗值得
-function GetExp($exp,&$team) {
+//	経験値を得る
+function GetExp($exp,$team) {
 	if(!$exp) return false;
 
 	$exp	= round(EXP_RATE * $exp);
@@ -712,16 +712,16 @@ function GetExp($exp,&$team) {
 
 	$Alive	= CountAliveChars($team);
 	if($Alive=== 0) return false;
-	$ExpGet	= ceil($exp/$Alive);//生存者經驗值分。
-	print("存活者獲得 {$ExpGet} 經驗.<br />\n");
+	$ExpGet	= ceil($exp/$Alive);//生存者にだけ経験値を分ける。
+	print("存活者获得 {$ExpGet} 经验.<br />\n");
 	foreach($team as $key => $char) {
-		if($char->STATE === 1) continue;//死亡者EXP
-		if($team[$key]->GetExp($ExpGet))//LvUptrue返
-			print("<span class=\"levelup\">".$char->Name()." 升級!</span><br />\n");
+		if($char->STATE === 1) continue;//死亡者にはEXPあげない
+		if($team[$key]->GetExp($ExpGet))//LvUpしたならtrueが返る
+			print("<span class=\"levelup\">".$char->Name()." 升级!</span><br />\n");
 	}
 }
 //////////////////////////////////////////////////
-//	取得()
+//	アイテムを取得する(チームが)
 	function GetItem($itemdrop,$MyTeam) {
 		if(!$itemdrop) return false;
 		if($MyTeam === $this->team0) {
@@ -736,29 +736,29 @@ function GetExp($exp,&$team) {
 	}
 
 //////////////////////////////////////////////////
-//	後衛守入選。
-	function &Defending(&$target,&$candidate,$skill) {
+//	後衛を守りに入るキャラを選ぶ。
+	function Defending($target,$candidate,$skill) {
 		if($target === false) return false;
 
-		if($skill["invalid"])//防禦無視技。
+		if($skill["invalid"])//防御無視できる技。
 			return false;
-		if($skill["support"])//支援。
+		if($skill["support"])//支援なのでガードしない。
 			return false;
-		if($target->POSITION == "front")//前衛守必要無。終
+		if($target->POSITION == "front")//前衛なら守る必要無し。終わる
 			return false;
-		// "前衛尚且生存者"配列詰↓
-		// 前衛 + 生存者 + HP1以上 變更 ( 多段系攻擊死守 [2007/9/20] )
+		// "前衛で尚且つ生存者"を配列に詰める↓
+		// 前衛 + 生存者 + HP1以上 に変更 ( 多段系攻撃で死にながら守るので [2007/9/20] )
 		foreach($candidate as $key => $char) {
 			//print("{$char->POSTION}:{$char->STATE}<br>");
 			if($char->POSITION == "front" && $char->STATE !== 1 && 1 < $char->HP )
-				$fore[]	= &$candidate["$key"];
+				$fore[]	= $candidate["$key"];
 		}
-		if(count($fore) == 0)//前衛守。終
+		if(count($fore) == 0)//前衛がいなけりゃ守れない。終わる
 			return false;
-		// 一人守入入判定。
-		shuffle($fore);//配列並混
+		// 一人づつ守りに入るか入らないかを判定する。
+		shuffle($fore);//配列の並びを混ぜる
 		foreach($fore as $key => $char) {
-			// 判定使變數計算。
+			// 判定に使う変数を計算したりする。
 			switch($char->guard) {
 				case "life25":
 				case "life50":
@@ -770,51 +770,51 @@ function GetExp($exp,&$team) {
 					mt_srand();
 					$prob	= mt_rand(1,100);
 			}
-			// 實際判定。
+			// 実際に判定してみる。
 			switch($char->guard) {
 				case "never":
 					continue;
-				case "life25":// HP(%)25%以上
-					if(25 < $HpRate) $defender	= &$fore["$key"]; break;
+				case "life25":// HP(%)が25%以上なら
+					if(25 < $HpRate) $defender	= $fore["$key"]; break;
 				case "life50":// 〃50%〃
-					if(50 < $HpRate) $defender	= &$fore["$key"]; break;
+					if(50 < $HpRate) $defender	= $fore["$key"]; break;
 				case "life75":// 〃70%〃
-					if(75 < $HpRate) $defender	= &$fore["$key"]; break;
-				case "prob25":// 25%確率
-					if($prob < 25) $defender	= &$fore["$key"]; break;
+					if(75 < $HpRate) $defender	= $fore["$key"]; break;
+				case "prob25":// 25%の確率で
+					if($prob < 25) $defender	= $fore["$key"]; break;
 				case "prob50":// 50% 〃
-					if($prob < 50) $defender	= &$fore["$key"]; break;
+					if($prob < 50) $defender	= $fore["$key"]; break;
 				case "prob75":// 75% 〃
-					if($prob < 75) $defender	= &$fore["$key"]; break;
+					if($prob < 75) $defender	= $fore["$key"]; break;
 				default:
-					$defender	= &$fore["$key"];
+					$defender	= $fore["$key"];
 			}
-			// 誰後衛守入表示
+			// 誰かが後衛を守りに入ったのでそれを表示する
 			if($defender) {
-				print('<span class="bold">'.$defender->name.'</span> 保護<span class="bold">'.$target->name.'</span>!<br />'."\n");
+				print('<span class="bold">'.$defender->name.'</span> 保护<span class="bold">'.$target->name.'</span>!<br />'."\n");
 				return $defender;
 			}
 		}
 	}
 //////////////////////////////////////////////////
-//	使用後對像者(候補)確
-	function JudgeTargetsDead(&$target) {
+//	スキル使用後に対象者(候補)がしぼーしたかどうかを確かめる
+	function JudgeTargetsDead($target) {
 		foreach($target as $key => $char) {
-			// 與差分經驗值取得場合。
+			// 与えたダメージの差分で経験値を取得するモンスターの場合。
 			if(method_exists($target[$key],'HpDifferenceEXP')) {
 				$exp	+= $target[$key]->HpDifferenceEXP();
 			}
-			if($target[$key]->CharJudgeDead()) {//死
-				// 死亡
+			if($target[$key]->CharJudgeDead()) {//死んだかどうか
+				// 死亡メッセージ
 				print("<span class=\"dmg\">".$target[$key]->Name(bold)." 被打倒.</span><br />\n");
 
-				//經驗值取得
+				//経験値の取得
 				$exp	+= $target[$key]->DropExp();
 
-				//金取得
+				//お金の取得
 				$money	+= $target[$key]->DropMoney();
 
-				// 
+				// アイテムドロップ
 				if($item = $target[$key]->DropItem()) {
 					$itemdrop["$item"]++;
 					$item	= LoadItemData($item);
@@ -823,122 +823,122 @@ function GetExp($exp,&$team) {
 					print("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
 				}
 
-				//召喚消。
+				//召喚キャラなら消す。
 				if($target[$key]->summon === true) {
 					unset($target[$key]);
 				}
 
-				// 死直。
+				// 死んだのでディレイを直す。
 				$this->ChangeDelay();
 			}
 		}
-		return array($exp,$money,$itemdrop);//取得經驗值返
+		return array($exp,$money,$itemdrop);//取得する経験値を返す
 	}
 //////////////////////////////////////////////////
-//	優先順位從候補一人返
-	function &SelectTarget(&$target_list,$skill) {
+//	優先順位に従って候補から一人返す
+	function SelectTarget($target_list,$skill) {
 
 		/*
-		* 優先、當最終的要。
-		* 例 : 後衛居→前衛對像。
-		*    : 全員HP100%→誰  對像。
+		* 優先はするが、当てはまらなくても最終的にターゲットは要る。
+		* 例 : 後衛が居ない→前衛を対象にする。
+		*    : 全員がHP100%→誰か てきとう に対象にする。
 		*/
 
-		//殘HP(%)少人
+		//残りHP(%)が少ない人をターゲットにする
 		if($skill["priority"] == "LowHpRate") {
-			$hp = 2;//一應1大數字???
+			$hp = 2;//一応1より大きい数字に???
 			foreach($target_list as $key => $char) {
-				if($char->STATE == DEAD) continue;//者對像。
+				if($char->STATE == DEAD) continue;//しぼー者は対象にならない。
 				$HpRate	= $char->HP / $char->MAXHP;//HP(%)
 				if($HpRate < $hp) {
-					$hp	= $HpRate;//現狀最HP(%)低人
-					$target	= &$target_list[$key];
+					$hp	= $HpRate;//現状の最もHP(%)が低い人
+					$target	= $target_list[$key];
 				}
 			}
-			return $target;//最HP低人
+			return $target;//最もHPが低い人
 
-		//後衛優先
+		//後衛を優先する
 		} else if($skill["priority"] == "Back") {
 			foreach($target_list as $key => $char) {
-				if($char->STATE == DEAD) continue;//者對像。
-				if($char->POSITION != FRONT)//後衛
-				$target[]	= &$target_list[$key];//候補
+				if($char->STATE == DEAD) continue;//しぼー者は対象にならない。
+				if($char->POSITION != FRONT)//後衛なら
+				$target[]	= $target_list[$key];//候補にいれる
 			}
 			if($target)
-				return $target[array_rand($target)];//中
+				return $target[array_rand($target)];//リストの中からランダムで
 
 		/*
-		* 優先、
-		* 優先對像使用失敗(絞迂)
+		* 優先はするが、
+		* 優先する対象がいなければ使用は失敗する(絞込み)
 		*/
 
-		//者中返。
+		//しぼー者の中からランダムで返す。
 		} else if($skill["priority"] == "Dead") {
 			foreach($target_list as $key => $char) {
-				if($char->STATE == DEAD)//
-				$target[]	= &$target_list[$key];//者
+				if($char->STATE == DEAD)//しぼーなら
+				$target[]	= $target_list[$key];//しぼー者リスト
 			}
 			if($target)
-				return $target[array_rand($target)];//者中
+				return $target[array_rand($target)];//しぼー者リストの中からランダムで
 			else
-				return false;//誰false返...(→使用失敗)
+				return false;//誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
 
-		// 召喚優先。
+		// 召喚キャラを優先する。
 		} else if($skill["priority"] == "Summon") {
 			foreach($target_list as $key => $char) {
-				if($char->summon)//召喚
-					$target[]	= &$target_list[$key];//召喚
+				if($char->summon)//召喚キャラなら
+					$target[]	= $target_list[$key];//召喚キャラリスト
 			}
 			if($target)
-				return $target[array_rand($target)];//召喚中
+				return $target[array_rand($target)];//召喚キャラの中からランダムで
 			else
-				return false;//誰false返...(→使用失敗)
+				return false;//誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
 
-		// 中
+		// チャージ中のキャラ
 		} else if($skill["priority"] == "Charge") {
 			foreach($target_list as $key => $char) {
 				if($char->expect)
-					$target[]	= &$target_list[$key];
+					$target[]	= $target_list[$key];
 			}
 			if($target)
 				return $target[array_rand($target)];
 			else
-				return false;//誰false返...(→使用失敗)
+				return false;//誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
 		//
 		}
 
-		//以外()
+		//それ以外(ランダム)
 		foreach($target_list as $key => $char) {
-			if($char->STATE != DEAD)//以外
-				$target[]	= &$target_list[$key];//者
+			if($char->STATE != DEAD)//しぼー以外なら
+				$target[]	= $target_list[$key];//しぼー者リスト
 		}
-		return $target[array_rand($target)];//誰一人
+		return $target[array_rand($target)];//ランダムに誰か一人
 	}
 //////////////////////////////////////////////////
-//	次行動誰(又、詠唱中魔法發動誰)
-//	返
+//	次の行動は誰か(又、詠唱中の魔法が発動するのは誰か)
+//	リファレンスを返す
 	function &NextActer() {
-		// 最大人探
+		// 最もディレイが大きい人を探す
 		foreach($this->team0 as $key => $char) {
 			if($char->STATE === 1) continue;
-			// 最初誰最初人。
+			// 最初は誰でもいいのでとりあえず最初の人とする。
 			if(!isset($delay)) {
 				$delay	= $char->delay;
-				$NextChar	= &$this->team0["$key"];
+				$NextChar	= $this->team0["$key"];
 				continue;
 			}
-			// 今多交代
+			// キャラが今のディレイより多ければ交代
 			if($delay <= $char->delay) {//行動
-				// 同50%交代
+				// もしキャラとディレイが同じなら50%で交代
 				if($delay == $char->delay) {
 					if(mt_rand(0,1))
 						continue;
 				}
 				$delay	= $char->delay;
-				$NextChar	= &$this->team0["$key"];
+				$NextChar	= $this->team0["$key"];
 			}
 		}
-		// ↑同。
+		// ↑と同じ。
 		foreach($this->team1 as $key => $char) {
 			if($char->STATE === 1) continue;
 			if($delay <= $char->delay) {//行動
@@ -947,12 +947,12 @@ function GetExp($exp,&$team) {
 						continue;
 				}
 				$delay	= $char->delay;
-				$NextChar	= &$this->team1["$key"];
+				$NextChar	= $this->team1["$key"];
 			}
 		}
-		// 全員減少
-		$dif	= $this->delay - $NextChar->delay;//戰鬥基本行動者差分
-		if($dif < 0)//差分0以下…
+		// 全員ディレイ減少
+		$dif	= $this->delay - $NextChar->delay;//戦闘基本ディレイと行動者のディレイの差分
+		if($dif < 0)//もしも差分が0以下になったら…
 			return $NextChar;
 		foreach($this->team0 as $key => $char) {
 			$this->team0["$key"]->Delay($dif);
@@ -960,7 +960,7 @@ function GetExp($exp,&$team) {
 		foreach($this->team1 as $key => $char) {
 			$this->team1["$key"]->Delay($dif);
 		}
-		/*// 出。
+		/*// エラーが出たらこれで。
 		if(!is_object($NextChar)) {
 			print("AAA");
 			dump($NextChar);
@@ -971,38 +971,38 @@ function GetExp($exp,&$team) {
 		return $NextChar;
 	}
 //////////////////////////////////////////////////
-//	次行動誰(又、詠唱中魔法發動誰)
-//	返
+//	次の行動は誰か(又、詠唱中の魔法が発動するのは誰か)
+//	リファレンスを返す
 	function &NextActerNew() {
 
-		// 次行動最距離短人探。
+		// 次の行動まで最も距離が短い人を探す。
 		$nextDis	= 1000;
 		foreach($this->team0 as $key => $char) {
 			if($char->STATE === DEAD) continue;
 			$charDis	= $this->team0[$key]->nextDis();
 			if($charDis == $nextDis) {
-				$NextChar[]	= &$this->team0["$key"];
+				$NextChar[]	= $this->team0["$key"];
 			} else if($charDis <= $nextDis) {
 				$nextDis	= $charDis;
-				$NextChar	= array(&$this->team0["$key"]);
+				$NextChar	= array($this->team0["$key"]);
 			}
 		}
 
-		// ↑同。
+		// ↑と同じ。
 		foreach($this->team1 as $key => $char) {
 			if($char->STATE === DEAD) continue;
 			$charDis	= $this->team1[$key]->nextDis();
 			if($charDis == $nextDis) {
-				$NextChar[]	= &$this->team1["$key"];
+				$NextChar[]	= $this->team1["$key"];
 			} else if($charDis <= $nextDis) {
 				$nextDis	= $charDis;
-				$NextChar	= array(&$this->team1["$key"]);
+				$NextChar	= array($this->team1["$key"]);
 			}
 		}
 
-		// 全員減少 //////////////////////
+		// 全員ディレイ減少 //////////////////////
 
-		//差分0以下
+		//もしも差分が0以下になったら
 		if($nextDis < 0) {
 			if(is_array($NextChar)) {
 				return $NextChar[array_rand($NextChar)];
@@ -1016,7 +1016,7 @@ function GetExp($exp,&$team) {
 		foreach($this->team1 as $key => $char) {
 			$this->team1["$key"]->Delay($nextDis);
 		}
-		// 出。
+		// エラーが出たらこれでたしかめろ。
 		/*
 		if(!is_object($NextChar)) {
 			print("AAA");
@@ -1031,7 +1031,7 @@ function GetExp($exp,&$team) {
 			return $NextChar;
 	}
 //////////////////////////////////////////////////
-//	全員行動初期化(=SPD)
+//	キャラ全員の行動ディレイを初期化(=SPD)
 	function DelayResetAll() {
 		if(DELAY_TYPE === 0 || DELAY_TYPE === 1)
 		{
@@ -1044,13 +1044,13 @@ function GetExp($exp,&$team) {
 		}
 	}
 //////////////////////////////////////////////////
-//	計算設定
-//	誰SPD變化場合呼直
-//	*** 技使用等SPD變化際呼出 ***
+//	ディレイを計算して設定する
+//	誰かのSPDが変化した場合呼び直す
+//	*** 技の使用等でSPDが変化した際に呼び出す ***
 	function SetDelay() {
 		if(DELAY_TYPE === 0)
 		{
-			//SPD最大值合計求
+			//SPDの最大値と合計を求める
 			foreach($this->team0 as $key => $char) {
 				$TotalSPD	+= $char->SPD;
 				if($MaxSPD < $char->SPD)
@@ -1064,19 +1064,19 @@ function GetExp($exp,&$team) {
 			}
 			//平均SPD
 			$AverageSPD	= $TotalSPD/( count($this->team0) + count($this->team1) );
-			//基準delay
+			//基準delayとか
 			$AveDELAY	= $AverageSPD * DELAY;
-			$this->delay	= $MaxSPD + $AveDELAY;//戰鬥基準
-			$this->ChangeDelay	= false;//false每回DELAY計算直。
+			$this->delay	= $MaxSPD + $AveDELAY;//その戦闘の基準ディレイ
+			$this->ChangeDelay	= false;//falseにしないと毎回DELAYを計算し直してしまう。
 		}
 			else if(DELAY_TYPE === 1)
 		{
 		}
 	}
 //////////////////////////////////////////////////
-//	戰鬥基準再計算。
-//	使場所、技使用SPD變化際使。
-//	class.skill_effect.php 使用。
+//	戦闘の基準ディレイを再計算させるようにする。
+//	使う場所は、技の使用でキャラのSPDが変化した際に使う。
+//	class.skill_effect.php で使用。
 	function ChangeDelay(){
 		if(DELAY_TYPE === 0)
 		{
@@ -1084,23 +1084,23 @@ function GetExp($exp,&$team) {
 		}
 	}
 //////////////////////////////////////////////////
-//	名前設定
+//	チームの名前を設定
 	function SetTeamName($name1,$name2) {
 		$this->team0_name	= $name1;
 		$this->team1_name	= $name2;
 	}
 //////////////////////////////////////////////////
-//	戰鬥開始時平均合計HP等計算?表示
-//	戰鬥經緯一表構成
+//	戦闘開始した時の平均レベルや合計HP等を計算?表示
+//	戦闘の経緯は一つの表で構成されるうっう
 	function BattleHeader() {
-		foreach($this->team0 as $char) {//0
+		foreach($this->team0 as $char) {//チーム0
 			$team0_total_lv	+= $char->level;//合計LV
 			$team0_total_hp	+= $char->HP;//合計HP
 			$team0_total_maxhp	+= $char->MAXHP;//合計最大HP
 		}
-		$team0_avelv	= round($team0_total_lv/count($this->team0)*10)/10;//0平均LV
+		$team0_avelv	= round($team0_total_lv/count($this->team0)*10)/10;//チーム0平均LV
 		$this->team0_ave_lv	= $team0_avelv;
-		foreach($this->team1 as $char) {//1
+		foreach($this->team1 as $char) {//チーム1
 			$team1_total_lv	+= $char->level;
 			$team1_total_hp	+= $char->HP;
 			$team1_total_maxhp	+= $char->MAXHP;
@@ -1114,17 +1114,17 @@ function GetExp($exp,&$team) {
 		?>
 <table style="width:100%;" cellspacing="0"><tbody>
 <tr><td class="teams"><div class="bold"><?php print $this->team1_name?></div>
-總級別 : <?php print $team1_total_lv?><br>
-平均級別 : <?php print $team1_avelv?><br>
-總HP : <?php print $team1_total_hp?>/<?php print $team1_total_maxhp?>
+总级别 : <?php print $team1_total_lv?><br>
+平均级别 : <?php print $team1_avelv?><br>
+总HP : <?php print $team1_total_hp?>/<?php print $team1_total_maxhp?>
 </td><td class="teams ttd1"><div class="bold"><?php print $this->team0_name?></div>
-總級別 : <?php print $team0_total_lv?><br>
-平均級別 : <?php print $team0_avelv?><br>
-總HP : <?php print $team0_total_hp?>/<?php print $team0_total_maxhp?>
+总级别 : <?php print $team0_total_lv?><br>
+平均级别 : <?php print $team0_avelv?><br>
+总HP : <?php print $team0_total_hp?>/<?php print $team0_total_maxhp?>
 </td></tr><?php 
 	}
 //////////////////////////////////////////////////
-//	戰鬥終了時表示
+//	戦闘終了時に表示
 	function BattleFoot() {
 	/*	print("<tr><td>");
 		dump($this->team0);
@@ -1134,7 +1134,7 @@ function GetExp($exp,&$team) {
 <?php 
 	}
 //////////////////////////////////////////////////
-//	戰鬥畫像?各殘HP殘SP等表示
+//	戦闘画像?各キャラの残りHP残りSP等を表示
 	function BattleState() {
 		static $last;
 		if($last !== $this->actions)
@@ -1143,7 +1143,7 @@ function GetExp($exp,&$team) {
 			return false;
 
 		print("<tr><td colspan=\"2\" class=\"btl_img\">\n");
-		// 戰鬥順自動
+		// 戦闘ステップ順に自動スクロール
 		print("<a name=\"s".$this->Scroll."\"></a>\n");
 		print("<div style=\"width:100%;hight:100%;position:relative;\">\n");
 		print('<div style="position:absolute;bottom:0px;right:0px;">'."\n");
@@ -1157,12 +1157,12 @@ function GetExp($exp,&$team) {
 		switch(BTL_IMG_TYPE) {
 			case 0:
 				print('<div style="text-align:center">');
-				$this->ShowGdImage();//畫像
+				$this->ShowGdImage();//画像
 				print('</div>');
 				break;
 			case 1:
 			case 2:
-				$this->ShowCssImage();//畫像
+				$this->ShowCssImage();//画像
 				break;
 		}
 		print("</div>");
@@ -1170,9 +1170,9 @@ function GetExp($exp,&$team) {
 
 		print("<table style=\"width:100%\"><tbody><tr><td style=\"width:50%\">\n");// team1-backs
 
-		// 	左側後衛
+		// 	左側チーム後衛
 		foreach($this->team1 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 
@@ -1180,10 +1180,10 @@ function GetExp($exp,&$team) {
 				$char->ShowHpSp();
 		}
 
-		// 	左側前衛
+		// 	左側チーム前衛
 		print("</td><td style=\"width:50%\">\n");
 		foreach($this->team1 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 
@@ -1195,20 +1195,20 @@ function GetExp($exp,&$team) {
 
 		print("</td><td class=\"ttd1 break\">\n");
 
-		// 	右側前衛
+		// 	右側チーム前衛
 		print("<table style=\"width:100%\"><tbody><tr><td style=\"width:50%\">\n");
 		foreach($this->team0 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 			if($char->POSITION == FRONT)
 				$char->ShowHpSp();
 		}
 
-		// 	右側後衛
+		// 	右側チーム後衛
 		print("</td><td style=\"width:50%\">\n");
 		foreach($this->team0 as $char) {
-			// 召喚死亡場合飛
+			// 召喚キャラが死亡している場合は飛ばす
 			if($char->STATE === DEAD && $char->summon == true)
 				continue;
 			if($char->POSITION != FRONT)
@@ -1219,18 +1219,18 @@ function GetExp($exp,&$team) {
 		print("</td></tr>\n");
 	}
 //////////////////////////////////////////////////
-//	戰鬥畫像(畫像)
+//	戦闘画像(画像のみ)
 	function ShowGdImage() {
 		$url	= BTL_IMG."?";
 
-		// HP=0 畫像(擴張子取)
+		// HP=0 のキャラの画像(拡張子があればそれを取る)
 		$DeadImg	= substr(DEAD_IMG,0,strpos(DEAD_IMG,"."));
 
-		//1
+		//チーム1
 		$f	= 1;
-		$b	= 1;//前衛數?後衛數初期化
+		$b	= 1;//前衛の数?後衛の数を初期化
 		foreach($this->team0 as $char) {
-			//畫像設定畫像擴張子名前
+			//画像はキャラに設定されている画像の拡張子までの名前
 			if($char->STATE === 1)
 				$img	= $DeadImg;
 			else
@@ -1243,7 +1243,7 @@ function GetExp($exp,&$team) {
 				$b++;
 			endif;
 		}
-		//0
+		//チーム0
 		$f	= 1;
 		$b	= 1;
 		foreach($this->team1 as $char) {
@@ -1259,10 +1259,10 @@ function GetExp($exp,&$team) {
 				$b++;
 			endif;
 		}
-		print('<img src="'.$url.'">');// ←表示
+		print('<img src="'.$url.'">');// ←これが表示されるのみ
 	}
 //////////////////////////////////////////////////
-//	CSS戰鬥畫面
+//	CSS戦闘画面
 	function ShowCssImage() {
 		include_once(BTL_IMG_CSS);
 		$img	= new cssimage();
@@ -1270,31 +1270,31 @@ function GetExp($exp,&$team) {
 		$img->SetTeams($this->team1,$this->team0);
 		$img->SetMagicCircle($this->team1_mc, $this->team0_mc);
 		if(BTL_IMG_TYPE == 2)
-			$img->NoFlip();// CSS畫像反轉無
+			$img->NoFlip();// CSS画像反転無し
 		$img->Show();
 	}
 //////////////////////////////////////////////////
-//	金得、一時的變數保存。
-//	class內作
+//	お金を得る、一時的に変数に保存するだけ。
+//	class内にメソッド作れー
 	function GetMoney($money,$team) {
 		if(!$money) return false;
 		$money	= ceil($money * MONEY_RATE);
 		if($team === $this->team0) {
-			print("{$this->team0_name} 獲得 ".MoneyFormat($money).".<br />\n");
+			print("{$this->team0_name} 获得 ".MoneyFormat($money).".<br />\n");
 			$this->team0_money	+= $money;
 		} else if($team === $this->team1) {
-			print("{$this->team1_name} 獲得 ".MoneyFormat($money).".<br />\n");
+			print("{$this->team1_name} 获得 ".MoneyFormat($money).".<br />\n");
 			$this->team1_money	+= $money;
 		}
 	}
 //////////////////////////////////////////////////
-//	得合計金額渡
+//	ユーザーデータに得る合計金額を渡す
 	function ReturnMoney() {
 		return array($this->team0_money,$this->team1_money);
 	}
 
 //////////////////////////////////////////////////
-//	全體死者數數...(使?)
+//	全体の死者数を数える...(ネクロマンサしか使ってない?)
 	function CountDeadAll() {
 		$dead	= 0;
 		foreach($this->team0 as $char) {
@@ -1309,7 +1309,7 @@ function GetExp($exp,&$team) {
 	}
 
 //////////////////////////////////////////////////
-//	指定死者數數(指定)使?
+//	指定キャラのチームの死者数を数える(指定のチーム)ネクロマンサしか使ってない?
 	function CountDead($VarChar) {
 		$dead	= 0;
 
@@ -1332,7 +1332,7 @@ function GetExp($exp,&$team) {
 		return $dead;
 	}
 //////////////////////////////////////////////////
-//	魔方陣追加
+//	魔方陣を追加する
 	function MagicCircleAdd($team,$amount) {
 		if($team == TEAM_0) {
 			$this->team0_mc	+= $amount;
@@ -1347,7 +1347,7 @@ function GetExp($exp,&$team) {
 		}
 	}
 //////////////////////////////////////////////////
-//	魔方陣削除
+//	魔方陣を削除する
 	function MagicCircleDelete($team,$amount) {
 		if($team == TEAM_0) {
 			if($this->team0_mc < $amount)
@@ -1365,7 +1365,7 @@ function GetExp($exp,&$team) {
 }
 
 //////////////////////////////////////////////////
-//	生存者數數返
+//	生存者数を数えて返す
 function CountAlive($team) {
 	$no	= 0;//初期化
 	foreach($team as $char) {
@@ -1376,7 +1376,7 @@ function CountAlive($team) {
 }
 
 //////////////////////////////////////////////////
-//	初期生存數數返
+//	初期キャラ生存数を数えて返す
 function CountAliveChars($team) {
 	$no	= 0;//初期化
 	foreach($team as $char) {
@@ -1389,13 +1389,13 @@ function CountAliveChars($team) {
 	return $no;
 }
 //////////////////////////////////////////////////
-//	召還系呼。
+//	召還系スキルで呼ばれたモンスター。
 	function CreateSummon($no,$strength=false) {
 		include_once(DATA_MONSTER);
 		$monster	= CreateMonster($no,1);
 
 		$monster["summon"]	= true;
-		// 召喚強化。
+		// 召喚モンスターの強化。
 		if($strength) {
 			$monster["maxhp"]	= round($monster["maxhp"]*$strength);
 			$monster["hp"]	= round($monster["hp"]*$strength);
@@ -1416,7 +1416,7 @@ function CountAliveChars($team) {
 		return $monster;
 	}
 //////////////////////////////////////////////////
-//	複數判斷要素判定
+//	複数の判断要素での判定
 //function MultiFactJudge($Keys,$char,$MyTeam,$EnemyTeam) {
 function MultiFactJudge($Keys,$char,$classBattle) {
 	foreach($Keys as $no) {
@@ -1424,11 +1424,11 @@ function MultiFactJudge($Keys,$char,$classBattle) {
 		//$return	= DecideJudge($no,$char,$MyTeam,$EnemyTeam);
 		$return	= DecideJudge($no,$char,$classBattle);
 
-		// 判定否場合終了。
+		// 判定が否であった場合終了。
 		if(!$return)
 			return false;
 
-		// 配列比較共通項目殘(廢止方向)
+		// 配列を比較して共通項目を残す(ほぼ廃止の方向へ)
 		/*
 		if(!$compare && is_array($return))
 			$compare	= $return;

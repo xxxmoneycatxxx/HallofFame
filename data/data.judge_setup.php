@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 function LoadJudgeData($no) {
 /*
-	判定基礎
+	判定基础
 	HP
 	SP
-	人數(自己的生存者數)
-	狀態（毒）？？？
-	自己的行動回數
+	人数(自己的生存者数)
+	状态（毒）？？？
+	自己的行动回数
 	回合限定
-	對手的狀態
-	單純的概率
+	对手的状态
+	单纯的概率
 */
 	$Quantity	= '←←';
 	switch($no) {
@@ -17,7 +17,7 @@ function LoadJudgeData($no) {
 			$judge["exp"]	= "必定";
 			break;
 		case 1001:// pass
-			$judge["exp"]	= "跳過此判斷";
+			$judge["exp"]	= "跳过此判断";
 			break;
 //------------------------ HP
 		case 1099:
@@ -45,10 +45,10 @@ function LoadJudgeData($no) {
 		case 1121:// 我方 HP{$Quantity}(%)以下HP
 			$judge["exp"]	= "我方 HP{$Quantity}(%)以下";
 			break;
-		case 1125:// 我方平均HP {$Quantity}(%)以上箕
+		case 1125:// 我方平均HP {$Quantity}(%)以上の箕
 			$judge["exp"]	= "我方平均HP {$Quantity}(%)以上";
 			break;
-		case 1126:// 我方平均HP {$Quantity}(%)以下箕
+		case 1126:// 我方平均HP {$Quantity}(%)以下の箕
 			$judge["exp"]	= "我方平均HP {$Quantity}(%)以下";
 			break;
 //------------------------ SP
@@ -77,10 +77,10 @@ function LoadJudgeData($no) {
 		case 1221:// 我方 SP{$Quantity}(%)以下HP
 			$judge["exp"]	= "我方 SP{$Quantity}(%)以下";
 			break;
-		case 1225:// 我方平均SP {$Quantity}(%)以上箕
+		case 1225:// 我方平均SP {$Quantity}(%)以上の箕
 			$judge["exp"]	= "我方平均SP {$Quantity}(%)以上";
 			break;
-		case 1226:// 我方平均SP {$Quantity}(%)以下箕
+		case 1226:// 我方平均SP {$Quantity}(%)以下の箕
 			$judge["exp"]	= "我方平均SP {$Quantity}(%)以下";
 			break;
 /*
@@ -195,116 +195,116 @@ function LoadJudgeData($no) {
 		case 1410:// 己方前排的生存 {$Quantity}人以上
 			$judge["exp"]	= "我方前排的生存者 {$Quantity}人以上";
 			break;
-//------------------------ 生死（敵）
+//------------------------ 生死（敌）
 		case 1449:
-			$judge["exp"]	= "生死(敵)";
+			$judge["exp"]	= "生死(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1450:// 敵方的生存者 {$Quantity}人以上
-			$judge["exp"]	= "敵方的生存者 {$Quantity}人以上";
+		case 1450:// 敌方的生存者 {$Quantity}人以上
+			$judge["exp"]	= "敌方的生存者 {$Quantity}人以上";
 			break;
-		case 1451:// 敵方的生存者 {$Quantity}人以下
-			$judge["exp"]	= "敵方的生存者 {$Quantity}人以下";
+		case 1451:// 敌方的生存者 {$Quantity}人以下
+			$judge["exp"]	= "敌方的生存者 {$Quantity}人以下";
 			break;
-		case 1455:// 敵方的死者 {$Quantity}人以上
-			$judge["exp"]	= "敵方的死者 {$Quantity}人以上";
+		case 1455:// 敌方的死者 {$Quantity}人以上
+			$judge["exp"]	= "敌方的死者 {$Quantity}人以上";
 			break;
-		case 1456:// 敵方的死者 {$Quantity}人以下
-			$judge["exp"]	= "敵方的死者 {$Quantity}人以下";
+		case 1456:// 敌方的死者 {$Quantity}人以下
+			$judge["exp"]	= "敌方的死者 {$Quantity}人以下";
 			break;
-//------------------------ 詠唱
+//------------------------ 咏唱
 		case 1499:
-			$judge["exp"]	= "蓄力+詠唱";
+			$judge["exp"]	= "蓄力+咏唱";
 			$judge["css"]	= true;
 			break;
-		case 1500:// 處於詠唱狀態的 {$Quantity}人以上
-			$judge["exp"]	= "蓄力狀態的 {$Quantity}人以上";
+		case 1500:// 处于咏唱状态的 {$Quantity}人以上
+			$judge["exp"]	= "蓄力状态的 {$Quantity}人以上";
 			break;
-		case 1501:// 處於詠唱狀態的 {$Quantity}人以下
-			$judge["exp"]	= "蓄力狀態的 {$Quantity}人以下";
+		case 1501:// 处于咏唱状态的 {$Quantity}人以下
+			$judge["exp"]	= "蓄力状态的 {$Quantity}人以下";
 			break;
-		case 1505:// 蓄力詠唱狀態的{$Quantity}人以上
-			$judge["exp"]	= "詠唱狀態的{$Quantity}人以上";
+		case 1505:// 蓄力咏唱状态的{$Quantity}人以上
+			$judge["exp"]	= "咏唱状态的{$Quantity}人以上";
 			break;
-		case 1506:// 蓄力詠唱狀態的{$Quantity}人以下
-			$judge["exp"]	= "詠唱狀態的{$Quantity}人以下";
+		case 1506:// 蓄力咏唱状态的{$Quantity}人以下
+			$judge["exp"]	= "咏唱状态的{$Quantity}人以下";
 			break;
-		case 1510:// 蓄力詠唱狀態的{$Quantity}人以上
-			$judge["exp"]	= "蓄力詠唱狀態的{$Quantity}人以上";
+		case 1510:// 蓄力咏唱状态的{$Quantity}人以上
+			$judge["exp"]	= "蓄力咏唱状态的{$Quantity}人以上";
 			break;
-		case 1511:// 蓄力詠唱狀態的{$Quantity}人以下
-			$judge["exp"]	= "蓄力詠唱狀態的{$Quantity}人以下";
+		case 1511:// 蓄力咏唱状态的{$Quantity}人以下
+			$judge["exp"]	= "蓄力咏唱状态的{$Quantity}人以下";
 			break;
-//------------------------ 詠唱(敵)
+//------------------------ 咏唱(敌)
 		case 1549:
-			$judge["exp"]	= "詠唱(敵)";
+			$judge["exp"]	= "咏唱(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1550:// 敵方蓄力狀態的 {$Quantity}人以上
-			$judge["exp"]	= "敵方蓄力狀態的 {$Quantity}人以上";
+		case 1550:// 敌方蓄力状态的 {$Quantity}人以上
+			$judge["exp"]	= "敌方蓄力状态的 {$Quantity}人以上";
 			break;
-		case 1551:// 敵方蓄力狀態的 {$Quantity}人以下
-			$judge["exp"]	= "敵方蓄力狀態的 {$Quantity}人以下";
+		case 1551:// 敌方蓄力状态的 {$Quantity}人以下
+			$judge["exp"]	= "敌方蓄力状态的 {$Quantity}人以下";
 			break;
-		case 1555:// 敵方詠唱狀態的 {$Quantity}人以上
-			$judge["exp"]	= "敵方詠唱狀態的 {$Quantity}人以上";
+		case 1555:// 敌方咏唱状态的 {$Quantity}人以上
+			$judge["exp"]	= "敌方咏唱状态的 {$Quantity}人以上";
 			break;
-		case 1556:// 敵方詠唱狀態的 {$Quantity}人以下
-			$judge["exp"]	= "敵方詠唱狀態的 {$Quantity}人以下";
+		case 1556:// 敌方咏唱状态的 {$Quantity}人以下
+			$judge["exp"]	= "敌方咏唱状态的 {$Quantity}人以下";
 			break;
-		case 1560:// 蓄力敵方詠唱狀態的 {$Quantity}人以上
-			$judge["exp"]	= "敵方詠唱蓄力狀態的 {$Quantity}人以上";
+		case 1560:// 蓄力敌方咏唱状态的 {$Quantity}人以上
+			$judge["exp"]	= "敌方咏唱蓄力状态的 {$Quantity}人以上";
 			break;
-		case 1561:// 蓄力敵方詠唱狀態的 {$Quantity}人以下
-			$judge["exp"]	= "敵方蓄力詠唱狀態的 {$Quantity}人以下";
+		case 1561:// 蓄力敌方咏唱状态的 {$Quantity}人以下
+			$judge["exp"]	= "敌方蓄力咏唱状态的 {$Quantity}人以下";
 			break;
 //------------------------ 毒
 		case 1599:
 			$judge["exp"]	= "毒";
 			$judge["css"]	= true;
 			break;
-		case 1600:// 極屍毒覺輪
-			$judge["exp"]	= "自己處於毒狀態";
+		case 1600:// 极尸毒觉轮
+			$judge["exp"]	= "自己处于毒状态";
 			break;
-		case 1610:// 我方毒狀態 {$Quantity}人以上
-			$judge["exp"]	= "我方毒狀態 {$Quantity}人以上";
+		case 1610:// 我方毒状态 {$Quantity}人以上
+			$judge["exp"]	= "我方毒状态 {$Quantity}人以上";
 			break;
-		case 1611:// 我方毒狀態 {$Quantity}人以下
-			$judge["exp"]	= "我方毒狀態 {$Quantity}人以下";
+		case 1611:// 我方毒状态 {$Quantity}人以下
+			$judge["exp"]	= "我方毒状态 {$Quantity}人以下";
 			break;
-		case 1612:// 我方毒狀態 {$Quantity}% 以下
-			$judge["exp"]	= "我方毒狀態 {$Quantity}% 以上";
+		case 1612:// 我方毒状态 {$Quantity}% 以下
+			$judge["exp"]	= "我方毒状态 {$Quantity}% 以上";
 			break;
-		case 1613:// 我方毒狀態 {$Quantity}% 以下
-			$judge["exp"]	= "我方毒狀態 {$Quantity}% 以下";
+		case 1613:// 我方毒状态 {$Quantity}% 以下
+			$judge["exp"]	= "我方毒状态 {$Quantity}% 以下";
 			break;
-//------------------------ 毒(敵)
+//------------------------ 毒(敌)
 		case 1614:
-			$judge["exp"]	= "毒(敵)";
+			$judge["exp"]	= "毒(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1615:// 敵方毒狀態 {$Quantity}人以上
-			$judge["exp"]	= "敵方毒狀態 {$Quantity}人以上";
+		case 1615:// 敌方毒状态 {$Quantity}人以上
+			$judge["exp"]	= "敌方毒状态 {$Quantity}人以上";
 			break;
-		case 1616:// 敵方毒狀態 {$Quantity}人以下
-			$judge["exp"]	= "敵方毒狀態 {$Quantity}人以下";
+		case 1616:// 敌方毒状态 {$Quantity}人以下
+			$judge["exp"]	= "敌方毒状态 {$Quantity}人以下";
 			break;
-		case 1617:// 敵方毒狀態 {$Quantity}% 以下
-			$judge["exp"]	= "敵方毒狀態 {$Quantity}% 以上";
+		case 1617:// 敌方毒状态 {$Quantity}% 以下
+			$judge["exp"]	= "敌方毒状态 {$Quantity}% 以上";
 			break;
-		case 1618:// 敵方毒狀態 {$Quantity}% 以下
-			$judge["exp"]	= "敵方毒狀態 {$Quantity}% 以下";
+		case 1618:// 敌方毒状态 {$Quantity}% 以下
+			$judge["exp"]	= "敌方毒状态 {$Quantity}% 以下";
 			break;
-//------------------------ 隊列
+//------------------------ 队列
 		case 1699:
-			$judge["exp"]	= "隊列";
+			$judge["exp"]	= "队列";
 			$judge["css"]	= true;
 			break;
 		case 1700:// 自己在前排
 			$judge["exp"]	= "自己在前排";
 			break;
-		case 1701:// 自己在後排
-			$judge["exp"]	= "自己在後排";
+		case 1701:// 自己在后排
+			$judge["exp"]	= "自己在后排";
 			break;
 		case 1710:// 我方前排{$Quantity}人以上
 			$judge["exp"]	= "我方前排{$Quantity}人以上";
@@ -315,105 +315,105 @@ function LoadJudgeData($no) {
 		case 1712:// 我方前排{$Quantity}人以下
 			$judge["exp"]	= "我方前排{$Quantity}人";
 			break;
-		case 1715:// 我方後排{$Quantity}人以上
-			$judge["exp"]	= "我方後排{$Quantity}人以上";
+		case 1715:// 我方后排{$Quantity}人以上
+			$judge["exp"]	= "我方后排{$Quantity}人以上";
 			break;
-		case 1716:// 我方後排{$Quantity}人以下
-			$judge["exp"]	= "我方後排{$Quantity}人以下";
+		case 1716:// 我方后排{$Quantity}人以下
+			$judge["exp"]	= "我方后排{$Quantity}人以下";
 			break;
-		case 1717:// 我方後排{$Quantity}人以下
-			$judge["exp"]	= "我方後排{$Quantity}人";
+		case 1717:// 我方后排{$Quantity}人以下
+			$judge["exp"]	= "我方后排{$Quantity}人";
 			break;
-//------------------------ 隊列(敵)
+//------------------------ 队列(敌)
 		case 1749:
-			$judge["exp"]	= "隊列(敵)";
+			$judge["exp"]	= "队列(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1750:// 敵方前排{$Quantity}人以上
-			$judge["exp"]	= "敵方前排{$Quantity}人以上";
+		case 1750:// 敌方前排{$Quantity}人以上
+			$judge["exp"]	= "敌方前排{$Quantity}人以上";
 			break;
-		case 1751:// 敵方前排{$Quantity}人以下
-			$judge["exp"]	= "敵方前排{$Quantity}人以下";
+		case 1751:// 敌方前排{$Quantity}人以下
+			$judge["exp"]	= "敌方前排{$Quantity}人以下";
 			break;
-		case 1752:// 敵方前排{$Quantity}人
-			$judge["exp"]	= "敵方前排{$Quantity}人";
+		case 1752:// 敌方前排{$Quantity}人
+			$judge["exp"]	= "敌方前排{$Quantity}人";
 			break;
-		case 1755:// 敵方後排{$Quantity}人以上
-			$judge["exp"]	= "敵方後排{$Quantity}人以上";
+		case 1755:// 敌方后排{$Quantity}人以上
+			$judge["exp"]	= "敌方后排{$Quantity}人以上";
 			break;
-		case 1756:// 敵方後排{$Quantity}人以下
-			$judge["exp"]	= "敵方後排{$Quantity}人以下";
+		case 1756:// 敌方后排{$Quantity}人以下
+			$judge["exp"]	= "敌方后排{$Quantity}人以下";
 			break;
-		case 1757:// 敵方後排{$Quantity}人
-			$judge["exp"]	= "敵方後排{$Quantity}人";
+		case 1757:// 敌方后排{$Quantity}人
+			$judge["exp"]	= "敌方后排{$Quantity}人";
 			break;
-//------------------------ 召喚
+//------------------------ 召唤
 		case 1799:
-			$judge["exp"]	= "召喚";
+			$judge["exp"]	= "召唤";
 			$judge["css"]	= true;
 			break;
-		case 1800:// 我方的召喚物 {$Quantity}匹以上
-			$judge["exp"]	= "我方的召喚物 {$Quantity}匹以上";
+		case 1800:// 我方的召唤物 {$Quantity}匹以上
+			$judge["exp"]	= "我方的召唤物 {$Quantity}匹以上";
 			break;
-		case 1801:// 我方的召喚物 {$Quantity}匹以下
-			$judge["exp"]	= "我方的召喚物 {$Quantity}匹以下";
+		case 1801:// 我方的召唤物 {$Quantity}匹以下
+			$judge["exp"]	= "我方的召唤物 {$Quantity}匹以下";
 			break;
-		case 1805:// 我方的召喚物 {$Quantity}匹
-			$judge["exp"]	= "我方的召喚物 {$Quantity}匹";
+		case 1805:// 我方的召唤物 {$Quantity}匹
+			$judge["exp"]	= "我方的召唤物 {$Quantity}匹";
 			break;
-//------------------------ 召喚(敵)
+//------------------------ 召唤(敌)
 		case 1819:
-			$judge["exp"]	= "召喚(敵)";
+			$judge["exp"]	= "召唤(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1820:// 敵方的召喚物 {$Quantity}匹以上
-			$judge["exp"]	= "敵方的召喚物 {$Quantity}匹以上";
+		case 1820:// 敌方的召唤物 {$Quantity}匹以上
+			$judge["exp"]	= "敌方的召唤物 {$Quantity}匹以上";
 			break;
-		case 1821:// 敵方的召喚物 {$Quantity}匹以下
-			$judge["exp"]	= "敵方的召喚物 {$Quantity}匹以下";
+		case 1821:// 敌方的召唤物 {$Quantity}匹以下
+			$judge["exp"]	= "敌方的召唤物 {$Quantity}匹以下";
 			break;
-		case 1825:// 敵方的召喚物 {$Quantity}匹
-			$judge["exp"]	= "敵方的召喚物 {$Quantity}匹";
+		case 1825:// 敌方的召唤物 {$Quantity}匹
+			$judge["exp"]	= "敌方的召唤物 {$Quantity}匹";
 			break;
-//------------------------ 魔法陣
+//------------------------ 魔法阵
 		case 1839:
-			$judge["exp"]	= "魔法陣";
+			$judge["exp"]	= "魔法阵";
 			$judge["css"]	= true;
 			break;
-		case 1840:// 我方的魔法陣數 {$Quantity}個以上
-			$judge["exp"]	= "我方的魔法陣數 {$Quantity}個以上";
+		case 1840:// 我方的魔法阵数 {$Quantity}个以上
+			$judge["exp"]	= "我方的魔法阵数 {$Quantity}个以上";
 			break;
-		case 1841:// 我方的魔法陣數 {$Quantity}個以下
-			$judge["exp"]	= "我方的魔法陣數 {$Quantity}個以下";
+		case 1841:// 我方的魔法阵数 {$Quantity}个以下
+			$judge["exp"]	= "我方的魔法阵数 {$Quantity}个以下";
 			break;
-		case 1845:// 我方的魔法陣數 {$Quantity}個
-			$judge["exp"]	= "我方的魔法陣數 {$Quantity}個";
+		case 1845:// 我方的魔法阵数 {$Quantity}个
+			$judge["exp"]	= "我方的魔法阵数 {$Quantity}个";
 			break;
-//------------------------ 魔法陣(敵)
+//------------------------ 魔法阵(敌)
 		case 1849:
-			$judge["exp"]	= "魔法陣(敵)";
+			$judge["exp"]	= "魔法阵(敌)";
 			$judge["css"]	= true;
 			break;
-		case 1850:// 敵方的魔法陣數 {$Quantity}個以上
-			$judge["exp"]	= "敵方的魔法陣數 {$Quantity}個以上";
+		case 1850:// 敌方的魔法阵数 {$Quantity}个以上
+			$judge["exp"]	= "敌方的魔法阵数 {$Quantity}个以上";
 			break;
-		case 1851:// 敵方的魔法陣數 {$Quantity}個以下
-			$judge["exp"]	= "敵方的魔法陣數 {$Quantity}個以下";
+		case 1851:// 敌方的魔法阵数 {$Quantity}个以下
+			$judge["exp"]	= "敌方的魔法阵数 {$Quantity}个以下";
 			break;
-		case 1855:// 敵方的魔法陣數 {$Quantity}個
-			$judge["exp"]	= "敵方的魔法陣數 {$Quantity}個";
+		case 1855:// 敌方的魔法阵数 {$Quantity}个
+			$judge["exp"]	= "敌方的魔法阵数 {$Quantity}个";
 			break;
 
-//------------------------ 指定行動回數
+//------------------------ 指定行动回数
 		case 1899:
-			$judge["exp"]	= "指定行動回數";
+			$judge["exp"]	= "指定行动回数";
 			$judge["css"]	= true;
 			break;
-		case 1900:// 自己的行動回數 {$Quantity}回以上
-			$judge["exp"]	= "自己的行動回數 {$Quantity}回以上";
+		case 1900:// 自己的行动回数 {$Quantity}回以上
+			$judge["exp"]	= "自己的行动回数 {$Quantity}回以上";
 			break;
-		case 1901:// 自己的行動回數 {$Quantity}回以下
-			$judge["exp"]	= "自己的行動回數 {$Quantity}回以下";
+		case 1901:// 自己的行动回数 {$Quantity}回以下
+			$judge["exp"]	= "自己的行动回数 {$Quantity}回以下";
 			break;
 		case 1902:// 自己的第 {$Quantity}回合
 			$judge["exp"]	= "自己的第 {$Quantity}回合";
@@ -435,8 +435,8 @@ function LoadJudgeData($no) {
 			$judge["exp"]	= "{$Quantity}%的概率";
 			break;
 //----------------------- 特殊
-		case 9000:// 敵方Lv超過以上。
-			$judge["exp"]	= "敵方Lv超過{$Quantity}以上";
+		case 9000:// 敌方Lv超过以上。
+			$judge["exp"]	= "敌方Lv超过{$Quantity}以上";
 			break;
 		default:
 $judge	= false;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 print("--------- Blessing...<br />\n");
 $RATE	= 3;
 for($MAXSP=10; $MAXSP<1000; $MAXSP++) {

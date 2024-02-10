@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="../basis.css" type="text/css">
 <title>JOB List</title>
 <style type="text/css">
@@ -94,7 +94,7 @@ print("</tbody></table>");
 </html>
 <?php
 //////////////////////////////////////////////////
-//	技詳細表示
+//	技の詳細を表示
 	function ShowSkillDetail($skill,$radio=false) {
 
 		define("IMG_ICON","../image/icon/");
@@ -110,7 +110,7 @@ print("</tbody></table>");
 		if($radio)
 			print(" / <span class=\"bold\">{$skill[learn]}</span>pt");
 
-		if($skill[target][0] == "all")//對像
+		if($skill[target][0] == "all")//対象
 			print(" / <span class=\"charge\">{$skill[target][0]}</span>");
 		else if($skill[target][0] == "enemy")
 			print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
@@ -121,7 +121,7 @@ print("</tbody></table>");
 		else if(isset($skill[target][0]))
 			print(" / {$skill[target][0]}");
 
-		if($skill[target][1] == "all")//單體or複數or全體
+		if($skill[target][1] == "all")//単体or複数or全体
 			print(" - <span class=\"charge\">{$skill[target][1]}</span>");
 		else if($skill[target][1] == "individual")
 			print(" - <span class=\"recover\">{$skill[target][1]}</span>");

@@ -1,8 +1,6 @@
-<?php
-
-//精煉製作增加的特殊效果 input = 物品,精煉效果編號, option = 物品說明文字, atk[0] = atk , atk[1] = matk, def[0] = def, def[1] = ??? , def[2] = mdef
+﻿<?php
 function AddEnchantData(&$item, $opt) {
-
+//制作精炼的特殊效果
 
 	switch($opt) {
     // ATK
@@ -544,7 +542,7 @@ function AddEnchantData(&$item, $opt) {
 			$item["P_LUK"]	+= 10;
 			$item["option"]	.= "LUK+10, ";
 			break;
-    // 特殊前綴
+    // 特殊前缀
 		case X00:
 			if($item["type2"] == "WEAPON") {
 				$item["atk"]["0"]	+= 5;
@@ -553,7 +551,7 @@ function AddEnchantData(&$item, $opt) {
 			} else {
 				$item["def"]["0"]	+= 2;
 				$item["option"]	.= "Def+2, ";
-				$item["AddName"]	= "穩固";
+				$item["AddName"]	= "稳固";
 			}
 			break;
 		case X01:

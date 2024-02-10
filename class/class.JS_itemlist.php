@@ -1,11 +1,11 @@
-<?php
-// Javascript種類切替表示。
+﻿<?php
+// Javascript中切换种类进行显示道具。
 
-// 
+// サンプル
 /*
 $list0	= new JS_ItemList();
-$list0->SetID("buy");//引數
-$list0->SetName("type_buy");//引數
+$list0->SetID("buy");//引数なんでもいい
+$list0->SetName("type_buy");//引数なんでもいい
 foreach($ShopList as $no) {
 	$item	= LoadItemData($no);
 	$head	= '<input type="radio" name="item_no" value="'.$no.'" class="vcent">'.MoneyFormat($item["buy"]);
@@ -14,7 +14,7 @@ foreach($ShopList as $no) {
 }
 	print($list0->GetJavaScript("list"));
 	print($list0->ShowSelect());
------------------- ↓必要
+------------------ ↓も必要
 <form action="?" method="post">
 <div id="list"><?php print $list0->ShowDefault()?></div>
 <input type="submit" class="btn" name="shop_buy" value="Buy">
@@ -22,20 +22,20 @@ foreach($ShopList as $no) {
 -----------------------
 ※注意事項
 <form></form>
-入子注意。
+が入れ子にならないように注意。
 
 print($list0->ShowSelect());
-<form>～～～～</form>書出。
+は<form>～～～～</form>で書き出される。
 print("<form>");
 print($list0->ShowSelect());
-print("</form>");// 形動。
+print("</form>");// の形になると動かない。
 */
 
 /*
-	// 形式表示場合
-	// 各項目\ n使！！！
-$list0->ListTable("<table>");// 
-$list0->ListTableInsert("<tr><td>No</td><td>Item</td></tr>"); // 最初最後行表示。
+	// テーブル形式で表示させる場合
+	// 各アイテムの項目に\ nは使えない！！！
+$list0->ListTable("<table>");// テーブルタグのはじまり
+$list0->ListTableInsert("<tr><td>No</td><td>Item</td></tr>"); // テーブルの最初と最後の行に表示させるやつ。
 */
 
 class JS_ItemList {
@@ -51,7 +51,7 @@ class JS_ItemList {
 	var $Table	= false;
 	var $TableInsert;
 
-	// JS使用！！！
+	// JSを使用しない！！！
 	var $NoJS;
 
 	function SetID($ID) {
@@ -62,16 +62,16 @@ class JS_ItemList {
 		$this->name	= $name;
 	}
 
-	// JS使用！！！
+	// JSを使用しない！！！
 	function NoJS() {
 		$this->NoJS	= true;
 	}
 
-	// 追加
+	// 添加道具类目
 	function AddItem($item,$string) {
 		switch($item["type"]) {
-			case "劍":
-			case "雙手劍":
+			case "剑":
+			case "双手剑":
 			case "匕首":
 			case "魔杖":
 			case "杖":
@@ -80,10 +80,10 @@ class JS_ItemList {
 				array_push($this->weapon,$string);
 				break;
 			case "盾":
-			case "書":
+			case "书":
 			case "甲":
 			case "衣服":
-			case "長袍":
+			case "长袍":
 				array_push($this->armor,$string);
 				break;
 			case "道具":
@@ -94,17 +94,17 @@ class JS_ItemList {
 		}
 	}
 
-	// 表形式表示。
+	// テーブルタグで表形式に表示するようにする。
 	function ListTable($HTML) {
 		$this->Table	= $HTML;
 	}
 
-	// 一番上下必表示項目
+	// テーブルの一番上と下に必ず表示する項目みたいなの
 	function ListTableInsert($string) {
 		$this->TableInsert	= $string;
 	}
 
-	// JS返。
+	// JSを返す。
 	function GetJavaScript($Id) {
 		if($this->NoJS)
 			return NULL;
@@ -137,7 +137,7 @@ if($this->Table) {
 	$Table0	= "html = '".$this->Table."' + insert + html;";
 	$Table1	= "html += insert + '</table>';";
 } else {
-	$None	= 'html = (html?"":"None.") + html;';
+	$None	= 'html = (html?"":"没有找到适合的道具。") + html;';
 }
 $js = <<< _JS_
 <script type="text/javascript"><!--
@@ -176,9 +176,9 @@ _JS_;
 		return $js;
 	}
 
-	// 最初表示
+	// 最初に表示するもの
 	function ShowDefault() {
-		// JS使全表示。
+		// JSを使わないので全て表示する。
 		if($this->NoJS) {
 			$list	= array_merge($this->weapon,$this->armor,$this->item,$this->other);
 			foreach($list as $str)
@@ -218,7 +218,7 @@ _JS_;
 		return $open;
 	}
 
-	// SELECT表示。
+	// SELECTボックスの表示。
 	function ShowSelect() {
 		if($this->NoJS)
 			return NULL;

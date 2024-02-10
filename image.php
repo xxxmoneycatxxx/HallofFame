@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include("setting.php");
 
 $img	= new image();

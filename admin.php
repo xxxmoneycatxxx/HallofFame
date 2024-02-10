@@ -1,15 +1,15 @@
-<?php
+ï»¿<?php
 /*
-* ‚±‚Ìƒtƒ@ƒCƒ‹–¼‚Í•ÏX‚µ‚Ä‚àOK
-* ƒpƒXƒ[ƒh‚Í•ÏX‚µ‚Ä‚­‚¾‚³‚¢B
+* å™åºåƒ¼å‚½åƒ€å„–æŸ¤å¼æ›„å³åŸå°å‚•OK
+* åƒ·åƒ—å„šä¹•åƒªå¼æ›„å³åŸå°å”å©åå„ä¸…
 *
-* ŠÇ—‚µ‚È‚¢‚È‚ç
-* admin.php ‚Æ adminƒtƒHƒ‹ƒ_‚ð
-* ƒT[ƒo[‚©‚çÁ‚µ‚Ä‚àOK
+* å¨—æ£ŸåŸå´å„å´å‚œ
+* admin.php å² adminåƒ¼åƒ…å„–åƒŸå‚ª
+* åƒ’ä¹•åƒ¶ä¹•åå‚œå¾šåŸå°å‚•OK
 *
 */
 	include("setting.php");
-	define("ADMIN_DIR","./admin/");//ŠÇ——p‚Ìƒtƒ@ƒCƒ‹êŠ
-	define("ADMIN_PASSWORD","password");//ƒpƒXƒ[ƒh
+	define("ADMIN_DIR","./admin/");//å¨—æ£Ÿæ¢¡åºåƒ¼å‚½åƒ€å„–å¿œå¼·
+	define("ADMIN_PASSWORD","123456");//åƒ·åƒ—å„šä¹•åƒª
 	include(ADMIN_DIR."admin.php");
 ?>

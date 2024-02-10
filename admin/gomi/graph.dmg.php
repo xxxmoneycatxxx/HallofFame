@@ -1,4 +1,4 @@
-<table><tbody>
+﻿<table><tbody>
 <?php 
 for($i=0; $i<5000; $i++) {
 	print("<tr><td>");

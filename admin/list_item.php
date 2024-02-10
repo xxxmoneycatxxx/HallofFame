@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ITEM List</title>
 <style type="text/css">
 <!--
@@ -34,14 +34,14 @@ include("../data/data.item.php");
 print("<table cellspacing=\"1\"><tbody>");
 $img_f	= "../image/icon/";
 $des	= '<tr><td class="a">ID</td>
-<td class="a">圖</td>
+<td class="a">图</td>
 <td class="a">名字</td>
-<td class="a">類型</td>
+<td class="a">类型</td>
 <td class="a">atk</td>
 <td class="a">def</td>
 <td class="a">handle</td>
-<td class="a">賣價</td>
-<td class="a">買價</td></tr>';
+<td class="a">卖价</td>
+<td class="a">买价</td></tr>';
 $count=0;
 for($i=1000; $i<10000; $i++) {
 	$item	= LoadItemData($i);

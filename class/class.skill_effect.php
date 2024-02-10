@@ -1,38 +1,38 @@
-<?php
+﻿<?php
 //////////////////////////////////////////////////
 //	extended class.battle.php
 class ClassSkillEffect{
 //////////////////////////////////////////////////
-//	對像使用
+//	スキルを対象に使用する
 /*
 
-使用對像者(被側)基本的
+スキル使用対象者(被側)は基本的に
 ■全員
-■(複數回)
-■(味方)HP低順回數=人數分
-■者()
-4種類?
-※敵HP低順狙面白。
+■ランダム(に複数回)
+■(味方の)HPが低い順から回数=人数分
+■しぼー者(でランダム)
+の4種類?
+※敵のHPが低い順から狙えると面白くないし。
 
-、先決。
+まず、先にターゲットを決める。
 候補(味方,敵,自分,味方+敵)
-候補 單體,複數,全體  優先順位從(單體,複數)決
+候補より 単体,複数,全体 を 優先順位に従って(単体,複数のみ)決める
 
-攻擊、入判定。
-攻擊。
+攻撃なら、ガードが入るかどうか判定。
+攻撃。
 
-支援→支援
+支援→そのまま支援
 
 */
 //////////////////////////////////////////////////
-//	使用者對像者使
+//	使用者が対象者にスキルを使う
 	function SkillEffect($skill,$skill_no,&$user,&$target) {
 		if($target === false) {
-			print("沒有目標.失敗!<br />\n");
+			print("没有目标.失败!<br />\n");
 			return false;
 		}
 
-		//實際使用
+		//スキルを実際に使用する
 		switch($skill_no):
 
 			case 1020:// ManaBreak
@@ -66,7 +66,7 @@ class ClassSkillEffect{
 				$value	= round(abs($target->HP - $user->HP)*0.5);// 差分
 				if($user->HP <= $target->HP) {
 					if(1000 <= $value) {
-						print("※價值太大被補正。<br />\n");
+						print("※价值太大被补正。<br />\n");
 						$value	= 500;
 					}
 					DamageHP($target,$value);
@@ -81,7 +81,7 @@ class ClassSkillEffect{
 				$value	= round(abs($target->SP - $user->SP)*0.5);// 差分
 				if($user->SP <= $target->SP) {
 					if(1000 <= $value) {
-						print("※價值太大被補正。<br />\n");
+						print("※价值太大被补正。<br />\n");
 						$value	= 500;
 					}
 					DamageSP($target,$value);
@@ -105,7 +105,7 @@ class ClassSkillEffect{
 			case 1200://PoisonBlow
 				if($target->STATE === 2) {
 					$option["multiply"]	= 6;
-					print("傷害 x6!<br />\n");
+					print("伤害 x6!<br />\n");
 				}
 				$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 				DamageHP($target,$dmg);
@@ -129,7 +129,7 @@ class ClassSkillEffect{
 
 			case 2030: // LifeDrain
 			case 2031: // LifeSqueeze
-				if($user == $target) return false;//自分自分吸收。
+				if($user == $target) return false;//自分から自分は吸収しない。
 				$dmg	= CalcBasicDamage($skill,$user,$target);
 				AbsorbHP($target,$dmg,$user,$dmg);
 				break;
@@ -137,12 +137,12 @@ class ClassSkillEffect{
 			case 2032: // DeathKnell
 				$p	= mt_rand(1,100);
 				if(50<$p) $target->HP	= 0;
-				else print("失敗!<br />");
+				else print("失败!<br />");
 				return true;
 
 			case 2055:// SoulRevenge
 				$option["multiply"]	= $this->CountDead($user) + 1;
-				print("傷害 x".$option["multiply"]."!<br />\n");
+				print("伤害 x".$option["multiply"]."!<br />\n");
 				$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 				DamageHP($target,$dmg);
 				break;
@@ -157,7 +157,7 @@ class ClassSkillEffect{
 
 			case 2057:// SelfMetamorphorse
 				if(60 < $target->HpPercent() || $target->SPECIAL["Metamo"]) {
-					print("失敗!<br />\n");
+					print("失败!<br />\n");
 					break;
 				}
 				print($target->GetSpecial("Metamo",true));
@@ -169,15 +169,15 @@ class ClassSkillEffect{
 				RecoverHP($target,round($target->MAXHP/2));
 				break;
 
-			// SP吸收系
+			// SP吸収系
 			case 2090://EneryRob
 			case 2091://EneryCollect
-				if($user == $target) return false;//自分自分吸收。
+				if($user == $target) return false;//自分から自分は吸収しない。
 				$dmg	= CalcBasicDamage($skill,$user,$target,array("pierce"=>1));
 				AbsorbSP($target,$dmg,$user,$dmg);
 				break;
 
-			// (詠唱)中對像
+			// チャージ(詠唱)中のキャラのみを対象にする
 			case 2110:
 			case 2111:
 				if($target->expect === false) break;
@@ -205,7 +205,7 @@ class ClassSkillEffect{
 				$Rate	= ($target->HP / $target->MAXHP) * 100;
 				if($Rate <= 30) {
 					$heal	*= 2;
-					print("治療x2!<br />");
+					print("治疗x2!<br />");
 				}
 				RecoverHP($target,$heal);
 				break;
@@ -230,7 +230,7 @@ class ClassSkillEffect{
 			case 3013: // EnergyExchange
 				$HpRate	= floor($target->HP/$target->MAXHP*100);
 				$SpRate	= floor($target->SP/$target->MAXSP*100);
-				print("{$target->name} 對換了HP和SP.<br />");
+				print("{$target->name} 对换了HP和SP.<br />");
 				print("HP: {$target->HP}(".$HpRate."%) 到 ");
 				$target->HP	= round($SpRate/100*$target->MAXHP);
 				print("{$target->HP}(".$SpRate."%)<br />");
@@ -252,7 +252,7 @@ class ClassSkillEffect{
 				RecoverHP($target,$heal);
 				break;
 */
-			//	蘇生系技。
+			//	蘇生系の技。
 			case 3040:// Resurrection
 			case 5030:// SoulRestor
 			case 5063:// WakeUp
@@ -266,7 +266,7 @@ class ClassSkillEffect{
 				if($target == $user) return false;
 				if($target->expect) return false;
 				//$target->Quick($this->delay + 1);
-				print("<span class=\"support\">".$target->Name("bold")." 變得輕快了!</span>");
+				print("<span class=\"support\">".$target->Name("bold")." 变得轻快了!</span>");
 				$target->DelayCut(101,$this->delay,1);
 				print("<br />\n");
 				break;
@@ -326,7 +326,7 @@ break;
 				RecoverHP($target,$heal);
 				break;
 
-			// 召喚適應技
+			// 召喚キャラのみに適応する技
 			case 3300:// PowerTrain
 			case 3301:// MindTrain
 			case 3302:// SpeedTrain
@@ -349,13 +349,13 @@ break;
 				DamageHP($user,9999);
 				break;
 
-			case 4000: // StanceRestore(臨戰態勢)
+			case 4000: // StanceRestore(臨戦態勢)
 				if($target->position != $target->POSITION) {
 					$target->Move($target->position);
 				}
 				break;
 
-			// 敵
+			// 敵スキル
 			case 5002: // BloodSuck
 				$dmg	= CalcBasicDamage($skill,$user,$target,array("pierce"=>1));
 				AbsorbHP($target,$dmg,$user,$dmg);
@@ -364,7 +364,7 @@ break;
 			case 5006: // Charge!!!
 				if($user == $target) {
 					$user->POSITION = "back";
-					return false;//自分對像外
+					return false;//自分は対象外
 				}
 				if($target->POSITION == "back") {
 					$target->POSITION = "front";
@@ -380,9 +380,9 @@ break;
 				$user->UpMDEF(30);
 				break;
 
-			// 變化形技
+			// ステータス変化形の技
 			case 5022://Fortune
-				if($user == $target) break;//自分使。
+				if($user == $target) break;//自分には使わない。
 				$heal	= CalcRecoveryValue($skill,$user,$target);
 				RecoverHP($target,$heal);
 				$this->StatusChanges($skill,$target);
@@ -394,41 +394,41 @@ break;
 				$add	= CreateSummon($mob);
 				$this->JoinCharacter($user,$add);
 				$add->ShowImage(vcent);
-				print($add->Name(bold)." 加入了隊伍.<br />\n");
+				print($add->Name(bold)." 加入了队伍.<br />\n");
 				break;
 
 			//---------------------------------------------//
-			// 以外技(最多分類)
-			// 處理增
+			// それ以外の技(ここが最も多く分類される)
+			// めんどくさいので処理が増えた
 			//---------------------------------------------//
 			default:
-				// 魔方陣描
+				// 魔方陣描く
 				if($skill["MagicCircleAdd"]) {
 					$this->MagicCircleAdd($user->team,$skill["MagicCircleAdd"]);
-					print($user->Name(bold).'<span class="support"> 畫魔法陣 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
+					print($user->Name(bold).'<span class="support"> 画魔法阵 x'.$skill["MagicCircleAdd"].'</span><br />'."\n");
 				}
-				// 魔方陣消(敵)
+				// 魔方陣消す(敵)
 				if($skill["MagicCircleDeleteEnemy"]) {
-					$EnemyTeam	= ($user->team == TEAM_0)?TEAM_1:TEAM_0;//相手指定
+					$EnemyTeam	= ($user->team == TEAM_0)?TEAM_1:TEAM_0;//相手チームを指定
 					$this->MagicCircleDelete($EnemyTeam,$skill["MagicCircleDeleteEnemy"]);
-					print($user->Name(bold).'<span class="dmg"> 消除了敵人魔法陣 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
+					print($user->Name(bold).'<span class="dmg"> 消除了敌人魔法阵 x'.$skill["MagicCircleDeleteEnemy"].'</span><br />'."\n");
 				}
-				// HP持續回復
+				// HP持続回復
 				if($skill["HpRegen"]) {
 					$target->GetSpecial("HpRegen",$skill["HpRegen"]);
-					print($target->Name(bold).'<span class="recover"> HP 回復了+'.$skill["HpRegen"]."%</span><br />\n");
+					print($target->Name(bold).'<span class="recover"> HP 回复了+'.$skill["HpRegen"]."%</span><br />\n");
 				}
-				// SP持續回復
+				// SP持続回復
 				if($skill["SpRegen"]) {
 					$target->GetSpecial("SpRegen",$skill["SpRegen"]);
-					print($target->Name(bold).'<span class="support"> SP 回復了+'.$skill["SpRegen"]."%</span><br />\n");
+					print($target->Name(bold).'<span class="support"> SP 回复了+'.$skill["SpRegen"]."%</span><br />\n");
 				}
-				// (詠唱)中適應技。
+				// チャージ(詠唱)中のキャラのみに適応する技。
 				if($skill["priority"] == "Charge" && !$target->expect)
 					break;
-				// 召喚系處理
+				// 召喚系の処理
 				if($skill["summon"]) {
-					// 配列要素1個配列。
+					// 配列じゃなかったら要素1個の配列にしちゃう。
 					if(!is_array($skill["summon"]))
 						$skill["summon"]	= array($skill["summon"]);
 					foreach($skill["summon"] as $SummonNo) {
@@ -436,33 +436,33 @@ break;
 						$add	= CreateSummon($SummonNo,$Strength);
 						if($skill["quick"])// 速攻
 							$add->Quick($this->delay * 2);
-						//break;//取無(?)。
+						//break;//ここ取るとエラー無くなる(?)。
 						$this->JoinCharacter($user,$add);
 						$add->ShowImage(vcent);
-						print($add->Name(bold)." 加入了隊伍.<br />\n");
+						print($add->Name(bold)." 加入了队伍.<br />\n");
 					}
 					return true;
 				}
 
-				// 毒治療
+				// 毒の治療
 				if($skill["CurePoison"]) {
 					if($target->STATE == POISON)
 						$target->GetNormal(true);
 				}
-				// 基本的計算
+				// 基本的なダメージの計算
 				if($skill["pow"]) {
 					if($skill["support"]) {
 						$heal	= CalcRecoveryValue($skill,$user,$target);
 						RecoverHP($target,$heal);
 						$this->StatusChanges($skill,$target);
 					} else {
-						if($skill["pierce"])//?? 設定必要？
+						if($skill["pierce"])//?? ここで設定する必要ある？
 							$option["pierce"] = true;
 						$dmg	= CalcBasicDamage($skill,$user,$target,$option);
 						DamageHP($target,$dmg);
 					}
 				}
-				// SP回復()
+				// SP回復(レート)
 				if($skill["SpRecoveryRate"]) {
 					$SpRec	= ceil(sqrt($target->MAXSP) * $skill["SpRecoveryRate"]);
 					RecoverSP($target,$SpRec);
@@ -473,23 +473,23 @@ break;
 					if($result === true)
 						print($target->Name(bold)."<span class=\"spdmg\">中毒了</span> !<br />\n");
 					else if($result === "BLOCK")
-						print($target->Name(bold)." 沒有中毒.<br />\n");
+						print($target->Name(bold)." 没有中毒.<br />\n");
 				}
-				// (後衛化)
+				// ノックバック(後衛化)
 				if($skill["knockback"])
 					$target->KnockBack($skill["knockback"]);
-				// 變化
+				// ステータス変化
 				$this->StatusChanges($skill,$target);
-				// 隊列移動
+				// 隊列の移動
 				if($skill["move"])
 					$target->Move($skill["move"]);
-				// 行動遲(DELAY)
+				// 行動を遅らせる(DELAY)
 				$this->DelayChar($target,$skill);
 				return $dmg;
 		endswitch;
 	}
 //////////////////////////////////////////////////
-//	行動遲
+//	行動を遅らせる
 	function DelayChar(&$target,$skill) {
 		if(!$skill["delay"])
 			return false;
@@ -499,8 +499,8 @@ break;
 		print(".<br />\n");
 	}
 //////////////////////////////////////////////////
-//	變化
-//	Class內馱目。
+//	ステータスを変化させる
+//	Class内にないと駄目。
 	function StatusChanges($skill,&$target) {
 		if($skill["PlusSTR"])
 			$target->PlusSTR($skill["PlusSTR"]);
@@ -564,83 +564,83 @@ break;
 
 }
 //////////////////////////////////////////////////
-//	HP
+//	HPへダメージ
 function DamageHP(&$target,$value) {
 	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='dmg bold'>  ".$value."</span> 傷害 ");
+	print("<span class='dmg bold'>  ".$value."</span> 伤害 ");
 	$target->HpDamage($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	HP(1以下)
+//	HPへダメージ(1以下にならない)
 function DamageHP2(&$target,$value) {
 	print('<span class="dmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='dmg bold'>  ".$value."</span> 傷害 ");
+	print("<span class='dmg bold'>  ".$value."</span> 伤害 ");
 	$target->HpDamage2($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	SP
+//	SPへダメージ
 function DamageSP(&$target,$value) {
 	print('<span class="spdmg" style="font-color:#f53;">'.$target->Name("bold")."</span> 受到");
-	print("<span class='spdmg bold'>  ".$value."</span> 傷害 ");
+	print("<span class='spdmg bold'>  ".$value."</span> 伤害 ");
 	$target->SpDamage($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	HP回復
+//	HPの回復
 function RecoverHP(&$target,$value) {
-	print($target->Name("bold").' <span class="recover">回復了 <span class="bold">'.$value.' HP</span></span>');
+	print($target->Name("bold").' <span class="recover">回复了 <span class="bold">'.$value.' HP</span></span>');
 	$target->HpRecover($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	SP回復
+//	SPの回復
 function RecoverSP(&$target,$value) {
-	print($target->Name("bold").' <span class="support">回復了 <span class="bold">'.$value.' SP</span></span>');
+	print($target->Name("bold").' <span class="support">回复了 <span class="bold">'.$value.' SP</span></span>');
 	$target->SpRecover($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	HP吸收
+//	HPの吸収
 function AbsorbHP(&$target,$value,&$user,$value2) {
-	print(' 從 '.$target->Name(bold));
+	print(' 从 '.$target->Name(bold));
 	$target->HpDamage($value);
 	print('吸取 <span class="recover"><span class="bold">'.$value.'</span> HP</span>');
 	$user->HpRecover($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	SP回復
+//	SPの回復
 function AbsorbSP(&$target,$value,&$user,$value2) {
-	print(' 從 '.$target->Name(bold));
+	print(' 从 '.$target->Name(bold));
 	$target->SpDamage($value);
 	print('吸取 <span class="support"><span class="bold">'.$value.'</span> SP</span>');
 	$user->SpRecover($value);
 	print("<br />\n");
 }
 //////////////////////////////////////////////////
-//	基本的計算式返。
+//	基本的なダメージ計算式でダメージだけ返す。
 function CalcBasicDamage($skill,$user,&$target,$option=null) {
-	//基本的計算(物理or魔法)
+	//基本的なダメージ計算(物理or魔法)
 	if($skill["type"] == 0) {//物理
-		if($skill["inf"] == "dex")//威力DEX依存
+		if($skill["inf"] == "dex")//威力をDEX依存にする
 			$str	= $user->DEX;
 		else
 			$str	= $user->STR;
 		$dmg	= sqrt($str)*10;
-		$dmg	+= $user->atk[0];//裝備物攻
+		$dmg	+= $user->atk[0];//装備の物攻
 		$dmg	*= $skill["pow"]/100;
-		// 追加防禦無視
+		// 追加防御無視ダメージ
 		if($user->SPECIAL["Pierce"]["0"]) {
 			$Pierce	= $user->SPECIAL["Pierce"]["0"] * $skill["pow"]/100;
 		}
 	} else {//魔法
 		$int	= $user->INT;
 		$dmg	= sqrt($int)*10;
-		$dmg	+= $user->atk[1];//裝備魔攻
+		$dmg	+= $user->atk[1];//装備の魔攻
 		$dmg	*= $skill["pow"]/100;
-		// 追加防禦無視
+		// 追加防御無視ダメージ
 		if($user->SPECIAL["Pierce"]["1"]) {
 			$Pierce	= $user->SPECIAL["Pierce"]["1"] * $skill["pow"]/100;
 		}
@@ -649,16 +649,16 @@ function CalcBasicDamage($skill,$user,&$target,$option=null) {
 	if($option["multiply"])
 		$dmg	*= $option["multiply"];
 
-	// 1回攻擊防0。
+	// 1回攻撃を防いで0にする。
 	if($target->SPECIAL["Barrier"]) {
 		$target->GetSpecial("Barrier",false);
-		print("攻擊無效.<br />\n");
+		print("攻击无效.<br />\n");
 		$dmg	= 0;
 	}
 
-	$min	= $dmg*(1/10);//最低保証
+	$min	= $dmg*(1/10);//最低保証ダメジ
 
-	//相手防禦力輕減
+	//相手の防御力による軽減
 	if(!$option["pierce"]) {
 		if($skill["type"] == 0) {//物理
 			$dmg	*= 1 - $target->def["0"]/100;
@@ -669,27 +669,27 @@ function CalcBasicDamage($skill,$user,&$target,$option=null) {
 		}
 	}
 	$dmg	+=	$Pierce;
-	//
+	//ダメージのばらつき
 	//$dmg	*= mt_rand(90,110)/100;
 	//$dmg	*= mt_rand(90,110)/100;
-	//最低
+	//最低ダメージかどうか
 	if($dmg < $min)
 		$dmg	= $min;
 
-	return ceil($dmg);//最終
+	return ceil($dmg);//最終ダメージ
 }
 //////////////////////////////////////////////////
-//	回復量計算
+//	回復量の計算
 	function CalcRecoveryValue($skill,$user,$target) {
 		$int	= $user->INT;
 		$heal	= sqrt($int)*10;
-		$heal	+= $user->atk["1"];//裝備魔攻
+		$heal	+= $user->atk["1"];//装備の魔攻
 		$heal	*= $skill["pow"]/100;
 		$heal	= ceil($heal);
 
-		// 回復量增加系
+		// 回復量増加系パッシブ
 
-		// 受側回復量增加系持增
+		// 受ける側が回復量増加系のパッシブスキルを持っていたら増す
 		//if($user->special["?"])
 		//	
 

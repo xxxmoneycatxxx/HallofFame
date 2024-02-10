@@ -1,14 +1,24 @@
-<?php
-// 各個道具種類中可透過製作獲得的物品編號列表, input = user資料 ; output = 可製作編號清單
-function CanCreate($user) { 
+﻿<?php
+// 制作表
+function CanCreate($user) {
 
-	// 劍
+/*	// ※表示に時間かかる 
+	// 自动获取所有项目数据中被设定为need的项目
+	for($i=1000; $i<10000; $i++) {
+		$item	= LoadItemData($i);
+		if(!$item) continue;
+		if($item["need"])
+			$create[]	= $i;
+	}
+	return $create;
+*/
+	// 剑
 	$create	= array(1000,1001,1002,1003,1004,1005,1006,1007,1008,1020,1022,1023);
-	// 雙手劍
+	// 双手剑
 	$create	= array_merge($create,
 	array(1100,1101,1102,1103,1104,1120)
 	);
-	// 短劍
+	// 短剑
 	$create	= array_merge($create,
 	array(1201,1202,1203,1204,1205,1220,)
 	);
@@ -16,7 +26,7 @@ function CanCreate($user) {
 	$create	= array_merge($create,
 	array(1700,1701,1702,1703,1704,1705,1706,)
 	);
-	// 雙手杖
+	// 双手杖
 	$create	= array_merge($create,
 	array(1800,1801,1802,1803,1810,1811,1812,)
 	);
@@ -36,7 +46,7 @@ function CanCreate($user) {
 	$create	= array_merge($create,
 	array(3101,3102,3103,3104,3105,)
 	);
-	// 鎧
+	// 铠
 	$create	= array_merge($create,
 	array(5000,5001,5002,5003,5004,5005,5007,5008,5009,)
 	);
@@ -50,11 +60,11 @@ function CanCreate($user) {
 	);
 	return $create;
 }
-// 判斷道具能否被製作(具有"need"屬性與user材料是否充足) 
+// 判断道具需求
 function HaveNeeds($item,$UserItem) {
-	// 沒有道具的情況
+	// 没有道具的情况
 	if(!$UserItem) return false;
-	// 判斷材料是否充足
+	// 对象到不不能做成情况下
 	if(!$item["need"]) return false;
 	foreach($item["need"] as $NeedNo => $Amount) {
 		if($UserItem[$NeedNo] < $Amount)
@@ -63,11 +73,11 @@ function HaveNeeds($item,$UserItem) {
 	return true;
 }
 
-// 道具所返回的能力 ???
+// 道具所返回的能力
 function ItemAbilityPossibility($type) {
 	switch($type) {
-		case "劍":
-		case "雙手劍":
+		case "剑":
+		case "双手剑":
 		case "匕首":
 		case "魔杖":
 		case "杖":
@@ -135,10 +145,10 @@ function ItemAbilityPossibility($type) {
 			);
 			break;
 		case "盾":
-		case "書":
+		case "书":
 		case "甲":
 		case "衣服":
-		case "長袍":
+		case "长袍":
 			$low	= array(
 			// Def +
 			300,301,

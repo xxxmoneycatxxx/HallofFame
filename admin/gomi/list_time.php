@@ -1,4 +1,4 @@
-<title>time</title>
+﻿<title>time</title>
 <?php
 $now	= time();
 for($i=-24; $i<24; $i++) {

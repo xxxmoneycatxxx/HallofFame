@@ -1,32 +1,32 @@
-<?php 
+﻿<?php 
 /**
-"name"	=> "名前",
-	"img"	=> "skill_042.png",//畫像
-	"exp"	=> "技說明",
-	"sp"	=> "消費sp",
+"name"	=> "技能名称",
+	"img"	=> "skill_042.png",//图标
+	"exp"	=> "技能介绍",
+	"sp"	=> "消耗魔力",
 	"type"	=> "0",//0=物理 1=魔法
-	"target"=> array(friend/enemy/all/self,individual/multi/all,攻擊回數),
+	"target"=> array(friend/enemy/all/self,individual/multi/all,攻撃回数),
 		----(例)----------------------------------------
-			frien/enemy	= 味方/敵
-			all			= 味方+敵 全體
-			self		= 自身
-		enemy individual 1	= 敵一人1回
-		enemy individual 3	= 敵一人3回
-		enemy multi 3		= 敵(誰3人)1回(重複可能性有)
-		enemy all 1			= 敵全員1回攻擊
-		all individual 5	= 味方敵全體誰一人5回
-		all multi 5			= 味方敵全體誰5人1回(重複可能性有)
-		all all 3			= 味方敵全員3回
+			frien/enemy	= 己方/敌方
+			all			= 己方+敌方 全体
+			self		= 自己
+		enemy individual 1	= 敌方单体攻击1次
+		enemy individual 3	= 敌方单体攻击3次
+		enemy multi 3		= 敌方随机攻击3人1次(可能对同一目标重复攻击)
+		enemy all 1			= 敌方全体攻击1次
+		all individual 5	= 对敌我全体攻击5次
+		all multi 5			= 对敌我全体随机攻击5人1次(可能对同一目标重复攻击)
+		all all 3			= 对敌我全体全部攻击3次
 		------------------------------------------------
-	"pow"	=> "100",// 100割物倍率... 130=1.3倍 100 基本。
-	// "hit"	=> "100",// (多分消...技成功率...?)
-	"invalid"	=> "1",//後衛動作無效化
-	"support"	=> "1",//味方支援魔法(↑區別必要)
-	"priority"	=> "LowHpRate",//優先(LowHpRate,Dead,Summon,Charge)
-	//"charge"	=> "",//詠唱完了時間、力貯時間等(0=詠唱無)
-	//"stiff"	=> "",//行動後硬直時間(0=硬直無 100=待機時間2倍(待機時間=硬直時間) )
-	"charge" => array(charge,stiff),//配列變更。
-	"learn"	=> "習得必要數",
+	"pow"	=> "100",// 攻击倍数 130=1.3倍 100为基本攻击。
+	// "hit"	=> "100",// 命中率
+	"invalid"	=> "1",//攻击后排
+	"support"	=> "1",//己方增益魔法(需要与"invalid"区别)
+	"priority"	=> "LowHpRate",//优先目标(LowHpRate,Dead,Summon,Charge)
+	//"charge"	=> "",//吟唱或蓄力时间(0=无CD瞬发)
+	//"stiff"	=> "",//释放后硬直时间(0=无硬直 100=待机时间x2(待机时间=硬直时间) )
+	"charge" => array(charge,stiff),//更改为数组。
+	"learn"	=> "学习技能需要的技能点",
 	"Up**"
 	"Down**"
 	"pierce"
@@ -35,8 +35,8 @@
 	"poison"
 	"summon"
 	"move"
-	"strict" => array("Bow"=>true),//武器制限
-	"umove" // 使用者移動。
+	"strict" => array("Bow"=>true),//武器限制
+	"umove" // 使用者が移動。
 	"DownSTR"	=> "40",// IND DEX SPD LUK ATK MATK DEF MDEF HP SP
 	"UpSTR"
 	"PlusSTR"	=> 50,
@@ -46,9 +46,9 @@ function LoadSkillData($no) {
 	switch($no) {
 		case "1000":
 $skill	= array(
-"name"	=> "攻擊",
+"name"	=> "攻击",
 "img"	=> "skill_042.png",
-"exp"	=> "通常攻擊",
+"exp"	=> "通常攻击",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "0",
@@ -57,7 +57,7 @@ $skill	= array(
 ); break;
 		case "1001":
 $skill	= array(
-"name"	=> "痛擊",
+"name"	=> "痛击",
 "img"	=> "skill_032.png",
 "exp"	=> "",
 "sp"	=> "8",
@@ -69,7 +69,7 @@ $skill	= array(
 ); break;
 		case "1002":
 $skill	= array(
-"name"	=> "火球術",
+"name"	=> "火球术",
 "img"	=> "skill_018.png",
 "exp"	=> "",
 "sp"	=> "20",
@@ -82,7 +82,7 @@ $skill	= array(
 ); break;
 		case "1003":
 $skill	= array(
-"name"	=> "雙重打擊",
+"name"	=> "双重打击",
 "img"	=> "skill_073.png",
 "exp"	=> "",
 "sp"	=> "15",
@@ -92,13 +92,13 @@ $skill	= array(
 "pow"	=> "90",
 ); break;
 //---------------------------------------------------//
-//  1010 練習作技！                   //
+//  1010 到目前为止都是测试技能！                      //
 //---------------------------------------------------//
 		case "1011":
 $skill	= array(
-"name"	=> "破壞武器",
+"name"	=> "破坏武器",
 "img"	=> "skill_072.png",
-"exp"	=> "攻擊力低下",
+"exp"	=> "攻击力低下",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "6",
@@ -110,9 +110,9 @@ $skill	= array(
 ); break;
 		case "1012":
 $skill	= array(
-"name"	=> "破壞裝備",
+"name"	=> "破坏装备",
 "img"	=> "skill_072.png",
-"exp"	=> "防禦力低下",
+"exp"	=> "防御力低下",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "6",
@@ -148,9 +148,9 @@ $skill	= array(
 ); break;
 		case "1015":
 $skill	= array(
-"name"	=> "推後",
+"name"	=> "推后",
 "img"	=> "skill_075.png",
-"exp"	=> "後衛化",
+"exp"	=> "后卫化",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "10",
@@ -161,9 +161,9 @@ $skill	= array(
 ); break;
 		case "1016":
 $skill	= array(
-"name"	=> "刺穿裝備",
+"name"	=> "刺穿装备",
 "img"	=> "skill_077.png",
-"exp"	=> "無視防禦力",
+"exp"	=> "无视防御力",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "6",
@@ -174,7 +174,7 @@ $skill	= array(
 ); break;
 		case "1017":
 $skill	= array(
-"name"	=> "憤怒一擊",
+"name"	=> "愤怒一击",
 "img"	=> "skill_031.png",
 "exp"	=> "",
 "sp"	=> "40",
@@ -186,9 +186,9 @@ $skill	= array(
 ); break;
 		case "1018":
 $skill	= array(
-"name"	=> "敵我亂打",
+"name"	=> "敌我乱打",
 "img"	=> "skill_031z.png",
-"exp"	=> "不分敵我的全員攻擊",
+"exp"	=> "不分敌我的全员攻击",
 "sp"	=> "65",
 "type"	=> "0",
 "learn"	=> "10",
@@ -201,7 +201,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "穿刺",
 "img"	=> "skill_077z.png",
-"exp"	=> "無視防禦力",
+"exp"	=> "无视防御力",
 "sp"	=> "80",
 "type"	=> "0",
 "learn"	=> "10",
@@ -212,7 +212,7 @@ $skill	= array(
 ); break;
 		case "1020":
 $skill	= array(
-"name"	=> "破壞精神",
+"name"	=> "破坏精神",
 "img"	=> "skill_073z.png",
 "exp"	=> "SP下降",
 "sp"	=> "20",
@@ -223,7 +223,7 @@ $skill	= array(
 ); break;
 		case "1021":
 $skill	= array(
-"name"	=> "破壞靈魂",
+"name"	=> "破坏灵魂",
 "img"	=> "skill_072z.png",
 "exp"	=> "SP+HP下降",
 "sp"	=> "50",
@@ -234,9 +234,9 @@ $skill	= array(
 ); break;
 		case "1022":
 $skill	= array(
-"name"	=> "衝鋒",
+"name"	=> "冲锋",
 "img"	=> "skill_033.png",
-"exp"	=> "後排時威力四倍+前進",
+"exp"	=> "后排时威力四倍+前进",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "4",
@@ -246,9 +246,9 @@ $skill	= array(
 ); break;
 		case "1023":
 $skill	= array(
-"name"	=> "一擊脫離",
+"name"	=> "一击脱离",
 "img"	=> "skill_033z.png",
-"exp"	=> "前排時威力三倍+後退",
+"exp"	=> "前排时威力三倍+后退",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "4",
@@ -260,7 +260,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "分裂生命",
 "img"	=> "skill_073y.png",
-"exp"	=> "對象的HP分裂",
+"exp"	=> "对象的HP分裂",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "10",
@@ -271,13 +271,13 @@ $skill	= array(
 $skill	= array(
 "name"	=> "分裂精神",
 "img"	=> "skill_073x.png",
-"exp"	=> "對象的SP分裂",
+"exp"	=> "对象的SP分裂",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "3",
 "target"=> array("enemy","individual",1),
 ); break;
-									// 1100 - 狂戰士技能
+									// 1100 - 狂战士技能
 		case "1100":
 $skill	= array(
 "name"	=> "力量上升",
@@ -343,7 +343,7 @@ $skill	= array(
 ); break;
 		case "1115":
 $skill	= array(
-"name"	=> "毀滅",
+"name"	=> "毁灭",
 "img"	=> "skill_057.png",
 "exp"	=> "",
 "sp"	=> "1",
@@ -355,9 +355,9 @@ $skill	= array(
 ); break;
 		case "1116":
 $skill	= array(
-"name"	=> "懲罰",
+"name"	=> "惩罚",
 "img"	=> "skill_057.png",
-"exp"	=> "根據自己減少的HP來製造對敵人的傷害",
+"exp"	=> "根据自己减少的HP来制造对敌人的伤害",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "12",
@@ -379,9 +379,9 @@ $skill	= array(
 ); break;
 		case "1118":
 $skill	= array(
-"name"	=> "擊退",
+"name"	=> "击退",
 "img"	=> "skill_057.png",
-"exp"	=> "敵後退",
+"exp"	=> "敌后退",
 "sp"	=> "50",
 "type"	=> "0",
 "learn"	=> "8",
@@ -392,7 +392,7 @@ $skill	= array(
 ); break;
 		case "1119":
 $skill	= array(
-"name"	=> "友方強化",
+"name"	=> "友方强化",
 "img"	=> "skill_057.png",
 "exp"	=> "?",
 "sp"	=> "70",
@@ -407,12 +407,12 @@ $skill	= array(
 "UpATK"	=> "55",
 "UpMATK"=> "55",
 ); break;
-//------------------------------------------------ 1200 暗殺者
+//------------------------------------------------ 1200 暗杀者
 		case "1200":
 $skill	= array(
-"name"	=> "毒之一擊",
+"name"	=> "毒之一击",
 "img"	=> "skill_074y.png",
-"exp"	=> "對方毒狀態的話威力6倍",
+"exp"	=> "对方毒状态的话威力6倍",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "4",
@@ -422,7 +422,7 @@ $skill	= array(
 ); break;
 		case "1203":
 $skill	= array(
-"name"	=> "擲匕首",
+"name"	=> "掷匕首",
 "img"	=> "we_sword001.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -434,7 +434,7 @@ $skill	= array(
 ); break;
 		case "1204":
 $skill	= array(
-"name"	=> "匕首亂打",
+"name"	=> "匕首乱打",
 "img"	=> "we_sword001z.png",
 "sp"	=> "30",
 "type"	=> "0",
@@ -448,7 +448,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "酸化表面",
 "img"	=> "item_027.png",
-"exp"	=> "防禦低下",
+"exp"	=> "防御低下",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "4",
@@ -458,9 +458,9 @@ $skill	= array(
 ); break;
 		case "1206":
 $skill	= array(
-"name"	=> "酸霧",
+"name"	=> "酸雾",
 "img"	=> "skill_079z.png",
-"exp"	=> "防禦低下",
+"exp"	=> "防御低下",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "4",
@@ -469,9 +469,9 @@ $skill	= array(
 ); break;
 		case "1207":
 $skill	= array(
-"name"	=> "毒之氣息",
+"name"	=> "毒之气息",
 "img"	=> "skill_005cz.png",
-"exp"	=> "前衛化",
+"exp"	=> "前卫化",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "4",
@@ -484,7 +484,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "使毒",
 "img"	=> "skill_024z.png",
-"exp"	=> "毒狀態的對方失血(int相關？？)",
+"exp"	=> "毒状态的对方失血(int相关？？)",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "6",
@@ -492,9 +492,9 @@ $skill	= array(
 ); break;
 		case "1209":
 $skill	= array(
-"name"	=> "傳毒",
+"name"	=> "传毒",
 "img"	=> "item_031.png",
-"exp"	=> "毒狀態能力上升+解毒",
+"exp"	=> "毒状态能力上升+解毒",
 "sp"	=> "80",
 "type"	=> "0",
 "learn"	=> "8",
@@ -508,7 +508,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "前排致盲",
 "img"	=> "skill_073x.png",
-"exp"	=> "行動延遲",
+"exp"	=> "行动延迟",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "2",
@@ -516,9 +516,9 @@ $skill	= array(
 ); break;
 		case "1211":
 $skill	= array(
-"name"	=> "後排致盲",
+"name"	=> "后排致盲",
 "img"	=> "skill_073x.png",
-"exp"	=> "行動延遲",
+"exp"	=> "行动延迟",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "2",
@@ -534,7 +534,7 @@ $skill	= array(
 "learn"	=> "5",
 "target"=> array("friend","all",1),
 ); break;
-//---------------------------------------------- 1240 馴獸師
+//---------------------------------------------- 1240 驯兽师
 		case "1240":
 $skill	= array(
 "name"	=> "抽打",
@@ -561,7 +561,7 @@ $skill	= array(
 ); break;
 		case "1242":
 $skill	= array(
-"name"	=> "鞭子風暴",
+"name"	=> "鞭子风暴",
 "img"	=> "we_other007y.png",
 "exp"	=> "",
 "sp"	=> "40",
@@ -586,7 +586,7 @@ $skill	= array(
 ); break;
 		case "1244":
 $skill	= array(
-"name"	=> "身體固定",
+"name"	=> "身体固定",
 "img"	=> "we_other007y.png",
 "exp"	=> "",
 "sp"	=> "40",
@@ -599,10 +599,10 @@ $skill	= array(
 "limit"=> array("鞭"=>true,),
 ); break;
 //------------------------------------------------ 
-									// 2000 - 魔法系
+									// 2000 - 魔法系らしい
 		case "2000":
 $skill	= array(
-"name"	=> "火焰風暴",
+"name"	=> "火焰风暴",
 "img"	=> "skill_004a.png",
 "exp"	=> "",
 "sp"	=> "70",
@@ -615,7 +615,7 @@ $skill	= array(
 ); break;
 		case "2001":
 $skill	= array(
-"name"	=> "地獄火",
+"name"	=> "地狱火",
 "img"	=> "skill_006a.png",
 "exp"	=> "",
 "sp"	=> "320",
@@ -655,7 +655,7 @@ $skill	= array(
 ); break;
 		case "2004":
 $skill	= array(
-"name"	=> "隕石風暴",
+"name"	=> "陨石风暴",
 "img"	=> "skill_021z.png",
 "exp"	=> "",
 "sp"	=> "800",
@@ -667,7 +667,7 @@ $skill	= array(
 ); break;
 		case "2010":
 $skill	= array(
-"name"	=> "冰之槍",
+"name"	=> "冰之枪",
 "img"	=> "skill_001b.png",
 "exp"	=> "",
 "sp"	=> "20",
@@ -679,7 +679,7 @@ $skill	= array(
 ); break;
 		case "2011":
 $skill	= array(
-"name"	=> "冰標槍",
+"name"	=> "冰标枪",
 "img"	=> "skill_002b.png",
 "exp"	=> "",
 "sp"	=> "60",
@@ -691,7 +691,7 @@ $skill	= array(
 ); break;
 		case "2012":
 $skill	= array(
-"name"	=> "暴風雪",
+"name"	=> "暴风雪",
 "img"	=> "skill_006b.png",
 "exp"	=> "",
 "sp"	=> "240",
@@ -715,9 +715,9 @@ $skill	= array(
 ); break;
 		case "2014":
 $skill	= array(
-"name"	=> "冰獄",
+"name"	=> "冰狱",
 "img"	=> "skill_055.png",
-"exp"	=> "防禦DOWN",
+"exp"	=> "防御DOWN",
 "sp"	=> "40",
 "type"	=> "1",
 "learn"	=> "4",
@@ -732,7 +732,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "海浪",
 "img"	=> "skill_056z.png",
-"exp"	=> "後衛化",
+"exp"	=> "后卫化",
 "sp"	=> "520",
 "type"	=> "1",
 "learn"	=> "12",
@@ -743,7 +743,7 @@ $skill	= array(
 ); break;
 		case "2020":
 $skill	= array(
-"name"	=> "雷擊",
+"name"	=> "雷击",
 "img"	=> "skill_030z.png",
 "exp"	=> "",
 "sp"	=> "30",
@@ -756,7 +756,7 @@ $skill	= array(
 ); break;
 		case "2021":
 $skill	= array(
-"name"	=> "閃電球",
+"name"	=> "闪电球",
 "img"	=> "skill_054z.png",
 "exp"	=> "",
 "sp"	=> "80",
@@ -769,9 +769,9 @@ $skill	= array(
 ); break;
 		case "2022":
 $skill	= array(
-"name"	=> "閃光",
+"name"	=> "闪光",
 "img"	=> "skill_022z.png",
-"exp"	=> "行動延遲",
+"exp"	=> "行动延迟",
 "sp"	=> "30",
 "type"	=> "1",
 "learn"	=> "4",
@@ -781,9 +781,9 @@ $skill	= array(
 ); break;
 		case "2023":
 $skill	= array(
-"name"	=> "麻痺",
+"name"	=> "麻痹",
 "img"	=> "skill_025.png",
-"exp"	=> "行動延遲",
+"exp"	=> "行动延迟",
 "sp"	=> "15",
 "type"	=> "1",
 "learn"	=> "4",
@@ -820,7 +820,7 @@ $skill	= array(
 ); break;
 		case "2031":
 $skill	= array(
-"name"	=> "生命擠壓",
+"name"	=> "生命挤压",
 "img"	=> "skill_078.png",
 "exp"	=> "HP吸收",
 "sp"	=> "70",
@@ -832,7 +832,7 @@ $skill	= array(
 ); break;
 		case "2032":
 $skill	= array(
-"name"	=> "死亡之鍾",
+"name"	=> "死亡之钟",
 "img"	=> "skill_041z.png",
 "exp"	=> "即死",
 "sp"	=> "50",
@@ -844,9 +844,9 @@ $skill	= array(
 ); break;
 		case "2040":
 $skill	= array(
-"name"	=> "沙漠風暴",
+"name"	=> "沙漠风暴",
 "img"	=> "skill_006d.png",
-"exp"	=> "行動延遲",
+"exp"	=> "行动延迟",
 "sp"	=> "200",
 "type"	=> "1",
 "learn"	=> "12",
@@ -882,7 +882,7 @@ $skill	= array(
 //-------------------------------- 2050
 		case "2050":
 $skill	= array(
-"name"	=> "猛毒轟擊",
+"name"	=> "猛毒轰击",
 "img"	=> "skill_024.png",
 "exp"	=> "毒化",
 "sp"	=> "30",
@@ -895,7 +895,7 @@ $skill	= array(
 ); break;
 		case "2051":
 $skill	= array(
-"name"	=> "毒煙",
+"name"	=> "毒烟",
 "img"	=> "skill_079.png",
 "exp"	=> "毒化",
 "sp"	=> "80",
@@ -908,9 +908,9 @@ $skill	= array(
 ); break;
 		case "2055":
 $skill	= array(
-"name"	=> "靈魂復仇",
+"name"	=> "灵魂复仇",
 "img"	=> "skill_065.png",
-"exp"	=> "根據死者數傷害增加",
+"exp"	=> "根据死者数伤害增加",
 "sp"	=> "340",
 "type"	=> "1",
 "learn"	=> "8",
@@ -920,9 +920,9 @@ $skill	= array(
 ); break;
 		case "2056":
 $skill	= array(
-"name"	=> "殭屍復活",
+"name"	=> "僵尸复活",
 "img"	=> "skill_061.png",
-"exp"	=> "我方復活",
+"exp"	=> "我方复活",
 "sp"	=> "300",
 "type"	=> "1",
 "learn"	=> "8",
@@ -936,7 +936,7 @@ $skill	= array(
 ); break;
 		case "2057":
 $skill	= array(
-"name"	=> "自我蛻變",
+"name"	=> "自我蜕变",
 "img"	=> "skill_066.png",
 "exp"	=> "HP60%以下可使用(1回限制)",
 "sp"	=> "250",
@@ -965,7 +965,7 @@ $skill	= array(
 //---------------------------------- 2090
 		case "2090":
 $skill	= array(
-"name"	=> "能量搶奪",
+"name"	=> "能量抢夺",
 "img"	=> "skill_037.png",
 "exp"	=> "SP吸收",
 "sp"	=> "10",
@@ -992,7 +992,7 @@ $skill	= array(
 							// 2100
 		case "2100":
 $skill	= array(
-"name"	=> "聖光",
+"name"	=> "圣光",
 "img"	=> "skill_022.png",
 "exp"	=> "",
 "sp"	=> "10",
@@ -1005,7 +1005,7 @@ $skill	= array(
 ); break;
 		case "2101":
 $skill	= array(
-"name"	=> "聖光爆發",
+"name"	=> "圣光爆发",
 "img"	=> "skill_010z.png",
 "exp"	=> "",
 "sp"	=> "40",
@@ -1030,12 +1030,12 @@ $skill	= array(
 "MagicCircleDeleteTeam"	=> 1,
 ); break;
 							// 2110
-							// 詠唱中適應。
+							// 詠唱中のキャラのみに適応する。
 		case "2110":
 $skill	= array(
-"name"	=> "打擾詠唱",
+"name"	=> "打扰咏唱",
 "img"	=> "skill_016.png",
-"exp"	=> "Charge（詠唱）妨害",
+"exp"	=> "Charge（咏唱）妨害",
 "sp"	=> "60",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1047,9 +1047,9 @@ $skill	= array(
 ); break;
 		case "2111":
 $skill	= array(
-"name"	=> "打擾詠唱(全員)",
+"name"	=> "打扰咏唱(全员)",
 "img"	=> "skill_016.png",
-"exp"	=> "Charge（詠唱）妨害(全)",
+"exp"	=> "Charge（咏唱）妨害(全)",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "6",
@@ -1059,10 +1059,10 @@ $skill	= array(
 "delay"	=> "100",
 "charge"	=> array(0,40),
 ); break;
-/////////////////////// 2300-弓系列 "inf"	=> "dex",// 威力dex依存
+/////////////////////// 2300-弓系列 "inf"	=> "dex",// 威力をdex依存にする
 		case "2300":
 $skill	= array(
-"name"	=> "射擊",
+"name"	=> "射击",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -1078,7 +1078,7 @@ $skill	= array(
 ); break;
 		case "2301":
 $skill	= array(
-"name"	=> "強力射擊",
+"name"	=> "强力射击",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "10",
@@ -1108,7 +1108,7 @@ $skill	= array(
 ); break;
 		case "2303":
 $skill	= array(
-"name"	=> "麻痺射擊",
+"name"	=> "麻痹射击",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "10",
@@ -1125,7 +1125,7 @@ $skill	= array(
 ); break;
 		case "2304":
 $skill	= array(
-"name"	=> "中毒攻擊",
+"name"	=> "中毒攻击",
 "img"	=> "item_042.png",
 "exp"	=> "毒",
 "sp"	=> "15",
@@ -1141,9 +1141,9 @@ $skill	= array(
 ); break;
 		case "2305":
 $skill	= array(
-"name"	=> "換位射擊",
+"name"	=> "换位射击",
 "img"	=> "item_042.png",
-"exp"	=> "後衛化",
+"exp"	=> "后卫化",
 "sp"	=> "30",
 "type"	=> "0",
 "learn"	=> "6",
@@ -1156,9 +1156,9 @@ $skill	= array(
 ); break;
 		case "2306":
 $skill	= array(
-"name"	=> "穿透射擊",
+"name"	=> "穿透射击",
 "img"	=> "item_042.png",
-"exp"	=> "無視防禦",
+"exp"	=> "无视防御",
 "sp"	=> "90",
 "type"	=> "0",
 "learn"	=> "8",
@@ -1172,7 +1172,7 @@ $skill	= array(
 ); break;
 		case "2307":
 $skill	= array(
-"name"	=> "颶風射擊",
+"name"	=> "飓风射击",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "180",
@@ -1187,7 +1187,7 @@ $skill	= array(
 ); break;
 		case "2308":
 $skill	= array(
-"name"	=> "瞄準",
+"name"	=> "瞄准",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -1203,7 +1203,7 @@ $skill	= array(
 ); break;
 		case "2309":
 $skill	= array(
-"name"	=> "解除武裝",
+"name"	=> "解除武装",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "20",
@@ -1220,7 +1220,7 @@ $skill	= array(
 ); break;
 		case "2310":
 $skill	= array(
-"name"	=> "雙重射擊",
+"name"	=> "双重射击",
 "img"	=> "item_042.png",
 "exp"	=> "",
 "sp"	=> "28",
@@ -1236,9 +1236,9 @@ $skill	= array(
 								// 2400-召喚系
 		case "2400":
 $skill	= array(
-"name"	=> "哥布林召喚",
+"name"	=> "哥布林召唤",
 "img"	=> "skill_066.png",
-"exp"	=> "哥布林召喚",
+"exp"	=> "哥布林召唤",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "99",
@@ -1248,9 +1248,9 @@ $skill	= array(
 ); break;
 		case "2401":
 $skill	= array(
-"name"	=> "召喚小豬",
+"name"	=> "召唤小猪",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚小豬",
+"exp"	=> "召唤小猪",
 "sp"	=> "150",
 "type"	=> "0",
 "learn"	=> "4",
@@ -1260,9 +1260,9 @@ $skill	= array(
 ); break;
 		case "2402":
 $skill	= array(
-"name"	=> "召喚瘋豬",
+"name"	=> "召唤疯猪",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚瘋豬",
+"exp"	=> "召唤疯猪",
 "sp"	=> "250",
 "type"	=> "0",
 "learn"	=> "10",
@@ -1272,9 +1272,9 @@ $skill	= array(
 ); break;
 		case "2403":
 $skill	= array(
-"name"	=> "大怪物召喚",
+"name"	=> "大怪物召唤",
 "img"	=> "skill_029.png",
-"exp"	=> "大怪物召喚",
+"exp"	=> "大怪物召唤",
 "sp"	=> "350",
 "type"	=> "0",
 "learn"	=> "20",
@@ -1284,9 +1284,9 @@ $skill	= array(
 ); break;
 		case "2404":
 $skill	= array(
-"name"	=> "召喚獅子",
+"name"	=> "召唤狮子",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚獅子",
+"exp"	=> "召唤狮子",
 "sp"	=> "150",
 "type"	=> "0",
 "learn"	=> "4",
@@ -1297,9 +1297,9 @@ $skill	= array(
 ); break;
 		case "2405":
 $skill	= array(
-"name"	=> "召喚熊",
+"name"	=> "召唤熊",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚熊",
+"exp"	=> "召唤熊",
 "sp"	=> "250",
 "type"	=> "0",
 "learn"	=> "10",
@@ -1310,9 +1310,9 @@ $skill	= array(
 ); break;
 		case "2406":
 $skill	= array(
-"name"	=> "召喚合成獸",
+"name"	=> "召唤合成兽",
 "img"	=> "skill_029.png",
-"exp"	=> "召喚合成獸",
+"exp"	=> "召唤合成兽",
 "sp"	=> "350",
 "type"	=> "0",
 "learn"	=> "20",
@@ -1323,9 +1323,9 @@ $skill	= array(
 ); break;
 		case "2407":
 $skill	= array(
-"name"	=> "召喚雪男",
+"name"	=> "召唤雪男",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚雪男",
+"exp"	=> "召唤雪男",
 "sp"	=> "250",
 "type"	=> "0",
 "learn"	=> "10",
@@ -1336,9 +1336,9 @@ $skill	= array(
 ); break;
 		case "2408":
 $skill	= array(
-"name"	=> "召喚小妖精",
+"name"	=> "召唤小妖精",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚小妖精",
+"exp"	=> "召唤小妖精",
 "sp"	=> "150",
 "type"	=> "0",
 "learn"	=> "4",
@@ -1349,9 +1349,9 @@ $skill	= array(
 ); break;
 		case "2409":
 $skill	= array(
-"name"	=> "召喚飛河馬",
+"name"	=> "召唤飞河马",
 "img"	=> "skill_028.png",
-"exp"	=> "召喚飛河馬",
+"exp"	=> "召唤飞河马",
 "sp"	=> "250",
 "type"	=> "0",
 "learn"	=> "10",
@@ -1362,9 +1362,9 @@ $skill	= array(
 ); break;
 		case "2410":
 $skill	= array(
-"name"	=> "召喚龍",
+"name"	=> "召唤龙",
 "img"	=> "skill_029.png",
-"exp"	=> "召喚龍",
+"exp"	=> "召唤龙",
 "sp"	=> "350",
 "type"	=> "0",
 "learn"	=> "20",
@@ -1373,12 +1373,12 @@ $skill	= array(
 "summon"	=> "5017",
 "quick"	=> true,
 ); break;
-				// 2460 - 殭屍?
+				// 2460 - 僵尸?
 		case "2460":
 $skill	= array(
-"name"	=> "殭屍",
+"name"	=> "僵尸",
 "img"	=> "skill_028.png",
-"exp"	=> "殭屍",
+"exp"	=> "僵尸",
 "sp"	=> "60",
 "type"	=> "1",
 "learn"	=> "2",
@@ -1388,9 +1388,9 @@ $skill	= array(
 ); break;
 		case "2461":
 $skill	= array(
-"name"	=> "食屍鬼",
+"name"	=> "食尸鬼",
 "img"	=> "skill_028.png",
-"exp"	=> "食屍鬼",
+"exp"	=> "食尸鬼",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1412,9 +1412,9 @@ $skill	= array(
 ); break;
 		case "2463":
 $skill	= array(
-"name"	=> "殭屍控制",
+"name"	=> "僵尸控制",
 "img"	=> "skill_028.png",
-"exp"	=> "3體召喚",
+"exp"	=> "3体召唤",
 "sp"	=> "200",
 "type"	=> "1",
 "learn"	=> "8",
@@ -1426,7 +1426,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "墓地",
 "img"	=> "skill_028.png",
-"exp"	=> "3體召喚",
+"exp"	=> "3体召唤",
 "sp"	=> "360",
 "type"	=> "1",
 "learn"	=> "12",
@@ -1436,9 +1436,9 @@ $skill	= array(
 ); break;
 		case "2465":
 $skill	= array(
-"name"	=> "生化危機",
+"name"	=> "生化危机",
 "img"	=> "skill_028.png",
-"exp"	=> "5體召喚",
+"exp"	=> "5体召唤",
 "sp"	=> "560",
 "type"	=> "1",
 "learn"	=> "16",
@@ -1449,9 +1449,9 @@ $skill	= array(
 								// 2480
 		case "2480":
 $skill	= array(
-"name"	=> "治癒兔",
+"name"	=> "治愈兔",
 "img"	=> "skill_038.png",
-"exp"	=> "召喚治療兔子",
+"exp"	=> "召唤治疗兔子",
 "sp"	=> "60",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1462,9 +1462,9 @@ $skill	= array(
 ); break;
 		case "2481":
 $skill	= array(
-"name"	=> "天使降臨",
+"name"	=> "天使降临",
 "img"	=> "skill_038.png",
-"exp"	=> "天使降臨",
+"exp"	=> "天使降临",
 "sp"	=> "160",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1473,10 +1473,10 @@ $skill	= array(
 "summon"	=> "5001",
 "quick"	=> true,
 ); break;
-//-----------------------------------------	2500 召喚系
+//-----------------------------------------	2500 まだ召喚系
 		case "2500":
 $skill	= array(
-"name"	=> "伊弗裡特",
+"name"	=> "伊弗里特",
 "img"	=> "skill_029.png",
 "exp"	=> "",
 "sp"	=> "700",
@@ -1490,7 +1490,7 @@ $skill	= array(
 ); break;
 		case "2501":
 $skill	= array(
-"name"	=> "利維坦",
+"name"	=> "利维坦",
 "img"	=> "skill_029.png",
 "exp"	=> "",
 "sp"	=> "700",
@@ -1504,7 +1504,7 @@ $skill	= array(
 ); break;
 		case "2502":
 $skill	= array(
-"name"	=> "天使長",
+"name"	=> "天使长",
 "img"	=> "skill_029.png",
 "exp"	=> "",
 "sp"	=> "900",
@@ -1518,7 +1518,7 @@ $skill	= array(
 ); break;
 		case "2503":
 $skill	= array(
-"name"	=> "墮落天使",
+"name"	=> "堕落天使",
 "img"	=> "skill_029.png",
 "exp"	=> "",
 "sp"	=> "900",
@@ -1532,7 +1532,7 @@ $skill	= array(
 ); break;
 		case "2504":
 $skill	= array(
-"name"	=> "托爾",
+"name"	=> "托尔",
 "img"	=> "skill_029.png",
 "exp"	=> "",
 "sp"	=> "1200",
@@ -1547,9 +1547,9 @@ $skill	= array(
 ////////////////////////////////////////
 		case "3000"://	3000 - 其他
 $skill	= array(
-"name"	=> "治療",
+"name"	=> "治疗",
 "img"	=> "skill_013a.png",
-"exp"	=> "HP回復",
+"exp"	=> "HP回复",
 "sp"	=> "5",
 "type"	=> "1",
 "learn"	=> "0",
@@ -1562,9 +1562,9 @@ $skill	= array(
 ); break;
 		case "3001":
 $skill	= array(
-"name"	=> "高級治療",
+"name"	=> "高级治疗",
 "img"	=> "skill_013b.png",
-"exp"	=> "HP回復",
+"exp"	=> "HP回复",
 "sp"	=> "20",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1576,9 +1576,9 @@ $skill	= array(
 ); break;
 		case "3002":
 $skill	= array(
-"name"	=> "群體回復",
+"name"	=> "群体回复",
 "img"	=> "skill_013c.png",
-"exp"	=> "HP回復",
+"exp"	=> "HP回复",
 "sp"	=> "30",
 "type"	=> "1",
 "learn"	=> "12",
@@ -1590,9 +1590,9 @@ $skill	= array(
 ); break;
 		case "3003":
 $skill	= array(
-"name"	=> "快速回復",
+"name"	=> "快速回复",
 "img"	=> "skill_013b.png",
-"exp"	=> "HP回復",
+"exp"	=> "HP回复",
 "sp"	=> "20",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1603,9 +1603,9 @@ $skill	= array(
 ); break;
 		case "3004":
 $skill	= array(
-"name"	=> "整體回復",
+"name"	=> "整体回复",
 "img"	=> "skill_013b.png",
-"exp"	=> "HP回復",
+"exp"	=> "HP回复",
 "sp"	=> "30",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1617,9 +1617,9 @@ $skill	= array(
 ); break;
 		case "3005":
 $skill	= array(
-"name"	=> "漸漸回復",
+"name"	=> "渐渐回复",
 "img"	=> "skill_013b.png",
-"exp"	=> "對像HP30%以下時回復量2倍",
+"exp"	=> "对象HP30%以下时回复量2倍",
 "sp"	=> "30",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1631,9 +1631,9 @@ $skill	= array(
 ); break;
 		case "3010"://	3010
 $skill	= array(
-"name"	=> "恢復精神",
+"name"	=> "恢复精神",
 "img"	=> "skill_019.png",
-"exp"	=> "SP回復",
+"exp"	=> "SP回复",
 "sp"	=> "0",
 "type"	=> "1",
 "learn"	=> "0",
@@ -1644,7 +1644,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "集中精神",
 "img"	=> "skill_019z.png",
-"exp"	=> "SP回復",
+"exp"	=> "SP回复",
 "sp"	=> "0",
 "type"	=> "1",
 "learn"	=> "2",
@@ -1654,9 +1654,9 @@ $skill	= array(
 ); break;
 		case "3012":
 $skill	= array(
-"name"	=> "血轉魔",
+"name"	=> "血转魔",
 "img"	=> "skill_019y.png",
-"exp"	=> "SP回復",
+"exp"	=> "SP回复",
 "sp"	=> "0",
 "type"	=> "1",
 "learn"	=> "6",
@@ -1667,9 +1667,9 @@ $skill	= array(
 ); break;
 		case "3013":
 $skill	= array(
-"name"	=> "魔轉血",
+"name"	=> "魔转血",
 "img"	=> "exchange.png",
-"exp"	=> "HP,SP交換(%)",
+"exp"	=> "HP,SP交换(%)",
 "sp"	=> "10",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1690,9 +1690,9 @@ $skill	= array(
 					// 3030
 		case "3030":
 $skill	= array(
-"name"	=> "異常恢復",
+"name"	=> "异常恢复",
 "img"	=> "skill_008.png",
-"exp"	=> "狀態異常恢復",
+"exp"	=> "状态异常恢复",
 "sp"	=> "30",
 "type"	=> "1",
 "learn"	=> "2",
@@ -1705,9 +1705,9 @@ $skill	= array(
 					// 3040
 		case "3040":
 $skill	= array(
-"name"	=> "復甦",
+"name"	=> "复苏",
 "img"	=> "mat_026.png",
-"exp"	=> "復甦",
+"exp"	=> "复苏",
 "sp"	=> "120",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1720,9 +1720,9 @@ $skill	= array(
 //---------------------------------- 3050
 		case "3050":
 $skill	= array(
-"name"	=> "立即行動",
+"name"	=> "立即行动",
 "img"	=> "skill_015.png",
-"exp"	=> "立即行動",
+"exp"	=> "立即行动",
 "sp"	=> "150",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1733,9 +1733,9 @@ $skill	= array(
 //---------------------------------- 3055
 		case "3055":
 $skill	= array(
-"name"	=> "加快詠唱",
+"name"	=> "加快咏唱",
 "img"	=> "skill_016z.png",
-"exp"	=> "加快詠唱",
+"exp"	=> "加快咏唱",
 "sp"	=> "150",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1746,9 +1746,9 @@ $skill	= array(
 //---------------------------------- 3060
 		case "3060":
 $skill	= array(
-"name"	=> "聖光防護",
+"name"	=> "圣光防护",
 "img"	=> "skill_045z.png",
-"exp"	=> "一回合受傷無效化",
+"exp"	=> "一回合受伤无效化",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "10",
@@ -1761,7 +1761,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "祝福",
 "img"	=> "skill_008.png",
-"exp"	=> "SP回復",
+"exp"	=> "SP回复",
 "sp"	=> "0",
 "type"	=> "1",
 "learn"	=> "0",
@@ -1773,7 +1773,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "大祝福",
 "img"	=> "skill_009.png",
-"exp"	=> "SP回復",
+"exp"	=> "SP回复",
 "sp"	=> "20",
 "type"	=> "1",
 "learn"	=> "4",
@@ -1784,9 +1784,9 @@ $skill	= array(
 ); break;
 		case "3103":
 $skill	= array(
-"name"	=> "聖域",
+"name"	=> "圣域",
 "img"	=> "skill_010.png",
-"exp"	=> "HP,SP回復",
+"exp"	=> "HP,SP回复",
 "sp"	=> "150",
 "type"	=> "1",
 "learn"	=> "8",
@@ -1801,9 +1801,9 @@ $skill	= array(
 //----------------------------- 3110
 		case "3110":
 $skill	= array(
-"name"	=> "強化",
+"name"	=> "强化",
 "img"	=> "skill_059.png",
-"exp"	=> "自己強化",
+"exp"	=> "自己强化",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "2",
@@ -1815,7 +1815,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "超限",
 "img"	=> "skill_059z.png",
-"exp"	=> "自己強化·弱",
+"exp"	=> "自己强化·弱",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "8",
@@ -1826,9 +1826,9 @@ $skill	= array(
 ); break;
 		case "3112":
 $skill	= array(
-"name"	=> "防禦",
+"name"	=> "防御",
 "img"	=> "skill_059y.png",
-"exp"	=> "自己強化·弱·前衛化",
+"exp"	=> "自己强化·弱·前卫化",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "6",
@@ -1853,7 +1853,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "急救",
 "img"	=> "skill_014.png",
-"exp"	=> "自己HP回復",
+"exp"	=> "自己HP回复",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "1",
@@ -1862,7 +1862,7 @@ $skill	= array(
 ); break;
 		case "3121":
 $skill	= array(
-"name"	=> "自我回復",
+"name"	=> "自我回复",
 "img"	=> "skill_062.png",
 "exp"	=> "",
 "sp"	=> "15",
@@ -1873,9 +1873,9 @@ $skill	= array(
 ); break;
 		case "3122":
 $skill	= array(
-"name"	=> "超回復",
+"name"	=> "超回复",
 "img"	=> "skill_062y.png",
-"exp"	=> "恢復自己損失掉的HP中的60%",
+"exp"	=> "恢复自己损失掉的HP中的60%",
 "sp"	=> "20",
 "type"	=> "0",
 "learn"	=> "4",
@@ -1885,9 +1885,9 @@ $skill	= array(
 ); break;
 		case "3123":
 $skill	= array(
-"name"	=> "自我持續回復",
+"name"	=> "自我持续回复",
 "img"	=> "skill_062x.png",
-"exp"	=> "HP持續回復力+10%",
+"exp"	=> "HP持续回复力+10%",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "3",
@@ -1898,9 +1898,9 @@ $skill	= array(
 ); break;
 		case "3130":
 $skill	= array(
-"name"	=> "詠唱輔助",
+"name"	=> "咏唱辅助",
 "img"	=> "skill_062x.png",
-"exp"	=> "詠唱輔助",
+"exp"	=> "咏唱辅助",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "3",
@@ -1911,9 +1911,9 @@ $skill	= array(
 ); break;
 		case "3135":
 $skill	= array(
-"name"	=> "聖光盾",
+"name"	=> "圣光盾",
 "img"	=> "skill_062x.png",
-"exp"	=> "一回合傷害無效化",
+"exp"	=> "一回合伤害无效化",
 "sp"	=> "10",
 "type"	=> "0",
 "learn"	=> "3",
@@ -1924,7 +1924,7 @@ $skill	= array(
 //-----------------------------------------------// 3200
 		case "3200":
 $skill	= array(
-"name"	=> "勇氣",
+"name"	=> "勇气",
 "img"	=> "skill_044.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -1963,7 +1963,7 @@ $skill	= array(
 						// 3215
 		case "3215":
 $skill	= array(
-"name"	=> "破壞智力",
+"name"	=> "破坏智力",
 "img"	=> "skill_050.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -1976,7 +1976,7 @@ $skill	= array(
 						// 3220
 		case "3220":
 $skill	= array(
-"name"	=> "防禦地帶",
+"name"	=> "防御地带",
 "img"	=> "skill_045.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -1988,7 +1988,7 @@ $skill	= array(
 ); break;
 		case "3221":
 $skill	= array(
-"name"	=> "防護+",
+"name"	=> "防护+",
 "img"	=> "skill_045.png",
 "sp"	=> "90",
 "type"	=> "1",
@@ -2000,7 +2000,7 @@ $skill	= array(
 ); break;
 		case "3222":
 $skill	= array(
-"name"	=> "防護Q",
+"name"	=> "防护Q",
 "img"	=> "skill_045.png",
 "sp"	=> "70",
 "type"	=> "1",
@@ -2013,7 +2013,7 @@ $skill	= array(
 						// 3230
 		case "3230":
 $skill	= array(
-"name"	=> "力量地帶",
+"name"	=> "力量地带",
 "img"	=> "skill_070.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -2025,7 +2025,7 @@ $skill	= array(
 ); break;
 		case "3231":
 $skill	= array(
-"name"	=> "力量地帶[自我]",
+"name"	=> "力量地带[自我]",
 "img"	=> "skill_070.png",
 "sp"	=> "30",
 "type"	=> "1",
@@ -2051,7 +2051,7 @@ $skill	= array(
 //---------------------------- 3250
 		case "3250":
 $skill	= array(
-"name"	=> "力量輔助",
+"name"	=> "力量辅助",
 "img"	=> "skill_044.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -2063,7 +2063,7 @@ $skill	= array(
 ); break;
 		case "3255":
 $skill	= array(
-"name"	=> "魔法輔助",
+"name"	=> "魔法辅助",
 "img"	=> "skill_046.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -2075,7 +2075,7 @@ $skill	= array(
 ); break;
 		case "3265":
 $skill	= array(
-"name"	=> "速度輔助",
+"name"	=> "速度辅助",
 "img"	=> "skill_015.png",
 "sp"	=> "60",
 "type"	=> "1",
@@ -2085,12 +2085,12 @@ $skill	= array(
 "charge"	=> array(30,0),
 "PlusSPD"	=> 20,
 ); break;
-//------------------------------------------------// 3300 - 召喚物強化系
+//------------------------------------------------// 3300 - 召唤物强化系
 		case "3300":
 $skill	= array(
-"name"	=> "召喚物強化",
+"name"	=> "召唤物强化",
 "img"	=> "we_other007.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "4",
@@ -2102,9 +2102,9 @@ $skill	= array(
 ); break;
 		case "3301":
 $skill	= array(
-"name"	=> "召喚物智力強化",
+"name"	=> "召唤物智力强化",
 "img"	=> "we_other007.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "4",
@@ -2116,9 +2116,9 @@ $skill	= array(
 ); break;
 		case "3302":
 $skill	= array(
-"name"	=> "召喚物速度強化",
+"name"	=> "召唤物速度强化",
 "img"	=> "we_other007.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "4",
@@ -2130,9 +2130,9 @@ $skill	= array(
 ); break;
 		case "3303":
 $skill	= array(
-"name"	=> "召喚物防禦強化",
+"name"	=> "召唤物防御强化",
 "img"	=> "we_other007.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "60",
 "type"	=> "0",
 "learn"	=> "4",
@@ -2145,9 +2145,9 @@ $skill	= array(
 ); break;
 		case "3304":
 $skill	= array(
-"name"	=> "召喚物整體強化",
+"name"	=> "召唤物整体强化",
 "img"	=> "we_other007z.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "6",
@@ -2160,9 +2160,9 @@ $skill	= array(
 ); break;
 		case "3305":
 $skill	= array(
-"name"	=> "癒合",
+"name"	=> "愈合",
 "img"	=> "we_other007z.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "6",
@@ -2177,7 +2177,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "敏捷",
 "img"	=> "we_other007z.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "6",
@@ -2190,9 +2190,9 @@ $skill	= array(
 ); break;
 		case "3307":
 $skill	= array(
-"name"	=> "增強",
+"name"	=> "增强",
 "img"	=> "we_other007z.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "6",
@@ -2208,7 +2208,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "全力支持",
 "img"	=> "we_other007z.png",
-"exp"	=> "召喚物強化",
+"exp"	=> "召唤物强化",
 "sp"	=> "200",
 "type"	=> "0",
 "learn"	=> "8",
@@ -2223,9 +2223,9 @@ $skill	= array(
 ); break;
 		case "3310":
 $skill	= array(
-"name"	=> "野獸禁止",
+"name"	=> "野兽禁止",
 "img"	=> "we_other007x.png",
-"exp"	=> "召喚物弱化",
+"exp"	=> "召唤物弱化",
 "sp"	=> "100",
 "type"	=> "0",
 "learn"	=> "6",
@@ -2240,12 +2240,12 @@ $skill	= array(
 "priority"	=> "Summon",
 "limit"=> array("鞭"=>true,),
 ); break;
-//----------------------------------------- 3400 持續回復系
+//----------------------------------------- 3400 持续回复系
 		case "3400":
 $skill	= array(
-"name"	=> "持續回復",
+"name"	=> "持续回复",
 "img"	=> "skill_062x.png",
-"exp"	=> "HP持續回復+5%",
+"exp"	=> "HP持续回复+5%",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "8",
@@ -2256,9 +2256,9 @@ $skill	= array(
 ); break;
 		case "3401":
 $skill	= array(
-"name"	=> "魔力持續回復",
+"name"	=> "魔力持续回复",
 "img"	=> "skill_062x.png",
-"exp"	=> "SP持續回復+5%",
+"exp"	=> "SP持续回复+5%",
 "sp"	=> "150",
 "type"	=> "1",
 "learn"	=> "10",
@@ -2267,12 +2267,12 @@ $skill	= array(
 "charge"	=> array(10,0),
 "SpRegen"	=> 5,
 ); break;
-//----------------------------------------- 3410 魔法陣描系
+//----------------------------------------- 3410 魔法阵を描く系
 		case "3410":
 $skill	= array(
-"name"	=> "魔法陣",
+"name"	=> "魔法阵",
 "img"	=> "ms_01.png",
-"exp"	=> "魔法陣+1",
+"exp"	=> "魔法阵+1",
 "sp"	=> "100",
 "type"	=> "1",
 "learn"	=> "4",
@@ -2282,9 +2282,9 @@ $skill	= array(
 ); break;
 		case "3411":
 $skill	= array(
-"name"	=> "雙重魔法陣",
+"name"	=> "双重魔法阵",
 "img"	=> "ms_01.png",
-"exp"	=> "魔法陣+2",
+"exp"	=> "魔法阵+2",
 "sp"	=> "300",
 "type"	=> "1",
 "learn"	=> "6",
@@ -2294,9 +2294,9 @@ $skill	= array(
 ); break;
 		case "3415":
 $skill	= array(
-"name"	=> "魔法陣",
+"name"	=> "魔法阵",
 "img"	=> "ms_01.png",
-"exp"	=> "魔法陣+1",
+"exp"	=> "魔法阵+1",
 "sp"	=> "200",
 "type"	=> "1",
 "learn"	=> "4",
@@ -2304,12 +2304,12 @@ $skill	= array(
 "charge"	=> array(30,0),
 "MagicCircleAdd"	=> 1,
 ); break;
-//----------------------------------------- 3420 魔法陣消系
+//----------------------------------------- 3420 魔法阵を消す系
 		case "3420":
 $skill	= array(
-"name"	=> "魔法陣消除",
+"name"	=> "魔法阵消除",
 "img"	=> "ms_02.png",
-"exp"	=> "對手魔法陣-1",
+"exp"	=> "对手魔法阵-1",
 "sp"	=> "150",
 "type"	=> "1",
 "learn"	=> "4",
@@ -2319,9 +2319,9 @@ $skill	= array(
 ); break;
 		case "3421"://消費大
 $skill	= array(
-"name"	=> "魔法陣消除",
+"name"	=> "魔法阵消除",
 "img"	=> "ms_02.png",
-"exp"	=> "對手魔法陣-1",
+"exp"	=> "对手魔法阵-1",
 "sp"	=> "240",
 "type"	=> "1",
 "learn"	=> "4",
@@ -2329,7 +2329,7 @@ $skill	= array(
 "charge"	=> array(40,0),
 "MagicCircleDeleteEnemy"	=> 1,
 ); break;
-//----------------------------------------- 3900 便利技
+//----------------------------------------- 3900 テストに便利な技
 		case "3900":
 $skill	= array(
 "name"	=> "中毒",
@@ -2353,9 +2353,9 @@ $skill	= array(
 //////////////////////////////////////////////////
 		case "4000":
 $skill	= array(
-"name"	=> "復原",
+"name"	=> "复原",
 "img"	=> "inst_002.png",
-"exp"	=> "隊列修正",
+"exp"	=> "队列修正",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "5",
@@ -2377,7 +2377,7 @@ $skill	= array(
 ); break;
 		case "5000":
 $skill	= array(
-"name"	=> "地顫",
+"name"	=> "地颤",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "20",
@@ -2443,7 +2443,7 @@ $skill	= array(
 ); break;
 		case "5005":
 $skill	= array(
-"name"	=> "防禦",
+"name"	=> "防御",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "20",
@@ -2457,10 +2457,10 @@ $skill	= array(
 ); break;
 		case "5006":
 $skill	= array(
-"name"	=> "突擊!!!",
+"name"	=> "突击!!!",
 "img"	=> "skill_066.png",
-"exp"	=> "突擊命令",
-"exp"	=> "突擊命令",
+"exp"	=> "突击命令",
+"exp"	=> "突击命令",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "99",
@@ -2471,7 +2471,7 @@ $skill	= array(
 ); break;
 		case "5007":
 $skill	= array(
-"name"	=> "治療",//  他 專用
+"name"	=> "治疗",// うさぎ 他 専用
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "5",
@@ -2496,7 +2496,7 @@ $skill	= array(
 ); break;
 		case "5009":
 $skill	= array(
-"name"	=> "爪擊",
+"name"	=> "爪击",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -2531,7 +2531,7 @@ $skill	= array(
 ); break;
 		case "5012":
 $skill	= array(
-"name"	=> "擲石",
+"name"	=> "掷石",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -2543,7 +2543,7 @@ $skill	= array(
 ); break;
 		case "5013":
 $skill	= array(
-"name"	=> "空襲",
+"name"	=> "空袭",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -2555,7 +2555,7 @@ $skill	= array(
 ); break;
 		case "5014":
 $skill	= array(
-"name"	=> "多重爪擊",
+"name"	=> "多重爪击",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -2580,7 +2580,7 @@ $skill	= array(
 ); break;
 		case "5016":
 $skill	= array(
-"name"	=> "飛行",
+"name"	=> "飞行",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "10",
@@ -2593,7 +2593,7 @@ $skill	= array(
 ); break;
 		case "5017":
 $skill	= array(
-"name"	=> "幸運",
+"name"	=> "幸运",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -2609,7 +2609,7 @@ $skill	= array(
 ); break;
 		case "5018":
 $skill	= array(
-"name"	=> "火之氣息",
+"name"	=> "火之气息",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -2632,7 +2632,7 @@ $skill	= array(
 ); break;
 		case "5020":
 $skill	= array(
-"name"	=> "憤怒火焰",
+"name"	=> "愤怒火焰",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "300",
@@ -2655,7 +2655,7 @@ $skill	= array(
 ); break;
 		case "5022":
 $skill	= array(
-"name"	=> "命運女神",
+"name"	=> "命运女神",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "200",
@@ -2673,7 +2673,7 @@ $skill	= array(
 ); break;
 		case "5023":
 $skill	= array(
-"name"	=> "厄運",
+"name"	=> "厄运",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "500",
@@ -2685,7 +2685,7 @@ $skill	= array(
 ); break;
 		case "5024":
 $skill	= array(
-"name"	=> "懲罰者",
+"name"	=> "惩罚者",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "500",
@@ -2696,7 +2696,7 @@ $skill	= array(
 ); break;
 		case "5025":
 $skill	= array(
-"name"	=> "聖光風暴",
+"name"	=> "圣光风暴",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "100",
@@ -2708,7 +2708,7 @@ $skill	= array(
 ); break;
 		case "5026":
 $skill	= array(
-"name"	=> "銷毀",
+"name"	=> "销毁",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -2719,7 +2719,7 @@ $skill	= array(
 ); break;
 		case "5027":
 $skill	= array(
-"name"	=> "渦流",
+"name"	=> "涡流",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -2743,7 +2743,7 @@ $skill	= array(
 ); break;
 		case "5029":
 $skill	= array(
-"name"	=> "雷神之錘",
+"name"	=> "雷神之锤",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -2755,9 +2755,9 @@ $skill	= array(
 ); break;
 		case "5030":
 $skill	= array(
-"name"	=> "靈魂復甦",
+"name"	=> "灵魂复苏",
 "img"	=> "skill_008.png",
-"exp"	=> "復甦",
+"exp"	=> "复苏",
 "sp"	=> "400",
 "type"	=> "1",
 "learn"	=> "10",
@@ -2769,7 +2769,7 @@ $skill	= array(
 ); break;
 		case "5031":
 $skill	= array(
-"name"	=> "錘擊",
+"name"	=> "锤击",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -2780,7 +2780,7 @@ $skill	= array(
 ); break;
 		case "5032":
 $skill	= array(
-"name"	=> "地面攻擊",
+"name"	=> "地面攻击",
 "img"	=> "skill_066.png",
 "sp"	=> "50",
 "type"	=> "0",
@@ -2793,7 +2793,7 @@ $skill	= array(
 ); break;
 		case "5033":
 $skill	= array(
-"name"	=> "武器鍛造",
+"name"	=> "武器锻造",
 "img"	=> "skill_066.png",
 "sp"	=> "50",
 "type"	=> "0",
@@ -2805,7 +2805,7 @@ $skill	= array(
 ); break;
 		case "5034":
 $skill	= array(
-"name"	=> "石像鬼召喚",
+"name"	=> "石像鬼召唤",
 "img"	=> "skill_066.png",
 "sp"	=> "50",
 "type"	=> "0",
@@ -2828,7 +2828,7 @@ $skill	= array(
 ); break;
 		case "5036":
 $skill	= array(
-"name"	=> "凝視",
+"name"	=> "凝视",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -2839,7 +2839,7 @@ $skill	= array(
 ); break;
 		case "5037":
 $skill	= array(
-"name"	=> "眼射線",
+"name"	=> "眼射线",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "1",
@@ -2852,7 +2852,7 @@ $skill	= array(
 ); break;
 		case "5038":
 $skill	= array(
-"name"	=> "暗之氣息",
+"name"	=> "暗之气息",
 "img"	=> "skill_066.png",
 "sp"	=> "200",
 "type"	=> "1",
@@ -2865,7 +2865,7 @@ $skill	= array(
 ); break;
 		case "5039":
 $skill	= array(
-"name"	=> "毒氣",
+"name"	=> "毒气",
 "img"	=> "skill_066.png",
 "sp"	=> "100",
 "type"	=> "0",
@@ -2876,7 +2876,7 @@ $skill	= array(
 ); break;
 		case "5040":
 $skill	= array(
-"name"	=> "黑暗聖光",
+"name"	=> "黑暗圣光",
 "img"	=> "skill_066.png",
 "sp"	=> "300",
 "type"	=> "1",
@@ -2888,7 +2888,7 @@ $skill	= array(
 ); break;
 		case "5041":
 $skill	= array(
-"name"	=> "黑暗迷霧",
+"name"	=> "黑暗迷雾",
 "img"	=> "skill_066.png",
 "sp"	=> "300",
 "type"	=> "1",
@@ -2933,7 +2933,7 @@ $skill	= array(
 ); break;
 		case "5045":
 $skill	= array(
-"name"	=> "冰之氣息",
+"name"	=> "冰之气息",
 "img"	=> "skill_066.png",
 "sp"	=> "40",
 "type"	=> "0",
@@ -2944,7 +2944,7 @@ $skill	= array(
 ); break;
 		case "5046":
 $skill	= array(
-"name"	=> "冰裝甲",
+"name"	=> "冰装甲",
 "img"	=> "skill_066.png",
 "sp"	=> "100",
 "type"	=> "1",
@@ -2969,7 +2969,7 @@ $skill	= array(
 ); break;
 		case "5048":
 $skill	= array(
-"name"	=> "詛咒咆哮",
+"name"	=> "诅咒咆哮",
 "img"	=> "skill_066.png",
 "sp"	=> "120",
 "type"	=> "0",
@@ -2980,7 +2980,7 @@ $skill	= array(
 ); break;
 		case "5049":
 $skill	= array(
-"name"	=> "歡呼",
+"name"	=> "欢呼",
 "img"	=> "skill_066.png",
 "sp"	=> "60",
 "type"	=> "0",
@@ -2991,7 +2991,7 @@ $skill	= array(
 ); break;
 		case "5050":
 $skill	= array(
-"name"	=> "冰重擊",
+"name"	=> "冰重击",
 "img"	=> "skill_066.png",
 "sp"	=> "100",
 "type"	=> "1",
@@ -3014,7 +3014,7 @@ $skill	= array(
 ); break;
 		case "5052":
 $skill	= array(
-"name"	=> "即爆炸彈",
+"name"	=> "即爆炸弹",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -3025,7 +3025,7 @@ $skill	= array(
 ); break;
 		case "5053":
 $skill	= array(
-"name"	=> "冰牆",
+"name"	=> "冰墙",
 "img"	=> "skill_066.png",
 "sp"	=> "300",
 "type"	=> "1",
@@ -3037,7 +3037,7 @@ $skill	= array(
 ); break;
 		case "5054":
 $skill	= array(
-"name"	=> "絕對零度",
+"name"	=> "绝对零度",
 "img"	=> "skill_066.png",
 "sp"	=> "200",
 "type"	=> "1",
@@ -3048,7 +3048,7 @@ $skill	= array(
 ); break;
 		case "5055":
 $skill	= array(
-"name"	=> "輻射加熱",
+"name"	=> "辐射加热",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "1",
@@ -3071,7 +3071,7 @@ $skill	= array(
 ); break;
 		case "5057":
 $skill	= array(
-"name"	=> "爪擊",
+"name"	=> "爪击",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -3096,7 +3096,7 @@ $skill	= array(
 ); break;
 		case "5059":
 $skill	= array(
-"name"	=> "掠奪",
+"name"	=> "掠夺",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -3108,7 +3108,7 @@ $skill	= array(
 ); break;
 		case "5060":
 $skill	= array(
-"name"	=> "奪取裝甲",
+"name"	=> "夺取装甲",
 "img"	=> "skill_066.png",
 "sp"	=> "0",
 "type"	=> "0",
@@ -3120,7 +3120,7 @@ $skill	= array(
 ); break;
 		case "5061":
 $skill	= array(
-"name"	=> "強化掠奪",
+"name"	=> "强化掠夺",
 "img"	=> "skill_066.png",
 "sp"	=> "100",
 "type"	=> "0",
@@ -3146,7 +3146,7 @@ $skill	= array(
 $skill	= array(
 "name"	=> "清醒",
 "img"	=> "skill_008.png",
-"exp"	=> "復甦",
+"exp"	=> "复苏",
 "sp"	=> "50",
 "type"	=> "1",
 "learn"	=> "10",
@@ -3170,7 +3170,7 @@ $skill	= array(
 ); break;
 		case "5065":
 $skill	= array(
-"name"	=> "香蕉射擊",
+"name"	=> "香蕉射击",
 "img"	=> "banana.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -3183,7 +3183,7 @@ $skill	= array(
 ); break;
 		case "5066":
 $skill	= array(
-"name"	=> "香蕉回復",
+"name"	=> "香蕉回复",
 "img"	=> "banana.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3199,7 +3199,7 @@ $skill	= array(
 ); break;
 		case "5067":
 $skill	= array(
-"name"	=> "香蕉防護",
+"name"	=> "香蕉防护",
 "img"	=> "banana.png",
 "exp"	=> "",
 "sp"	=> "50",
@@ -3211,7 +3211,7 @@ $skill	= array(
 ); break;
 		case "5068":
 $skill	= array(
-"name"	=> "召喚奴隸",
+"name"	=> "召唤奴隶",
 "img"	=> "banana.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3223,7 +3223,7 @@ $skill	= array(
 ); break;
 		case "5069":
 $skill	= array(
-"name"	=> "召喚奴隸",
+"name"	=> "召唤奴隶",
 "img"	=> "banana.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3235,9 +3235,9 @@ $skill	= array(
 ); break;
 		case "5070":
 $skill	= array(
-"name"	=> "召喚奇美拉",
+"name"	=> "召唤奇美拉",
 "img"	=> "skill_029.png",
-"exp"	=> "合成獸召喚",
+"exp"	=> "合成兽召唤",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "20",
@@ -3247,9 +3247,9 @@ $skill	= array(
 ); break;
 		case "5071":
 $skill	= array(
-"name"	=> "召喚雪男",
+"name"	=> "召唤雪男",
 "img"	=> "skill_029.png",
-"exp"	=> "合成獸召喚",
+"exp"	=> "合成兽召唤",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "20",
@@ -3259,9 +3259,9 @@ $skill	= array(
 ); break;
 		case "5072":
 $skill	= array(
-"name"	=> "召喚野豬",
+"name"	=> "召唤野猪",
 "img"	=> "skill_029.png",
-"exp"	=> "合成獸召喚",
+"exp"	=> "合成兽召唤",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "20",
@@ -3271,9 +3271,9 @@ $skill	= array(
 ); break;
 		case "5073":
 $skill	= array(
-"name"	=> "召喚獅子",
+"name"	=> "召唤狮子",
 "img"	=> "skill_029.png",
-"exp"	=> "合成獸召喚",
+"exp"	=> "合成兽召唤",
 "sp"	=> "0",
 "type"	=> "0",
 "learn"	=> "20",
@@ -3291,10 +3291,10 @@ $skill	= array(
 "target"=> array("enemy","all",1),
 "pow"	=> "0",
 ); break;
-						// 敵專用召還狼技
+						// 敵専用召還狼技
 		case "5800":
 $skill	= array(
-"name"	=> "群召喚",
+"name"	=> "群召唤",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3306,7 +3306,7 @@ $skill	= array(
 ); break;
 		case "5801":
 $skill	= array(
-"name"	=> "召喚奴隸",
+"name"	=> "召唤奴隶",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3318,7 +3318,7 @@ $skill	= array(
 ); break;
 		case "5802":
 $skill	= array(
-"name"	=> "死者復生",
+"name"	=> "死者复生",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "80",
@@ -3341,7 +3341,7 @@ $skill	= array(
 ); break;
 		case "5804":
 $skill	= array(
-"name"	=> "召喚奴隸",
+"name"	=> "召唤奴隶",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "200",
@@ -3375,7 +3375,7 @@ $skill	= array(
 ); break;
 		case "5807":
 $skill	= array(
-"name"	=> "召喚獵手之狼",
+"name"	=> "召唤猎手之狼",
 "img"	=> "skill_066.png",
 "exp"	=> "",
 "sp"	=> "0",
@@ -3385,10 +3385,10 @@ $skill	= array(
 "summon"	=> array(1091),
 ); break;
 /*----------------------------------------------*
-*   7000 - 7999 PassiveSkills                   *
+*   7000 - 7999 PassiveSkills（被动技能）        *
 *-----------------------------------------------*
 	Passive 設定項目
-"passive"	=> 1,//
+"passive"	=> 1,//被动技能
 "p_maxhp"	=> "30",//最大HP+30
 "p_maxsp"	=> "10",//最大SP+10
 "p_str"	=> "1",//最大str+
@@ -3426,7 +3426,7 @@ $skill	= array(
 ); break;
 		case "7003":
 $skill	= array(
-"name"	=> "生命輔助1",
+"name"	=> "生命辅助1",
 "img"	=> "acce_003c.png",
 "exp"	=> "HP+30",
 "learn"	=> "4",
@@ -3435,7 +3435,7 @@ $skill	= array(
 ); break;
 		case "7004":
 $skill	= array(
-"name"	=> "生命輔助2",
+"name"	=> "生命辅助2",
 "img"	=> "acce_003c.png",
 "exp"	=> "HP+70",
 "learn"	=> "9",
@@ -3444,7 +3444,7 @@ $skill	= array(
 ); break;
 		case "7005":
 $skill	= array(
-"name"	=> "生命輔助3",
+"name"	=> "生命辅助3",
 "img"	=> "acce_003c.png",
 "exp"	=> "HP+150",
 "learn"	=> "21",
@@ -3454,7 +3454,7 @@ $skill	= array(
 							// HealBonus
 		case "7005":
 $skill	= array(
-"name"	=> "生命輔助3",
+"name"	=> "生命辅助3",
 "img"	=> "acce_003c.png",
 "exp"	=> "HP+150",
 "learn"	=> "21",
@@ -3466,9 +3466,9 @@ $skill	= array(
 //----------------------------------------------//
 		case "9000":
 $skill	= array(
-"name"	=> "* 繼續思考",
-"name2"	=> "* 考慮一下（？）",
-"exp"	=> "多重判定，引用 swto 的話就是and",
+"name"	=> "* 继续思考",
+"name2"	=> "* 考虑一下（？）",
+"exp"	=> "多重判定，引用 swto 的话就是and",
 "img"	=> "skill_040.png",
 "learn"	=> "4",
 "type"	=> false,

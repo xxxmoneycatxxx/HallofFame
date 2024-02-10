@@ -1,23 +1,23 @@
-<?php
+﻿<?php
 /*
-	茶嚨山績澀妥木
+	どっかおかしくて茶咙山绩されてないので涩妥ならば木して
 */
 include_once(DATA_MONSTER);
 ?>
 <div style="margin:0 15px">
-<h4>【</h4>
+<h4>モンスタ〖</h4>
 <table class="align-center" style="width:740px" cellspacing="0">
 <?php
 $List	= array(
-1000	=> array("grass","SP、強攻擊程度。"),
-1001	=> array("grass","SP、強攻擊程度。"),
-1002	=> array("grass","後列押出攻擊。"),
-1003	=> array("grass","強。"),
-1005	=> array("grass","低強感。"),
-1009	=> array("grass","HP高。"),
-1012	=> array("cave","仲間呼吸血攻擊。"),
-1014	=> array("cave","魔法攻擊倒。"),
-1017	=> array("cave","洞窟。倒奧行。"),
+1000	=> array("grass","SPがあるときは、強い攻撃をたまにしてくる程度。"),
+1001	=> array("grass","SPがあるときは、強い攻撃をたまにしてくる程度。"),
+1002	=> array("grass","後列に押し出す攻撃をする。"),
+1003	=> array("grass","そこそこな強さ。"),
+1005	=> array("grass","レベルが低いと強く感じる。"),
+1009	=> array("grass","HPが高い。"),
+1012	=> array("cave","仲間を呼んで吸血攻撃をしてくる。"),
+1014	=> array("cave","魔法で攻撃しないと倒しにくい。"),
+1017	=> array("cave","洞窟のボス。倒すと奥に行けるようになる。"),
 );
 $Detail	= "<tr>
 <td class=\"td6\">Image</td>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 class Auction {
 	var $fp;
 	var $AuctionType;
@@ -32,10 +32,10 @@ class Auction {
 			if($Article["bidder"]) {
 				$this->UserGetItem($Article["bidder"],$Article["item"],$Article["amount"]);
 				$this->UserGetMoney($Article["exhibitor"],$Article["price"]);
-				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個 ".$this->UserGetNameFromTemp($Article["bidder"])."".MoneyFormat($Article["price"])." <span class=\"recover\">中標。</span>");
+				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 ".$this->UserGetNameFromTemp($Article["bidder"])."".MoneyFormat($Article["price"])." <span class=\"recover\">中标。</span>");
 			} else {
 				$this->UserGetItem($Article["exhibitor"],$Article["item"],$Article["amount"]);
-				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個<span class=\"dmg\">流標。</span>");
+				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个<span class=\"dmg\">流标。</span>");
 			}
 			unset($this->Article["$no"]);
 			$this->DataChange	= true;
@@ -149,17 +149,17 @@ class Auction {
 		$this->Article["$ArticleNo"]["bidder"]	= $Bidder;
 		$this->DataChange	= true;
 		$item	= LoadItemData($Article["item"]);
-		$this->AddLog("No.".$Article["No"]." <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個 ".MoneyFormat($BidPrice)."  ".$BidderName." <span class=\"support\">出價。</span>");
+		$this->AddLog("No.".$Article["No"]." <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 ".MoneyFormat($BidPrice)."  ".$BidderName." <span class=\"support\">出价。</span>");
 		return true;
 	}
 	function ItemShowArticle($bidding=false) {
 		if(count($this->Article) == 0) {
-			print("無拍賣物(No auction)<br />\n");
+			print("无拍卖物(No auction)<br />\n");
 			return false;
 		} else {
 			$Now	= time();
-			$exp	= '<tr><td class="td9">編號</td><td class="td9">價格</td><td class="td9">投標人</td><td class="td9">出價數</td><td class="td9">其餘</td>'.
-					'<td class="td9">參展者</td><td class="td9"> 描述 </td></tr>'."\n";
+			$exp	= '<tr><td class="td9">编号</td><td class="td9">价格</td><td class="td9">投标人</td><td class="td9">出价数</td><td class="td9">其余</td>'.
+					'<td class="td9">参展者</td><td class="td9"> 描述 </td></tr>'."\n";
 			print('<table style="width:725px;text-align:center" cellpadding="0" cellspacing="0" border="0">'."{$exp}\n");
 			foreach($this->Article as $Article) {
 				print("<tr><td class=\"td7\">");
@@ -186,10 +186,10 @@ class Auction {
 				$item	= LoadItemData($Article["item"]);
 				print('<form action="?menu=auction" method="post">');
 				if($bidding) {
-					print('<a href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\';return false;)">招投標</a>');
+					print('<a href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\';return false;)">招投标</a>');
 					print('<span style="display:none" id="Bid'.$Article["No"].'">');
 					print(' <input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
-					print('<input type="submit" value="出價" class="btn">');
+					print('<input type="submit" value="出价" class="btn">');
 					print('<input type="hidden" name="ArticleNo" value="'.$Article["No"].'">');
 					print('</span>');
 				}
@@ -203,20 +203,20 @@ class Auction {
 	}
 	function ItemShowArticle2($bidding=false) {
 		if(count($this->Article) == 0) {
-			print("無拍賣物(No auction)<br />\n");
+			print("无拍卖物(No auction)<br />\n");
 			return false;
 		} else {
 			$Now	= time();
 			if($this->sort)
 				${"Style_".$this->sort}	= ' class="a0"';
 			$exp	= '<tr><td class="td9"><a href="?menu='.$this->QUERY.'&sort=no"'.$Style_no.'>No</a></td>'.
-					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=time"'.$Style_time.'>其餘</td>'.
-					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=price"'.$Style_price.'>價格</a>'.
+					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=time"'.$Style_time.'>其余</td>'.
+					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=price"'.$Style_price.'>价格</a>'.
 					'<br /><a href="?menu='.$this->QUERY.'&sort=rprice"'.$Style_rprice.'>（登）</a></td>'.
 					'<td class="td9">Item</td>'.
 					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=bid"'.$Style_bid.'>Bids</a></td>'.
-					'<td class="td9">投標人</td><td class="td9">參展人</td></tr>'."\n";
-			print("所列項目總數:".$this->ItemAmount()."\n");
+					'<td class="td9">投标人</td><td class="td9">参展人</td></tr>'."\n";
+			print("所列项目总数:".$this->ItemAmount()."\n");
 			print('<table style="width:725px;text-align:center" cellpadding="0" cellspacing="0" border="0">'."\n");
 			print($exp);
 			foreach($this->Article as $Article) {
@@ -253,10 +253,10 @@ class Auction {
 				print('<form action="?menu=auction" method="post">');
 				// 竞标フォーム
 				if($bidding) {
-					print('<strong>我要競標：</strong>');
-					print('<span id="Bid'.$Article["No"].'">');
+					print('<a style="margin:0 10px" href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\');return false;">竞标</a>');
+					print('<span style="display:none" id="Bid'.$Article["No"].'">');
 					print(' <input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
-					print('<input type="submit" value="出價" class="btn">');
+					print('<input type="submit" value="出价" class="btn">');
 					print('<input type="hidden" name="ArticleNo" value="'.$Article["No"].'">');
 					print('</span>');
 				}
@@ -325,7 +325,7 @@ class Auction {
 			);
 		array_unshift($this->Article,$New);
 		$itemData	= LoadItemData($item);
-		$this->AddLog("No.".$this->ArticleNo."  <img src=\"".IMG_ICON.$itemData["img"]."\"><span class=\"bold\">{$itemData[name]} x{$amount}</span>個<span class=\"charge\"> 加入拍賣。</span>");
+		$this->AddLog("No.".$this->ArticleNo."  <img src=\"".IMG_ICON.$itemData["img"]."\"><span class=\"bold\">{$itemData[name]} x{$amount}</span>个<span class=\"charge\"> 加入拍卖。</span>");
 		$this->DataChange	= true;
 	}
 //////////////////////////////////////////////
@@ -543,7 +543,7 @@ class Auction {
 		} else {
 			$hour	= floor($left/3600);
 			$minutes	= floor(($left%3600)/60);
-			return "{$hour}小時$minutes}分";
+			return "{$hour}小时$minutes}分";
 		}
 	}
 //////////////////////////////////////////////////
@@ -555,4 +555,3 @@ class Auction {
 			return sprintf("%0.0f",$price + $bottom);
 	}
 ?>
-
