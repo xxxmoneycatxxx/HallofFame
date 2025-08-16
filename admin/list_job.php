@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../basis.css" type="text/css">
+<link rel="stylesheet" href="../css/basis.css" type="text/css">
 <title>JOB List</title>
 <style type="text/css">
 <!--

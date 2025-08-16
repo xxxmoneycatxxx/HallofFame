@@ -3600,8 +3600,8 @@ print("</div>\n");
 	function HtmlScript() {
 		?>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="./basis.css" type="text/css">
-<link rel="stylesheet" href="./style.css" type="text/css">
+<link rel="stylesheet" href="./css/basis.css" type="text/css">
+<link rel="stylesheet" href="./css/style.css" type="text/css">
 <?php 
 	}
 

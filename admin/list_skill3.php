@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../basis.css" type="text/css">
-<link rel="stylesheet" href="../style.css" type="text/css">
+<link rel="stylesheet" href="../css/basis.css" type="text/css">
+<link rel="stylesheet" href="../css/style.css" type="text/css">
 <title>skl_list3</title>
 <style type="text/css">
 <!--
