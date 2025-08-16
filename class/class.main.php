@@ -1620,20 +1620,27 @@ print <<< JS_HTML
 <script type="text/javascript">
 <!--
 function toggleCSS(id) {
-Element.toggleClassName('i'+id+'a', 'tdToggleBg');
-Element.toggleClassName('i'+id+'b', 'tdToggleBg');
-Element.toggleClassName('i'+id+'c', 'tdToggleBg');
-Element.toggleClassName('i'+id+'d', 'tdToggleBg');
-Field.focus('text_'+id);
+    // 切换四组元素的 CSS 类名
+    ['a','b','c','d'].forEach(suffix => {
+        const el = document.getElementById('i' + id + suffix);
+        if (el) el.classList.toggle('tdToggleBg');
+    });
+    // 聚焦输入框
+    const textField = document.getElementById('text_' + id);
+    if (textField) textField.focus();
 }
 function toggleCheckBox(id) {
-if($('check_'+id).checked) {
-  $('check_'+id).checked = false;
-} else {
-  $('check_'+id).checked = true;
-  Field.focus('text_'+id);
-}
-toggleCSS(id);
+    const checkBox = document.getElementById('check_' + id);
+    if (!checkBox) return;
+    // 切换复选框状态
+    checkBox.checked = !checkBox.checked;
+    // 聚焦输入框（仅在勾选时）
+    if (checkBox.checked) {
+        const textField = document.getElementById('text_' + id);
+        if (textField) textField.focus();
+    }
+    // 更新样式
+    toggleCSS(id);
 }
 // -->
 </script>
@@ -1719,20 +1726,27 @@ print <<< JS_HTML
 <script type="text/javascript">
 <!--
 function toggleCSS(id) {
-Element.toggleClassName('i'+id+'a', 'tdToggleBg');
-Element.toggleClassName('i'+id+'b', 'tdToggleBg');
-Element.toggleClassName('i'+id+'c', 'tdToggleBg');
-Element.toggleClassName('i'+id+'d', 'tdToggleBg');
-Field.focus('text_'+id);
+    // 切换四组元素的 CSS 类名
+    ['a','b','c','d'].forEach(suffix => {
+        const el = document.getElementById('i' + id + suffix);
+        if (el) el.classList.toggle('tdToggleBg');
+    });
+    // 聚焦输入框
+    const textField = document.getElementById('text_' + id);
+    if (textField) textField.focus();
 }
 function toggleCheckBox(id) {
-if($('check_'+id).checked) {
-  $('check_'+id).checked = false;
-} else {
-  $('check_'+id).checked = true;
-  Field.focus('text_'+id);
-}
-toggleCSS(id);
+    const checkBox = document.getElementById('check_' + id);
+    if (!checkBox) return;
+    // 切换复选框状态
+    checkBox.checked = !checkBox.checked;
+    // 聚焦输入框（仅在勾选时）
+    if (checkBox.checked) {
+        const textField = document.getElementById('text_' + id);
+        if (textField) textField.focus();
+    }
+    // 更新样式
+    toggleCSS(id);
 }
 // -->
 </script>
@@ -1769,14 +1783,14 @@ JS_HTML;
 //////////////////////////////////////////////////
 //	打工処理
 	function WorkProcess() {
-		/*if($_POST["amount"]) {
+		if($_POST["amount"]) {
 			$amount	= (int)$_POST["amount"];
 			// 1以上10以下
 			if(0 < $amount && $amount < 11) {
 				$time	= $amount * 100;
 				$money	= $amount * 500;
 				if($this->WasteTime($time)) {
-					ShowResult(MoneyFormat($money)." げっとした！","margin15");
+					ShowResult(MoneyFormat($money)." 获得了！","margin15");
 					$this->GetMoney($money);
 					return true;
 				} else {
@@ -1784,7 +1798,7 @@ JS_HTML;
 					return false;
 				}
 			}
-		}*/
+		}
 	}
 //////////////////////////////////////////////////
 //	打工表示

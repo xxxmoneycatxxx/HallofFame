@@ -9,7 +9,7 @@ class Ranking {
 	var $UserRecord;
 
 //////////////////////////////////////////////
-// ファイルから読み込んでランキングを配列にする
+// 文件から読み込んでランキングを配列にする
 /*
 
 	$this->Ranking[0][0]= *********;// 首位
@@ -138,7 +138,7 @@ class Ranking {
 			//if($message != "Battle")
 			//	return array($message,$result);
 
-			// 戦闘を行って勝利なら順位交代
+			// 戦闘闘を行って勝利なら順位交代
 			/*
 			if($message == "Battle" && $result === 0) {
 				$this->ChangePlace($MyID,$RivalID);
@@ -170,18 +170,18 @@ class Ranking {
 			return "DEFENDER_NO_ID";
 		}
 
-		// お互いのランキンぐ用のパーティーを読み込む
+		// お互いのランキンぐ用のパーテティーを読み込む
 		$Party_Challenger	= $user->RankParty();
 		$Party_Defender		= $Rival->RankParty();
 
 
-		// ランク用パーティーがありません！！！
+		// ランク用パーテティーがありません！！！
 		if($Party_Challenger === false) {
 			ShowError("戦うメンバーがいません（？）。");
 			return "CHALLENGER_NO_PARTY";
 		}
 
-		// ランク用パーティーがありません！！！
+		// ランク用パーテティーがありません！！！
 		if($Party_Defender === false) {
 			//$defender->RankRecord(0,"DEFEND",$DefendMatch);
 			//$defender->SaveData();
@@ -196,11 +196,11 @@ class Ranking {
 		$battle->SetBackGround("colosseum");
 		$battle->SetResultType(1);// 決着つかない場合は生存者の数で決めるようにする
 		$battle->SetTeamName($user->name.$UserPlace,$Rival->name.$RivalPlace);
-		$battle->Process();//戦闘開始
+		$battle->Process();//戦闘闘開始
 		$battle->RecordLog("RANK");
-		$Result	= $battle->ReturnBattleResult();// 戦闘結果
+		$Result	= $battle->ReturnBattleResult();// 戦闘闘結果
 
-		// 戦闘を受けて立った側の成績はここで変える。
+		// 戦闘闘を受けて立った側の成績はここで変える。
 		//$defender->RankRecord($Result,"DEFEND",$DefendMatch);
 		//$defender->SaveData();
 
@@ -377,11 +377,11 @@ class Ranking {
 			// 順位アイコン
 			switch($Place) {
 				case 0:
-					print('<img src="'.IMG_ICON.'crown01.png" class="vcent" />'); break;
+					print(''); break;
 				case 1:
-					print('<img src="'.IMG_ICON.'crown02.png" class="vcent" />'); break;
+					print(''); break;
 				case 2:
-					print('<img src="'.IMG_ICON.'crown03.png" class="vcent" />'); break;
+					print(''); break;
 				default:
 					if($Place == $LastPlace)
 						print("底");
@@ -391,14 +391,30 @@ class Ranking {
 			print("</td><td class=\"td8\">\n");
 			foreach($this->Ranking["$Place"] as $SubRank => $data) {
 				list($Name,$R)	= $this->LoadUserName($data["id"],true);//成績も読み込む
-				$WinProb	= $R[all]?sprintf("%0.0f",($R[win]/$R[all])*100):"--";
-				$Record	= "(".($R[all]?$R[all]:"0")."战 ".
-						($R[win]?$R[win]:"0")."胜".
-						($R[lose]?$R[lose]:"0")."败 ".
-						($R[all]-$R[win]-$R[lose])."引 ".
-						($R[defend]?$R[defend]:"0")."防 ".
+				
+				// 安全获取战绩数据
+				$all = isset($R['all']) ? $R['all'] : 0;
+				$win = isset($R['win']) ? $R['win'] : 0;
+				$lose = isset($R['lose']) ? $R['lose'] : 0;
+				$defend = isset($R['defend']) ? $R['defend'] : 0;
+				
+				// 计算平局次数
+				$draw = $all - $win - $lose;
+				
+				// 计算胜率（需要处理除零错误）
+				if($all > 0) {
+					$WinProb = sprintf("%0.0f", ($win / $all) * 100);
+				} else {
+					$WinProb = "--";
+				}
+				
+				$Record	= "(".$all."战 ".$win."胜".
+						$lose."败 ".
+						$draw."引 ".
+						$defend."防 ".
 						"胜率".$WinProb.'%'.
 						")";
+				
 				if(isset($BoldRank) && $BoldRank["0"] == $Place && $BoldRank["1"] == $SubRank) {
 					print('<span class="bold u">'.$Name."</span> {$Record}");
 				} else {
@@ -450,15 +466,25 @@ class Ranking {
 //	ユーザの名前を呼び出す
 	function LoadUserName($id,$rank=false) {
 
-		if(!$this->UserName["$id"]) {
+		if(!isset($this->UserName[$id])) {
 			$User	= new user($id);
 			$Name	= $User->Name();
 			$Record	= $User->RankRecordLoad();
 			if($Name !== false) {
-				$this->UserName["$id"]	= $Name;
-				$this->UserRecord["$id"]	= $Record;
+				$this->UserName[$id]	= $Name;
+				
+				// 确保记录是数组格式
+				if($rank && !is_array($Record)) {
+					$Record = [
+						'all' => 0,
+						'win' => 0,
+						'lose' => 0,
+						'defend' => 0
+					];
+				}
+				$this->UserRecord[$id]	= $Record;
 			} else {
-				$this->UserName["$id"]	= "-";
+				$this->UserName[$id]	= "-";
 
 				$this->DeleteRank($id);
 
@@ -472,10 +498,20 @@ class Ranking {
 			}
 		}
 
-		if($rank)
-			return array($this->UserName["$id"],$this->UserRecord["$id"]);
-		else
-			return $this->UserName["$id"];
+		if($rank) {
+			// 确保返回数组格式
+			if(!is_array($this->UserRecord[$id])) {
+				$this->UserRecord[$id] = [
+					'all' => 0,
+					'win' => 0,
+					'lose' => 0,
+					'defend' => 0
+				];
+			}
+			return array($this->UserName[$id], $this->UserRecord[$id]);
+		} else {
+			return $this->UserName[$id];
+		}
 	}
 //////////////////////////////////////////////////
 //	
