@@ -501,8 +501,8 @@ print("<p>基本設定</p>\n
 <table border=\"1\">\n
 <tr><td>定义</td><td>说明</td><td>值</td></tr>
 <tr><td>TITLE</td><td>标题</td><td>".TITLE."</td></tr>\n
-<tr><td>MAX_TIME</td><td>最大Time</td><td>".MAX_TIME."Time</td></tr>\n
-<tr><td>TIME_GAIN_DAY</td><td>每天所给的Time</td><td>".TIME_GAIN_DAY."Time</td></tr>\n
+<tr><td>MAX_TIME</td><td>最大体力</td><td>".MAX_TIME."Time</td></tr>\n
+<tr><td>TIME_GAIN_DAY</td><td>每天所给的体力</td><td>".TIME_GAIN_DAY."Time</td></tr>\n
 <tr><td>CONTROL_PERIOD</td><td>自动管理周期</td><td>".CONTROL_PERIOD."s(".(CONTROL_PERIOD/60/60)."hour)"."</td></tr>\n
 <tr><td>RECORD_IP</td><td>IP记录(1=ON)</td><td>".RECORD_IP."</td></tr>\n
 <tr><td>SELLING_PRICE</td><td>卖值</td><td>".SELLING_PRICE."</td></tr>\n
@@ -515,11 +515,11 @@ print("<p>基本設定</p>\n
 <tr><td>RANK_TEAM_SET_TIME</td><td>排名队伍設定周期</td><td>".RANK_TEAM_SET_TIME."s(".(RANK_TEAM_SET_TIME/60/60)."hour)"."</td></tr>\n
 <tr><td>RANK_BATTLE_NEXT_LOSE</td><td>失败后再挑战时间</td><td>".RANK_BATTLE_NEXT_LOSE."s(".(RANK_BATTLE_NEXT_LOSE/60/60)."hour)"."</td></tr>\n
 <tr><td>RANK_BATTLE_NEXT_WIN</td><td>赢得排名站再战的时间</td><td>".RANK_BATTLE_NEXT_WIN."s</td></tr>\n
-<tr><td>NORMAL_BATTLE_TIME</td><td>普通战斗消耗时间</td><td>".NORMAL_BATTLE_TIME."Time</td></tr>\n
+<tr><td>NORMAL_BATTLE_TIME</td><td>普通战斗消耗体力</td><td>".NORMAL_BATTLE_TIME."Time</td></tr>\n
 <tr><td>MAX_BATTLE_LOG</td><td>战斗记录保存数(通常怪)</td><td>".MAX_BATTLE_LOG."</td></tr>\n
 <tr><td>MAX_BATTLE_LOG_UNION</td><td>战斗记录保存数(BOSS)</td><td>".MAX_BATTLE_LOG_UNION."</td></tr>\n
 <tr><td>MAX_BATTLE_LOG_RANK</td><td>战斗记录保存数(排名)</td><td>".MAX_BATTLE_LOG_RANK."</td></tr>\n
-<tr><td>UNION_BATTLE_TIME</td><td>BOSS战消耗时间</td><td>".UNION_BATTLE_TIME."Time</td></tr>\n
+<tr><td>UNION_BATTLE_TIME</td><td>BOSS战消耗体力</td><td>".UNION_BATTLE_TIME."Time</td></tr>\n
 <tr><td>UNION_BATTLE_NEXT</td><td>BOSS战再挑战时间</td><td>".UNION_BATTLE_NEXT."s</td></tr>\n
 <tr><td>BBS_BOTTOM_TOGGLE</td><td>下边是否加上bbs链接(1=ON)</td><td>".BBS_BOTTOM_TOGGLE."</td></tr>\n
 </table>\n

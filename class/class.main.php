@@ -1295,7 +1295,7 @@ HTML;
 
 			// Timeが足りてるかどうか確認する
 			if($this->time < NORMAL_BATTLE_TIME) {
-				ShowError("Time 不足 (必要 Time:".NORMAL_BATTLE_TIME.")","margin15");
+				ShowError("体力不足 ( 必要体力:".NORMAL_BATTLE_TIME." )","margin15");
 				return false;
 			}
 			// 自分パーティー
@@ -1807,7 +1807,7 @@ JS_HTML;
 <div style="margin:15px">
 <h4>一份兼职工作！</h4>
 <form method="post" action="?menu=work">
-<p>1 回 1 Time<br />
+<p>1 回 1 体力<br />
 給与 : <?php print MoneyFormat(500)?>/回</p>
 <select name="amount">
 <option value="1">1</option>
