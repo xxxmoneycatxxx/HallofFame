@@ -62,11 +62,11 @@ h4 {
 }
 
 .carpet0 {
-  background-image: url(image/carpet011.gif);
+  background-image: url(../image/carpet011.gif);
 }
 
 .carpet1 {
-  background-image: url(image/carpet010.gif);
+  background-image: url(../image/carpet010.gif);
 }
 
 /* 主框架 */
@@ -178,7 +178,7 @@ select, .select0, .text {
   text-align: center;
   color: #181818;
   border: 1px solid #334357;
-  background: url(image/btn_bk01.gif) repeat-x left top;
+  background: url(../image/btn_bk01.gif) repeat-x left top;
   cursor: pointer;
   display: inline-block; /* 保证按钮正确显示 */
 }
@@ -224,7 +224,7 @@ select, .select0, .text {
 .town {
   height: 220px;
   background: 
-    url(image/other/town02.gif)
+    url(../image/other/town02.gif)
     top right / contain
     no-repeat;
 }
