@@ -1,2 +1,5 @@
 .htaccess
 nginx.htaccess
+/log/**
+/db/**
+/user/**
