@@ -1713,7 +1713,7 @@ $item	= array(
 "type"	=> "其他",
 "buy"	=> "0",
 "sell"	=> "0",
-"img"	=> "item_035z.png",
+"img"	=> "item_035.png",
 ); break;
 		case "7510":
 $item	= array(
