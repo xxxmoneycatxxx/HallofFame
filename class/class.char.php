@@ -1101,7 +1101,15 @@ class char{
 Lv.<?php print $this->level?> <?php print $this->job_name?>
 
 </div>
-<input type="checkbox" onclick="Element.toggleClassName('text<?php print $flag?>','unselect')" id="box<?php print $flag?>" name="char_<?php print $birth?>" value="1"<?php print $checked?>>
+
+<input 
+  type="checkbox"
+  onclick="document.getElementById('text<?php print $flag?>').classList.toggle('unselect')"
+  id="box<?php print $flag?>"
+  name="char_<?php print $birth?>"
+  value="1"
+  <?php print $checked?>
+>
 
 </div><?php 
 	}
