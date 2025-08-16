@@ -1787,7 +1787,7 @@ JS_HTML;
 			$amount	= (int)$_POST["amount"];
 			// 1以上10以下
 			if(0 < $amount && $amount < 11) {
-				$time	= $amount * 100;
+				$time	= $amount * 1;
 				$money	= $amount * 500;
 				if($this->WasteTime($time)) {
 					ShowResult(MoneyFormat($money)." 获得了！","margin15");
@@ -1807,7 +1807,7 @@ JS_HTML;
 <div style="margin:15px">
 <h4>一份兼职工作！</h4>
 <form method="post" action="?menu=work">
-<p>1回 100Time<br />
+<p>1 回 1 Time<br />
 給与 : <?php print MoneyFormat(500)?>/回</p>
 <select name="amount">
 <option value="1">1</option>

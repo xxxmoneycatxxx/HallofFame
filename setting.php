@@ -31,7 +31,7 @@ define("EXP_RATE",1);//经验倍数
 define("MONEY_RATE",1);//金钱倍数
 
 define("NEW_NAME_COST",100000);//改变队伍名称所需资金
-define("BBS_OUT","http://localhost/bbs/");//论坛链接地址
+define("BBS_OUT",0);//论坛链接地址
 define("BBS_BOTTOM_TOGGLE",0);//底部论坛链接按钮(0=OFF 1=ON)
 define("AUCTION_TOGGLE",1);//是否开启拍卖会所(0=OFF 1=ON)
 define("AUCTION_EXHIBIT_TOGGLE",0);////拍卖(0=暂停 1=开启)
@@ -115,17 +115,17 @@ define("GAME_DATA_MONSTER", DATA_DIR."data.gd_monster.php");
 
 define("TUTORIAL", DATA_DIR."data.tutorial.php");
 // DAT
-define("AUCTION_ITEM","./auction.dat");//アイテムオ〖クション脱のファイル
-define("AUCTION_ITEM_LOG","./auction_log.dat");//アイテムオ〖クション脱のログファイル
+define("AUCTION_ITEM","./db/auction.dat");//アイテムオ〖クション脱のファイル
+define("AUCTION_ITEM_LOG","./db/auction_log.dat");//アイテムオ〖クション脱のログファイル
 
-define("REGISTER","./register.dat");
-define("UPDATE","./update.dat");
-define("CTRL_TIME_FILE","./ctrltime.dat");//年袋瓷妄のための箕粗淡脖ファイル
-define("RANKING","./ranking.dat");
-define("BBS_BOTTOM","./bbs.dat");
-define("BBS_TOWN","./bbs_town.dat");
-define("MANAGE_LOG_FILE","./managed.dat");//年袋瓷妄淡峡ファイル
-define("USER_NAME","./username.dat");//叹涟瘦赂ファイル
+define("REGISTER","./db/register.dat");
+define("UPDATE","./db/update.dat");
+define("CTRL_TIME_FILE","./db/ctrltime.dat");//年袋瓷妄のための箕粗淡脖ファイル
+define("RANKING","./db/ranking.dat");
+define("BBS_BOTTOM","./db/bbs.dat");
+define("BBS_TOWN","./db/bbs_town.dat");
+define("MANAGE_LOG_FILE","./db/managed.dat");//年袋瓷妄淡峡ファイル
+define("USER_NAME","./db/username.dat");//叹涟瘦赂ファイル
 
 // dir
 define("IMG_CHAR","./image/char/");
