@@ -1,4 +1,5 @@
-## PHP Web Game Hall Of Fame
+## PHP Web Game - Hall Of Fame
+## PHP页游 - 荣誉圣殿
 
 实测在php5.6.9下顺利运行。
 
@@ -38,8 +39,8 @@ class/ *功能实现
     global.php *全局核心功能库
 
 css/ *css资源
-    basis.css *战斗相关的css
-    style.css
+    basis.css *战斗相关css
+    style.css *全局页面css
 
 data/ *游戏数据（？）事实上不太好分类
     data.base_char.php *角色基础职业生成函数
@@ -114,4 +115,3 @@ setting.php *全局配置
 ```
 
 ### 暂时就这样
-
