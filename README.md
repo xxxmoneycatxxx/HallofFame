@@ -38,7 +38,7 @@ class/ *功能实现
     global.php *全局核心功能库
 
 css/ *css资源
-    basis.css
+    basis.css *战斗相关的css
     style.css
 
 data/ *游戏数据（？）事实上不太好分类
