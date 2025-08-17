@@ -1,10 +1,6 @@
-PHP Web Game Hall Of Fame
+## PHP Web Game Hall Of Fame
 
-
-1. 实测在php5.6.9下顺利运行。
-2. 如果注册后不能成功登录且提示用户已注册，则需要在根目录自行创建user文件夹。
-
-
+实测在php5.6.9下顺利运行。
 
 ### 项目结构
 ```
