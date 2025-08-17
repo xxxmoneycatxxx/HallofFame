@@ -1,22 +1,68 @@
 ﻿<?php
+
+/**
+ * 道具分类展示页面
+ * 
+ * 功能说明：
+ * 1. 按道具类型分类展示游戏内道具
+ * 2. 加载并显示每种道具的详细信息
+ * 3. 提供直观的道具浏览界面
+ * 
+ * 页面结构：
+ * 1. 包含道具数据文件：加载道具基础数据
+ * 2. 定义道具分类数组：按武器、盾牌、护甲等分类组织道具
+ * 3. 循环展示分类：为每个分类创建标题和道具列表
+ * 4. 显示道具详情：调用ShowItemDetail函数展示每个道具
+ * 
+ * 道具分类说明：
+ * 1. 武器(Weapon)：包含单手剑(1000)、双手剑(1100)、法杖(1700)等
+ * 2. 盾(Shield)：包含小型盾(3000)、中型盾(3001)、魔法盾(3100)等
+ * 3. 铠(Armor)：包含重甲(5000)、轻甲(5001)、布甲(5100)等
+ * 4. 道具(Item)：包含消耗品(5500)、任务物品(5501)等
+ * 5. 材料(Material)：包含矿石(6000)、草药(6001)、稀有材料(6040)等
+ * 
+ * 技术细节：
+ * 1. 使用DATA_ITEM常量指向道具数据文件路径
+ * 2. LoadItemData函数根据道具ID加载道具数据
+ * 3. ShowItemDetail函数格式化并输出道具信息
+ * 
+ * 页面样式：
+ * 1. 使用15px的外边距创建舒适的浏览空间
+ * 2. 每个分类使用<h4>标签创建清晰的标题
+ * 3. 道具之间用<br />分隔保持垂直布局
+ * 
+ * 注意事项：
+ * 1. 需要确保DATA_ITEM常量正确定义
+ * 2. LoadItemData和ShowItemDetail函数需提前定义
+ * 3. 道具ID数组可根据游戏内容扩展
+ */
 include_once(DATA_ITEM);
 ?>
 <div style="margin:0 15px">
-<?php
-$ItemList	= array(
-"武器(Weapon)"	=> array(1000,1100,1700,1800,2000),
-"盾(Shield)"	=> array(3000,3001,3100,3101),
-"铠(Armor)"	=> array(5000,5001,5100,5101,5200,5202),
-"道具(Item)"	=> array(5500,5501),
-"材料(Material)"	=> array(6000,6001,6040,6180,6800,7000),
-);
-foreach($ItemList as $Type => $ItemNoArray) {
-	print("<h4>$Type</h4>\n");
-	foreach($ItemNoArray as $ItemNo) {
-		$item	= LoadItemData($ItemNo);
-		ShowItemDetail($item);
-		print("<br />\n");
+	<?php
+	// 道具分类数组
+	$ItemList = array(
+		"武器(Weapon)" => array(1000, 1100, 1700, 1800, 2000),
+		"盾(Shield)" => array(3000, 3001, 3100, 3101),
+		"铠(Armor)" => array(5000, 5001, 5100, 5101, 5200, 5202),
+		"道具(Item)" => array(5500, 5501),
+		"材料(Material)" => array(6000, 6001, 6040, 6180, 6800, 7000),
+	);
+
+	// 循环展示每个分类的道具
+	foreach ($ItemList as $Type => $ItemNoArray) {
+		// 输出分类标题
+		print("<h4>$Type</h4>\n");
+
+		// 遍历当前分类的所有道具
+		foreach ($ItemNoArray as $ItemNo) {
+			// 加载道具数据
+			$item = LoadItemData($ItemNo);
+
+			// 显示道具详情
+			ShowItemDetail($item);
+			print("<br />\n");
+		}
 	}
-}
-?>
+	?>
 </div>
