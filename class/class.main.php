@@ -3181,9 +3181,9 @@ JS_HTML;
 						function TownShow()
 						{
 							include(DATA_TOWN);
-							print('<div style="margin:15px">' . "\n");
+							print('<div style="margin:15px;">' . "\n");
 							print("<h4>街</h4>");
-							print('<div class="town">' . "\n");
+							print('<div class="town" style="height:auto;">' . "\n");
 							print("<ul>\n");
 							$PlaceList	= TownAppear($this);
 							// 店
@@ -3191,31 +3191,31 @@ JS_HTML;
 						?>
 							<li>店(Shop)
 								<ul>
-									<li><a href="?menu=buy">买(Buy)</a></li>
-									<li><a href="?menu=sell">卖(Sell)</a></li>
-									<li><a href="?menu=work">打工</a></li>
+									<li><a href="?menu=buy">- 买(Buy)</a></li>
+									<li><a href="?menu=sell">- 卖(Sell)</a></li>
+									<li><a href="?menu=work">- 打工(Work)</a></li>
 								</ul>
 							</li>
 						<?php
 							}
-							// 斡旋所
+							// 招聘所
 							if ($PlaceList["Recruit"])
-								print("<li><p><a href=\"?recruit\">人材斡旋所(Recruit)</a></p></li>");
+								print("<li><p><a href=\"?recruit\">招聘所(Recruit)</a></p></li>");
 							// 鍛冶屋
 							if ($PlaceList["Smithy"]) {
 						?>
 							<li>锻冶屋(Smithy)
 								<ul>
-									<li><a href="?menu=refine">精炼工房(Refine)</a></li>
-									<li><a href="?menu=create">制作工房(Create)</a></li>
+									<li><a href="?menu=refine">- 精炼工房(Refine)</a></li>
+									<li><a href="?menu=create">- 制作工房(Create)</a></li>
 								</ul>
 							</li>
 						<?php
 							}
-							// オークション会場
+							// 拍卖会场
 							if ($PlaceList["Auction"] && AUCTION_TOGGLE)
 								print("<li><a href=\"?menu=auction\">拍卖会場(Auction)</li>");
-							// コロシアム
+							// 竞技场
 							if ($PlaceList["Colosseum"])
 								print("<li><a href=\"?menu=rank\">竞技场(Colosseum)</a></li>");
 							print("</ul>\n");
