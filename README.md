@@ -7,7 +7,7 @@ PHP Web Game Hall Of Fame
 
 
 ### 项目结构
-
+```
 admin/ *管理后台
     gomi/ *静态资源
         *.gif(s)
@@ -115,7 +115,7 @@ admin.php *管理入口
 image.php *战斗场景图像生成
 index.php *项目入口
 setting.php *全局配置
-
+```
 
 ### 暂时就这样
 
