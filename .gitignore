@@ -1,6 +1,5 @@
 .htaccess
 nginx.htaccess
-log/
-db/
-user/
+log/**
+user/**
 .idea/
