@@ -245,12 +245,12 @@ function RegularControl($value = null)
 //	$id 是否登录过
 function is_registered($id)
 {
-    if ($registered = @file(REGISTER)) {
-        if (array_search($id . "\n", $registered) !== false && !preg_match("/[\.\/]+/", $id)) // 改行記号必須
-            return true;
-        else
-            return false;
-    }
+	if ($registered = @file(REGISTER)) {
+		if (array_search($id . "\n", $registered) !== false && !preg_match("/[\.\/]+/", $id)) // 改行記号必須
+			return true;
+		else
+			return false;
+	}
 }
 //////////////////////////////////////////////////
 //	锁文件并返回文件指针
@@ -716,10 +716,10 @@ function ShowSkillDetail($skill, $radio = false)
 		print('<input type="radio" name="newskill" value="' . $skill["no"] . '" class="vcent" />');
 
 	print('<img src="' . IMG_ICON . $skill["img"] . '" class="vcent">');
-	print("{$skill[name]}");
+	print("{$skill["name"]}");
 
 	if ($radio)
-		print(" / <span class=\"bold\">需要 {$skill[learn]} 点技能</span>");
+		print(" / <span class=\"bold\">需要 {$skill["learn"]} 点技能</span>");
 
 	/*原版英文内容
 		if($skill[target][0] == "all")//滦据
@@ -734,45 +734,36 @@ function ShowSkillDetail($skill, $radio = false)
 			print(" / {$skill[target][0]}");
 */
 
-	if ($skill[target][0] == "all") //转换技能对象为中文表述
+	if ($skill["target"][0] == "all") //转换技能对象为中文表述
 		print(" / <span class=\"charge\">战场</span>");
-	else if ($skill[target][0] == "enemy")
+	else if ($skill["target"][0] == "enemy")
 		print(" / <span class=\"dmg\">敌方</span>");
-	else if ($skill[target][0] == "friend")
+	else if ($skill["target"][0] == "friend")
 		print(" / <span class=\"recover\">友方</span>");
-	else if ($skill[target][0] == "self")
+	else if ($skill["target"][0] == "self")
 		print(" / <span class=\"support\">自己</span>");
-	else if (isset($skill[target][0]))
-		print(" / {$skill[target][0]}");
-	/*未翻译原版英文表述
-		if($skill[target][1] == "all")//帽挛or剩眶or链挛
-			print(" - <span class=\"charge\">{$skill[target][1]}</span>");
-		else if($skill[target][1] == "individual")
-			print(" - <span class=\"recover\">{$skill[target][1]}</span>");
-		else if($skill[target][1] == "multi")
-			print(" - <span class=\"spdmg\">{$skill[target][1]}</span>");
-		else if(isset($skill[target][1]))
-			print(" - {$skill[target][1]}");
-*/
-	if ($skill[target][1] == "all") //转换技能效果范围为中文表述
+	else if (isset($skill["target"][0]))
+		print(" / {$skill["target"][0]}");
+
+	if ($skill["target"][1] == "all") //转换技能效果范围为中文表述
 		print(" - <span class=\"charge\">全体</span>");
-	else if ($skill[target][1] == "individual")
+	else if ($skill["target"][1] == "individual")
 		print(" - <span class=\"recover\">单体</span>");
-	else if ($skill[target][1] == "multi")
+	else if ($skill["target"][1] == "multi")
 		print(" - <span class=\"spdmg\">群体</span>");
-	else if (isset($skill[target][1]))
-		print(" - {$skill[target][1]}");
+	else if (isset($skill["target"][1]))
+		print(" - {$skill["target"][1]}");
 
 	if (isset($skill["sacrifice"]))
-		print(" / <span class=\"dmg\">Sacrifice:{$skill[sacrifice]}%</span>");
+		print(" / <span class=\"dmg\">Sacrifice:{$skill["sacrifice"]}%</span>");
 	// 消耗SP
 	if (isset($skill["sp"]))
-		print(" / <span class=\"support\">消耗 {$skill[sp]} 魔力</span>");
+		print(" / <span class=\"support\">消耗 {$skill["sp"]} 魔力</span>");
 	// 久锐蒜数控
 	if ($skill["MagicCircleDeleteTeam"])
 		print(" / <span class=\"support\">MagicCircle x" . $skill["MagicCircleDeleteTeam"] . "</span>");
 	if ($skill["pow"]) {
-		print(" / <span class=\"" . ($skill["support"] ? "recover" : "dmg") . "\">{$skill[pow]}%</span>x");
+		print(" / <span class=\"" . ($skill["support"] ? "recover" : "dmg") . "\">{$skill["pow"]}%</span>x");
 		print(($skill["target"][2] ? $skill["target"][2] : "1"));
 	}
 	if ($skill["type"] == 1)
@@ -787,66 +778,66 @@ function ShowSkillDetail($skill, $radio = false)
 		print(" / <span class=\"support\">CurePoison</span>");
 
 	if ($skill["delay"])
-		print(" / <span class=\"support\">延迟 -" . $skill[delay] . "%</span>");
+		print(" / <span class=\"support\">延迟 -" . $skill["delay"] . "%</span>");
 	//		if($skill["support"])
 	//			print(" / <span class=\"charge\">support</span>");
 
 	if ($skill["UpMAXHP"])
-		print(" / <span class=\"charge\">生命上限 +" . $skill[UpMAXHP] . "%</span>");
+		print(" / <span class=\"charge\">生命上限 +" . $skill["UpMAXHP"] . "%</span>");
 	if ($skill["UpMAXSP"])
-		print(" / <span class=\"charge\">魔力上限 +" . $skill[UpMAXSP] . "%</span>");
+		print(" / <span class=\"charge\">魔力上限 +" . $skill["UpMAXSP"] . "%</span>");
 	if ($skill["UpSTR"])
-		print(" / <span class=\"charge\">力量 +" . $skill[UpSTR] . "%</span>");
+		print(" / <span class=\"charge\">力量 +" . $skill["UpSTR"] . "%</span>");
 	if ($skill["UpINT"])
-		print(" / <span class=\"charge\">智慧 +" . $skill[UpINT] . "%</span>");
+		print(" / <span class=\"charge\">智慧 +" . $skill["UpINT"] . "%</span>");
 	if ($skill["UpDEX"])
-		print(" / <span class=\"charge\">敏捷 +" . $skill[UpDEX] . "%</span>");
+		print(" / <span class=\"charge\">敏捷 +" . $skill["UpDEX"] . "%</span>");
 	if ($skill["UpSPD"])
-		print(" / <span class=\"charge\">速度 +" . $skill[UpSPD] . "%</span>");
+		print(" / <span class=\"charge\">速度 +" . $skill["UpSPD"] . "%</span>");
 	if ($skill["UpLUK"])
-		print(" / <span class=\"charge\">幸运 +" . $skill[UpLUK] . "%</span>");
+		print(" / <span class=\"charge\">幸运 +" . $skill["UpLUK"] . "%</span>");
 	if ($skill["UpATK"])
-		print(" / <span class=\"charge\">物理攻击 +" . $skill[UpATK] . "%</span>");
+		print(" / <span class=\"charge\">物理攻击 +" . $skill["UpATK"] . "%</span>");
 	if ($skill["UpMATK"])
-		print(" / <span class=\"charge\">魔法攻击 +" . $skill[UpMATK] . "%</span>");
+		print(" / <span class=\"charge\">魔法攻击 +" . $skill["UpMATK"] . "%</span>");
 	if ($skill["UpDEF"])
-		print(" / <span class=\"charge\">物理防御 +" . $skill[UpDEF] . "%</span>");
+		print(" / <span class=\"charge\">物理防御 +" . $skill["UpDEF"] . "%</span>");
 	if ($skill["UpMDEF"])
-		print(" / <span class=\"charge\">魔法防御 +" . $skill[UpMDEF] . "%</span>");
+		print(" / <span class=\"charge\">魔法防御 +" . $skill["UpMDEF"] . "%</span>");
 
 	if ($skill["DownMAXHP"])
-		print(" / <span class=\"dmg\">生命上限 -" . $skill[DownMAXHP] . "%</span>");
+		print(" / <span class=\"dmg\">生命上限 -" . $skill["DownMAXHP"] . "%</span>");
 	if ($skill["DownMAXSP"])
-		print(" / <span class=\"dmg\">魔力上限 -" . $skill[DownMAXSP] . "%</span>");
+		print(" / <span class=\"dmg\">魔力上限 -" . $skill["DownMAXSP"] . "%</span>");
 	if ($skill["DownSTR"])
-		print(" / <span class=\"dmg\">力量 -" . $skill[DownSTR] . "%</span>");
+		print(" / <span class=\"dmg\">力量 -" . $skill["DownSTR"] . "%</span>");
 	if ($skill["DownINT"])
-		print(" / <span class=\"dmg\">智慧 -" . $skill[DownINT] . "%</span>");
+		print(" / <span class=\"dmg\">智慧 -" . $skill["DownINT"] . "%</span>");
 	if ($skill["DownDEX"])
-		print(" / <span class=\"dmg\">敏捷 -" . $skill[DownDEX] . "%</span>");
+		print(" / <span class=\"dmg\">敏捷 -" . $skill["DownDEX"] . "%</span>");
 	if ($skill["DownSPD"])
-		print(" / <span class=\"dmg\">速度 -" . $skill[DownSPD] . "%</span>");
+		print(" / <span class=\"dmg\">速度 -" . $skill["DownSPD"] . "%</span>");
 	if ($skill["DownLUK"])
-		print(" / <span class=\"dmg\">幸运 -" . $skill[DownLUK] . "%</span>");
+		print(" / <span class=\"dmg\">幸运 -" . $skill["DownLUK"] . "%</span>");
 	if ($skill["DownATK"])
-		print(" / <span class=\"dmg\">物理攻击 -" . $skill[DownATK] . "%</span>");
+		print(" / <span class=\"dmg\">物理攻击 -" . $skill["DownATK"] . "%</span>");
 	if ($skill["DownMATK"])
-		print(" / <span class=\"dmg\">魔法攻击 -" . $skill[DownMATK] . "%</span>");
+		print(" / <span class=\"dmg\">魔法攻击 -" . $skill["DownMATK"] . "%</span>");
 	if ($skill["DownDEF"])
-		print(" / <span class=\"dmg\">物理防御 -" . $skill[DownDEF] . "%</span>");
+		print(" / <span class=\"dmg\">物理防御 -" . $skill["DownDEF"] . "%</span>");
 	if ($skill["DownMDEF"])
-		print(" / <span class=\"dmg\">魔法防御 -" . $skill[DownMDEF] . "%</span>");
+		print(" / <span class=\"dmg\">魔法防御 -" . $skill["DownMDEF"] . "%</span>");
 
 	if ($skill["PlusSTR"])
-		print(" / <span class=\"charge\">力量 +" . $skill[PlusSTR] . "</span>");
+		print(" / <span class=\"charge\">力量 +" . $skill["PlusSTR"] . "</span>");
 	if ($skill["PlusINT"])
-		print(" / <span class=\"charge\">智慧 +" . $skill[PlusINT] . "</span>");
+		print(" / <span class=\"charge\">智慧 +" . $skill["PlusINT"] . "</span>");
 	if ($skill["PlusDEX"])
-		print(" / <span class=\"charge\">敏捷 +" . $skill[PlusDEX] . "</span>");
+		print(" / <span class=\"charge\">敏捷 +" . $skill["PlusDEX"] . "</span>");
 	if ($skill["PlusSPD"])
-		print(" / <span class=\"charge\">速度 +" . $skill[PlusSPD] . "</span>");
+		print(" / <span class=\"charge\">速度 +" . $skill["PlusSPD"] . "</span>");
 	if ($skill["PlusLUK"])
-		print(" / <span class=\"charge\">幸运 +" . $skill[PlusLUK] . "</span>");
+		print(" / <span class=\"charge\">幸运 +" . $skill["PlusLUK"] . "</span>");
 
 	if ($skill["charge"]["0"] || $skill["charge"]["1"]) {
 		print(" / (" . ($skill["charge"]["0"] ? $skill["charge"]["0"] : "0") . ":");
@@ -862,7 +853,7 @@ function ShowSkillDetail($skill, $radio = false)
 		print(substr($Limit, 0, -2));
 	}
 	if ($skill["exp"])
-		print(" / {$skill[exp]}");
+		print(" / {$skill["exp"]}");
 	print("\n");
 }
 //////////////////////////////////////////////////
@@ -871,31 +862,31 @@ function ShowItemDetail($item, $amount = false, $text = false, $need = false)
 {
 	if (!$item) return false;
 
-	$html	= "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">";
+	$html	= "";
 	// 篮希猛
 	if ($item["refine"])
-		$html	.= "+{$item[refine]} ";
+		$html	.= "+{$item["refine"]} ";
 	if ($item["AddName"])
-		$html	.= "{$item[AddName]} ";
-	$html	.= "{$item[base_name]}"; // 叹涟
+		$html	.= "{$item["AddName"]} ";
+	$html	.= "{$item["base_name"]}"; // 叹涟
 
 	if ($item["type"])
-		$html	.= "<span class=\"light\"> ({$item[type]})</span>";
+		$html	.= "<span class=\"light\"> ({$item["type"]})</span>";
 	if ($amount) { //眶翁
 		$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
 	}
 	if ($item["atk"]["0"]) //湿妄苟封
-		$html	.= ' / <span class="dmg">物理攻击：' . $item[atk][0] . '</span>';
+		$html	.= ' / <span class="dmg">物理攻击：' . $item["atk"][0] . '</span>';
 	if ($item["atk"]["1"]) //蒜恕苟封
-		$html	.= ' / <span class="spdmg">魔法攻击：' . $item[atk][1] . '</span>';
+		$html	.= ' / <span class="spdmg">魔法攻击：' . $item["atk"][1] . '</span>';
 	if ($item["def"]) {
-		$html	.= " / <span class=\"recover\">物理防御：{$item[def][0]}+{$item[def][1]}</span>";
-		$html	.= " / <span class=\"support\">魔法防御：{$item[def][2]}+{$item[def][3]}</span>";
+		$html	.= " / <span class=\"recover\">物理防御：{$item["def"][0]}+{$item["def"][1]}</span>";
+		$html	.= " / <span class=\"support\">魔法防御：{$item["def"][2]}+{$item["def"][3]}</span>";
 	}
 	if ($item["P_SUMMON"])
 		$html	.= ' / <span class="support">召唤 +' . $item["P_SUMMON"] . '%</span>';
 	if (isset($item["handle"]))
-		$html	.= ' / <span class="charge">重量：' . $item[handle] . '</span>';
+		$html	.= ' / <span class="charge">重量：' . $item['handle'] . '</span>'; // FIXED: changed $item[handle] to $item['handle']
 	if ($item["option"])
 		$html	.= ' / <span style="font-size:80%">' . substr($item["option"], 0, -2) . "</span>";
 
@@ -903,8 +894,8 @@ function ShowItemDetail($item, $amount = false, $text = false, $need = false)
 		$html	.= " /";
 		foreach ($item["need"] as $M_itemNo => $M_amount) {
 			$M_item	= LoadItemData($M_itemNo);
-			$html	.= "<img src=\"" . IMG_ICON . $M_item["img"] . "\" class=\"vcent\">";
-			$html	.= "{$M_item[base_name]}"; // 叹涟
+			$html	.= "";
+			$html	.= "{$M_item["base_name"]}"; // 叹涟
 			$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
 			if ($need["$M_itemNo"])
 				$html	.= "<span class=\"light\">(" . $need["$M_itemNo"] . ")</span>";

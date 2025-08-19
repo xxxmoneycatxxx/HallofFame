@@ -83,6 +83,8 @@ class main extends user
 {
 
 	var $islogin	= false;
+	var $char = array(); // 初始化为空数组
+
 
 	function __construct()
 	{
@@ -525,15 +527,15 @@ class main extends user
 				$char->statuspoint	-= $Sum; //ポイントを減らす。
 				print("<div class=\"margin15\">\n");
 				if ($_POST["upStr"])
-					ShowResult("STR <span class=\"bold\">" . $_POST[upStr] . "</span> 上升。" . ($char->str - $_POST["upStr"]) . " -> " . $char->str . "<br />\n");
+					ShowResult("STR <span class=\"bold\">" . $_POST["upStr"] . "</span> 上升。" . ($char->str - $_POST["upStr"]) . " -> " . $char->str . "<br />\n");
 				if ($_POST["upInt"])
-					ShowResult("INT <span class=\"bold\">" . $_POST[upInt] . "</span> 上升。" . ($char->int - $_POST["upInt"]) . " -> " . $char->int . "<br />\n");
+					ShowResult("INT <span class=\"bold\">" . $_POST["upInt"] . "</span> 上升。" . ($char->int - $_POST["upInt"]) . " -> " . $char->int . "<br />\n");
 				if ($_POST["upDex"])
-					ShowResult("DEX <span class=\"bold\">" . $_POST[upDex] . "</span> 上升。" . ($char->dex - $_POST["upDex"]) . " -> " . $char->dex . "<br />\n");
+					ShowResult("DEX <span class=\"bold\">" . $_POST["upDex"] . "</span> 上升。" . ($char->dex - $_POST["upDex"]) . " -> " . $char->dex . "<br />\n");
 				if ($_POST["upSpd"])
-					ShowResult("SPD <span class=\"bold\">" . $_POST[upSpd] . "</span> 上升。" . ($char->spd - $_POST["upSpd"]) . " -> " . $char->spd . "<br />\n");
+					ShowResult("SPD <span class=\"bold\">" . $_POST["upSpd"] . "</span> 上升。" . ($char->spd - $_POST["upSpd"]) . " -> " . $char->spd . "<br />\n");
 				if ($_POST["upLuk"])
-					ShowResult("LUK <span class=\"bold\">" . $_POST[upLuk] . "</span> 上升。" . ($char->luk - $_POST["upLuk"]) . " -> " . $char->luk . "<br />\n");
+					ShowResult("LUK <span class=\"bold\">" . $_POST["upLuk"] . "</span> 上升。" . ($char->luk - $_POST["upLuk"]) . " -> " . $char->luk . "<br />\n");
 				print("</div>\n");
 				$char->SaveCharData($this->id);
 				return true;
@@ -1076,7 +1078,7 @@ HTML;
 				foreach ($char->skill as $val) { //技のoption
 					$skill	= LoadSkillData($val);
 					print("<option value=\"{$val}\"" . ($char->action[$i] == $val ? " selected" : NULL) . ">");
-					print($skill["name"] . (isset($skill["sp"]) ? " - (SP:{$skill[sp]})" : NULL));
+					print($skill["name"] . (isset($skill["sp"]) ? " - (SP:{$skill["sp"]})" : NULL));
 					print("</option>\n");
 				}
 				print("</select>\n");
@@ -2286,9 +2288,9 @@ JS_HTML;
 			//	
 			function RecruitShow()
 			{
-				if (MAX_CHAR <= $this->CharCount()) {
+				$charCount = is_array($this->char) ? count($this->char) : 0;
+				if (MAX_CHAR <= $charCount) {
 				?>
-
 					<div style="margin:15px">
 						<p>Maximum characters.<br>
 							Need to make a space to recruit new character.</p>
@@ -3658,14 +3660,19 @@ JS_HTML;
 						}
 
 						//////////////////////////////////////////////////
-						//	自分のキャラを表示する
+						//	显示自己的队伍
 						function ShowMyCharacters($array = NULL)
-						{ // $array ← 色々受け取る
-							if (!$this->char) return false;
-							$divide	= (count($this->char) < CHAR_ROW ? count($this->char) : CHAR_ROW);
-							$width	= floor(100 / $divide); //各セル横幅
+						{
+							if (!is_array($this->char)) {
+								$this->char = array();
+							}
+							$charCount = count($this->char);
+							if ($charCount === 0) return false;
 
-							print('<table cellspacing="0" style="width:100%"><tbody><tr>'); //横幅100%
+							$divide = ($charCount < CHAR_ROW) ? $charCount : CHAR_ROW;
+							$width = floor(100 / $divide);
+
+							print('<table cellspacing="0" style="width:100%"><tbody><tr>');
 							foreach ($this->char as $val) {
 								if ($i % CHAR_ROW == 0 && $i != 0)
 									print("\t</tr><tr>\n");
@@ -3680,9 +3687,14 @@ JS_HTML;
 						//	キャラを表組みで表示する
 						function ShowCharacters($characters, $type = null, $checked = null)
 						{
-							if (!$characters) return false;
-							$divide	= (count($characters) < CHAR_ROW ? count($characters) : CHAR_ROW);
-							$width	= floor(100 / $divide); //各セル横幅
+							if (!is_array($characters)) {
+								return false;
+							}
+							$charCount = count($characters);
+							if ($charCount === 0) return false;
+
+							$divide = ($charCount < CHAR_ROW) ? $charCount : CHAR_ROW;
+							$width = floor(100 / $divide);
 
 							if ($type == "CHECKBOX") {
 								print <<< HTML
@@ -4266,7 +4278,7 @@ HTML;
 									}
 									include(DATA_BASE_CHAR);
 									$char	= new char();
-									$char->SetCharData(array_merge(BaseCharStatus($job), array("name" => $_POST[first_name], "gender" => "$gend")));
+									$char->SetCharData(array_merge(BaseCharStatus($job), array("name" => $_POST["first_name"], "gender" => "$gend")));
 									$char->SaveCharData($this->id);
 									return false;
 								} while (0);

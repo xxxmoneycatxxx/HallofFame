@@ -332,8 +332,8 @@ HTML;
 		// 达到最大回合数
 		else if ($this->BattleMaxTurn <= $this->actions) {
 			// 添加类型安全检查
-			$team0Alive = is_countable($this->team0) ? CountAliveChars($this->team0) : 0;
-			$team1Alive = is_countable($this->team1) ? CountAliveChars($this->team1) : 0;
+			$team0Alive = CountAliveChars($this->team0);
+			$team1Alive = CountAliveChars($this->team1);
 
 			// 计算存活人数差
 			$AliveNumDiff = abs($team0Alive - $team1Alive);
@@ -805,61 +805,77 @@ HTML;
 			return false;
 		if ($target->POSITION == "front") //前衛なら守る必要無し。終わる
 			return false;
-		// "前衛で尚且つ生存者"を配列に詰める↓
+
+		// "前衛で尚且つ生存者"を配列に詰詰める↓
 		// 前衛 + 生存者 + HP1以上 に変更 ( 多段系攻撃で死にながら守るので [2007/9/20] )
+		$fore = []; // 明确初始化数组
 		foreach ($candidate as $key => $char) {
 			//print("{$char->POSTION}:{$char->STATE}<br>");
 			if ($char->POSITION == "front" && $char->STATE !== 1 && 1 < $char->HP)
-				$fore[]	= $candidate["$key"];
+				$fore[] = $candidate[$key];
 		}
 		if (count($fore) == 0) //前衛がいなけりゃ守れない。終わる
 			return false;
+
 		// 一人づつ守りに入るか入らないかを判定する。
 		shuffle($fore); //配列の並びを混ぜる
+
 		foreach ($fore as $key => $char) {
+			// 変数初始化
+			$HpRate = 0;
+			$prob = 0;
+
 			// 判定に使う変数を計算したりする。
 			switch ($char->guard) {
 				case "life25":
 				case "life50":
 				case "life75":
-					$HpRate	= ($char->HP / $char->MAXHP) * 100;
+					$HpRate = ($char->HP / $char->MAXHP) * 100;
+					break;
 				case "prob25":
 				case "prob50":
 				case "prob75":
 					mt_srand();
-					$prob	= mt_rand(1, 100);
+					$prob = mt_rand(1, 100);
+					break;
 			}
+
+			$defender = null; // 初始化守卫者变量
+
 			// 実際に判定してみる。
 			switch ($char->guard) {
 				case "never":
-					continue 2;
+					continue 2; // 跳过这个角色
 				case "life25": // HP(%)が25%以上なら
-					if (25 < $HpRate) $defender	= $fore["$key"];
+					if (25 < $HpRate) $defender = $fore[$key];
 					break;
-				case "life50": // 〃50%〃
-					if (50 < $HpRate) $defender	= $fore["$key"];
+				case "life50": // 〃〃50%〃〃
+					if (50 < $HpRate) $defender = $fore[$key];
 					break;
-				case "life75": // 〃70%〃
-					if (75 < $HpRate) $defender	= $fore["$key"];
+				case "life75": // 〃〃70%〃〃
+					if (75 < $HpRate) $defender = $fore[$key];
 					break;
 				case "prob25": // 25%の確率で
-					if ($prob < 25) $defender	= $fore["$key"];
+					if ($prob < 25) $defender = $fore[$key];
 					break;
-				case "prob50": // 50% 〃
-					if ($prob < 50) $defender	= $fore["$key"];
+				case "prob50": // 50% 〃〃
+					if ($prob < 50) $defender = $fore[$key];
 					break;
-				case "prob75": // 75% 〃
-					if ($prob < 75) $defender	= $fore["$key"];
+				case "prob75": // 75% 〃〃
+					if ($prob < 75) $defender = $fore[$key];
 					break;
 				default:
-					$defender	= $fore["$key"];
+					$defender = $fore[$key];
 			}
+
 			// 誰かが後衛を守りに入ったのでそれを表示する
 			if ($defender) {
 				print('<span class="bold">' . $defender->name . '</span> 保护<span class="bold">' . $target->name . '</span>!<br />' . "\n");
 				return $defender;
 			}
 		}
+
+		return false; // 没有守卫者
 	}
 	//////////////////////////////////////////////////
 	//	スキル使用後に対象者(候補)がしぼーしたかどうかを確かめる
@@ -904,70 +920,97 @@ HTML;
 	//	優先順位に従って候補から一人返す
 	function SelectTarget($target_list, $skill)
 	{
-
 		/*
-		* 優先はするが、当てはまらなくても最終的にターゲットは要る。
-		* 例 : 後衛が居ない→前衛を対象にする。
-		*    : 全員がHP100%→誰か てきとう に対象にする。
-		*/
+    * 優先はするが、当てはまらなくても最終的にターゲットは要る。
+    * 例 : 後衛が居ない→前衛を対象にする。
+    *    : 全員がHP100%→誰か てきとう に対象にする。
+    */
 
-		//残りHP(%)が少ない人をターゲットにする
+		// 残りHP(%)が少ない人をターゲットにする
 		if ($skill["priority"] == "LowHpRate") {
 			$hp = 2; //一応1より大きい数字に???
+			$target = null;
 			foreach ($target_list as $key => $char) {
 				if ($char->STATE == DEAD) continue; //しぼー者は対象にならない。
-				$HpRate	= $char->HP / $char->MAXHP; //HP(%)
+				$HpRate = $char->HP / $char->MAXHP; //HP(%)
 				if ($HpRate < $hp) {
-					$hp	= $HpRate; //現状の最もHP(%)が低い人
-					$target	= $target_list[$key];
+					$hp = $HpRate; //現状の最もHP(%)が低い人
+					$target = $target_list[$key];
+				}
+			}
+			// 如果找不到目标，随机选择一个
+			if ($target === null) {
+				$alive = [];
+				foreach ($target_list as $key => $char) {
+					if ($char->STATE != DEAD) //しぼー以外なら
+						$alive[] = $target_list[$key];
+				}
+				if (count($alive) > 0) {
+					$target = $alive[array_rand($alive)];
 				}
 			}
 			return $target; //最もHPが低い人
 
 			//後衛を優先する
 		} else if ($skill["priority"] == "Back") {
+			$target = []; // 明确初始化数组
 			foreach ($target_list as $key => $char) {
 				if ($char->STATE == DEAD) continue; //しぼー者は対象にならない。
 				if ($char->POSITION != FRONT) //後衛なら
-					$target[]	= $target_list[$key]; //候補にいれる
+					$target[] = $target_list[$key]; //候補にいれる
 			}
-			if ($target)
+			if (count($target) > 0)
 				return $target[array_rand($target)]; //リストの中からランダムで
+			else {
+				// 如果后位没有目标，选择任何活着的角色
+				$alive = [];
+				foreach ($target_list as $key => $char) {
+					if ($char->STATE != DEAD)
+						$alive[] = $target_list[$key];
+				}
+				if (count($alive) > 0)
+					return $alive[array_rand($alive)];
+				else
+					return false;
+			}
 
 			/*
-		* 優先はするが、
-		* 優先する対象がいなければ使用は失敗する(絞込み)
-		*/
+        * 優先はするが、
+        * 優先する対象がいなければ使用は失敗する(絞絞込み)
+        */
 
 			//しぼー者の中からランダムで返す。
 		} else if ($skill["priority"] == "Dead") {
+			$target = []; // 明确初始化数组
 			foreach ($target_list as $key => $char) {
 				if ($char->STATE == DEAD) //しぼーなら
-					$target[]	= $target_list[$key]; //しぼー者リスト
+					$target[] = $target_list[$key]; //しぼー者リスト
 			}
-			if ($target)
+			if (count($target) > 0)
 				return $target[array_rand($target)]; //しぼー者リストの中からランダムで
 			else
 				return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
 
 			// 召喚キャラを優先する。
 		} else if ($skill["priority"] == "Summon") {
+			$target = []; // 明确初始化数组
 			foreach ($target_list as $key => $char) {
 				if ($char->summon) //召喚キャラなら
-					$target[]	= $target_list[$key]; //召喚キャラリスト
+					$target[] = $target_list[$key]; //召喚キャラリスト
 			}
-			if ($target)
+			if (count($target) > 0)
 				return $target[array_rand($target)]; //召喚キャラの中からランダムで
 			else
 				return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
 
 			// チャージ中のキャラ
 		} else if ($skill["priority"] == "Charge") {
+			$target = []; // 明确初始化数组
 			foreach ($target_list as $key => $char) {
 				if ($char->expect)
-					$target[]	= $target_list[$key];
+					$target[] = $target_list[$key];
 			}
-			if ($target)
+			if (count($target) > 0)
 				return $target[array_rand($target)];
 			else
 				return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
@@ -975,11 +1018,15 @@ HTML;
 		}
 
 		//それ以外(ランダム)
+		$target = []; // 明确初始化数组
 		foreach ($target_list as $key => $char) {
 			if ($char->STATE != DEAD) //しぼー以外なら
-				$target[]	= $target_list[$key]; //しぼー者リスト
+				$target[] = $target_list[$key]; //しぼー者リスト
 		}
-		return $target[array_rand($target)]; //ランダムに誰か一人
+		if (count($target) > 0)
+			return $target[array_rand($target)]; //ランダムに誰か一人
+		else
+			return false;
 	}
 	//////////////////////////////////////////////////
 	//	次の行動は誰か(又、詠唱中の魔法が発動するのは誰か)
@@ -1454,10 +1501,13 @@ HTML;
 				//	生存者数を数えて返す
 				function CountAlive($team)
 				{
-					$no	= 0; //初期化
-					foreach ($team as $char) {
-						if ($char->STATE !== 1)
-							$no++;
+					$no = 0;
+					// 添加类型检查，确保 $team 是可遍历对象
+					if (is_array($team) || $team instanceof Traversable) {
+						foreach ($team as $char) {
+							if ($char->STATE !== DEAD)
+								$no++;
+						}
 					}
 					return $no;
 				}
@@ -1466,17 +1516,14 @@ HTML;
 				//	初期キャラ生存数を数えて返す
 				function CountAliveChars($team)
 				{
-					// 防御性检查：确保参数可计数
-					if (!is_countable($team)) {
-						return 0;
-					}
-
 					$no = 0;
-					foreach ($team as $char) {
-						// 跳过死亡角色和召唤生物
-						if ($char->STATE === DEAD) continue;
-						if (isset($char->summon) && $char->summon) continue;
-						$no++;
+					if (is_array($team) || $team instanceof Traversable) {
+						foreach ($team as $char) {
+							if (!is_object($char)) continue;  // 添加对象检查
+							if ($char->STATE === DEAD) continue;
+							if (isset($char->summon) && $char->summon) continue;
+							$no++;
+						}
 					}
 					return $no;
 				}
