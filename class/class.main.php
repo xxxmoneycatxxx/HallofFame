@@ -82,19 +82,29 @@ class main extends user
 
 	//////////////////////////////////////////////////
 	//	
-	function main()
+	function __construct()
 	{
+		// 删除父类构造函数调用
 		$this->SessionSwitch();
 		$this->Set_ID_PASS();
+
+		// 手动初始化user功能
+		if ($this->id) {
+			// 模拟user类构造流程
+			if ($data = $this->LoadData()) {
+				$this->DataUpDate($data);
+				$this->SetData($data);
+			}
+		}
+
 		ob_start();
 		$this->Order();
-		$content	= ob_get_contents();
+		$content = ob_get_contents();
 		ob_end_clean();
 
 		$this->Head();
 		print($content);
 		$this->Debug();
-		//$this->ShowSession();
 		$this->Foot();
 	}
 
@@ -3843,42 +3853,36 @@ HTML;
 						}
 
 						//////////////////////////////////////////////////
-						//	保存されているセッション番号を変更する。
+						//	保存されているセッション番号を変更する。[session会话？]
 						function SessionSwitch()
 						{
-							// session消滅の時間(?)
-							// how about "session_set_cookie_params()"?
 							session_cache_expire(COOKIE_EXPIRE / 60);
-							if ($_COOKIE["NO"]) //クッキーに保存してあるセッションIDのセッションを呼び出す
+							if ($_COOKIE["NO"]) {
 								session_id($_COOKIE["NO"]);
+							}
 
 							session_start();
-							if (!SESSION_SWITCH) //switchしないならここで終了
-								return false;
-							//print_r($_SESSION);
-							//dump($_SESSION);
-							$OldID	= session_id();
-							$temp	= serialize($_SESSION);
 
-							session_regenerate_id();
-							$NewID	= session_id();
+							if (!SESSION_SWITCH) {
+								return false;
+							}
+
+							$OldID = session_id();
+							$temp = $_SESSION; // 保存当前会话数据
+
+							// 关闭当前会话
+							session_write_close();
+
+							// 重新生成会话ID
+							session_id(session_create_id());
+
+							// 重启会话并恢复数据
+							session_start();
+							$_SESSION = $temp;
+
+							$NewID = session_id();
 							setcookie("NO", $NewID, time() + COOKIE_EXPIRE);
 							$_COOKIE["NO"] = $NewID;
-
-							session_id($OldID);
-							session_start();
-
-							if ($_SESSION):
-								//	session_destroy();//Sleipnirだとおかしい...?(最初期)
-								//	unset($_SESSION);//こっちは大丈夫(やっぱりこれは駄目かも)(修正後)
-								//結局,セッションをforeachでループして1個づつunset(2007/9/14 再修正)
-								foreach ($_SESSION as $key => $val)
-									unset($_SESSION["$key"]);
-							endif;
-
-							session_id($NewID);
-							session_start();
-							$_SESSION	= unserialize($temp);
 						}
 
 						//////////////////////////////////////////////////

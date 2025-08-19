@@ -109,7 +109,7 @@ class user
 
 	//////////////////////////////////////////////////
 	//	対象のIDのユーザークラスを作成
-	function user($id, $noExit = false)
+	function __construct($id, $noExit = false)
 	{
 		if ($id) {
 			$this->id	= $id;

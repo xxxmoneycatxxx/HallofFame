@@ -118,19 +118,18 @@ class char
 	var $ActCount; //合計行動回数
 	var $JdgCount; //決定した判断の回数=array()
 	//////////////////////////////////////////////////
-	function char($file = false)
-	{
+	function __construct($file = false)
+    {
+        if (!$file)
+            return 0;
 
-		if (!$file)
-			return 0;
+        $this->Number = basename($file, ".dat");
+        $this->file = $file;
+        $this->fp = FileLock($file);
 
-		$this->Number	= basename($file, ".dat");
-		$this->file	= $file;
-		$this->fp	= FileLock($file);
-
-		$data	= ParseFileFP($this->fp);
-		$this->SetCharData($data);
-	}
+        $data = ParseFileFP($this->fp);
+        $this->SetCharData($data);
+    }
 	//////////////////////////////////////////////////
 	//	ファイルポインタが開かれていれば閉じる
 	function fpclose()
