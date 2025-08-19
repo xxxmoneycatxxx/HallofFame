@@ -1624,26 +1624,27 @@ HTML;
 							return false;
 						}
 					case ($_POST["shop_buy"]):
-						$ShopList	= ShopList(); //売ってるものデータ
+						$ShopList    = ShopList(); //売ってるものデータ
 						if ($_POST["item_no"] && in_array($_POST["item_no"], $ShopList)) {
-							if (mb_ereg("^[0-9]", $_POST["amount"])) {
-								$amount	= (int)$_POST["amount"];
+							// 替换为 preg_match() - 检查字符串是否以数字开头
+							if (preg_match('/^[0-9]/', $_POST["amount"])) {
+								$amount    = (int)$_POST["amount"];
 								if ($amount == 0)
-									$amount	= 1;
+									$amount    = 1;
 							} else {
-								$amount	= 1;
+								$amount    = 1;
 							}
-							$item	= LoadItemData($_POST["item_no"]);
-							$need	= $amount * $item["buy"]; //購入に必要なお金
+							$item    = LoadItemData($_POST["item_no"]);
+							$need    = $amount * $item["buy"]; //購入に必要なお金
 							if ($this->TakeMoney($need)) { // お金を引けるかで判定。
 								$this->AddItem($_POST["item_no"], $amount);
 								$this->SaveUserItem();
 								if (1 < $amount) {
-									$img	= "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
+									$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
 									ShowResult("{$img}{$item[name]}  {$amount}个 买入 (" . MoneyFormat($item["buy"]) . " x{$amount} = " . MoneyFormat($need) . ")", "margin15");
 									return true;
 								} else {
-									$img	= "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
+									$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
 									ShowResult("{$img}{$item[name]}个 买入 (" . MoneyFormat($need) . ")", "margin15");
 									return true;
 								}
@@ -1655,22 +1656,23 @@ HTML;
 						break;
 					case ($_POST["shop_sell"]):
 						if ($_POST["item_no"] && $this->item[$_POST["item_no"]]) {
-							if (mb_ereg("^[0-9]", $_POST["amount"])) {
-								$amount	= (int)$_POST["amount"];
+							// 替换为 preg_match() - 检查字符串是否以数字开头
+							if (preg_match('/^[0-9]/', $_POST["amount"])) {
+								$amount    = (int)$_POST["amount"];
 								if ($amount == 0)
-									$amount	= 1;
+									$amount    = 1;
 							} else {
-								$amount	= 1;
+								$amount    = 1;
 							}
 							// 消した個数(超過して売られるのも防ぐ)
-							$DeletedAmount	= $this->DeleteItem($_POST["item_no"], $amount);
-							$item	= LoadItemData($_POST["item_no"]);
-							$price	= (isset($item["sell"]) ? $item["sell"] : round($item["buy"] * SELLING_PRICE));
+							$DeletedAmount    = $this->DeleteItem($_POST["item_no"], $amount);
+							$item    = LoadItemData($_POST["item_no"]);
+							$price    = (isset($item["sell"]) ? $item["sell"] : round($item["buy"] * SELLING_PRICE));
 							$this->GetMoney($price * $DeletedAmount);
 							$this->SaveUserItem();
 							if ($DeletedAmount != 1)
-								$add	= " x{$DeletedAmount}";
-							$img	= "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
+								$add    = " x{$DeletedAmount}";
+							$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
 							ShowResult("{$img}{$item[name]}{$add}" . MoneyFormat($price * $DeletedAmount) . " 出售", "margin15");
 							return true;
 						}
@@ -1754,7 +1756,6 @@ HTML;
 				</div>
 			<?php
 			}
-
 			//////////////////////////////////////////////////
 			function ShopBuyProcess()
 			{
@@ -2932,12 +2933,12 @@ JS_HTML;
 								return false;
 							}
 							// 数量の確認
-							if (mb_ereg("^[0-9]", $_POST["Amount"])) {
-								$amount	= (int)$_POST["Amount"];
+							if (preg_match('/^[0-9]/', $_POST["Amount"])) {
+								$amount = (int)$_POST["Amount"];
 								if ($amount == 0)
-									$amount	= 1;
+									$amount = 1;
 							} else {
-								$amount	= 1;
+								$amount = 1;
 							}
 							// 減らす(所持数より多く指定された場合その数を調節する)
 							$_SESSION["AuctionExhibit"]	= time(); //セッションで2重出品を防ぐ
@@ -3312,7 +3313,7 @@ JS_HTML;
 							if ($_POST["color"]) {
 								if (
 									strlen($_POST["color"]) != 6 &&
-									!mb_ereg("^[0369cf]{6}", $_POST["color"])
+									!preg_match('/^[0369cf]{6}$/', $_POST["color"])
 								)
 									return "error 12072349";
 								$this->UserColor	= $_POST["color"];
@@ -3883,56 +3884,44 @@ HTML;
 						//////////////////////////////////////////////////
 						//	入力された情報が型にはまるか判定
 						//	→ 新規データを作成。
-
 						function MakeNewData()
 						{
-							// 登録者数が限界の場合
 							if (MAX_USERS <= count(glob(USER . "*")))
 								return array(false, "Maximum users.<br />已达到最大用户数量。");
+
 							if (isset($_POST["Newid"]))
 								trim($_POST["Newid"]);
 							if (empty($_POST["Newid"]))
 								return array(false, "Enter ID.");
 
 							if (
-								!mb_ereg("[0-9a-zA-Z]{4,16}", $_POST["Newid"]) ||
-								mb_ereg("[^0-9a-zA-Z]+", $_POST["Newid"])
-							) //正規表現
-								return array(false, "Bad ID");
-
-							if (strlen($_POST["Newid"]) < 4 || 16 < strlen($_POST["Newid"])) //文字制限
+								!preg_match("/^[0-9a-zA-Z]{4,16}$/", $_POST["Newid"])  // 检查完整字符串格式
+							)
 								return array(false, "Bad ID");
 
 							if (is_registered($_POST["Newid"]))
 								return array(false, "您注册的ID已经被使用");
 
 							$file = USER . $_POST["Newid"] . "/" . DATA;
-							// PASS
-							//if(isset($_POST["pass1"]))
-							//	trim($_POST["pass1"]);
 							if (empty($_POST["pass1"]) || empty($_POST["pass2"]))
 								return array(false, "Enter both Password.");
 
-							if (!mb_ereg("[0-9a-zA-Z]{4,16}", $_POST["pass1"]) || mb_ereg("[^0-9a-zA-Z]+", $_POST["pass1"]))
+							if (!preg_match("/^[0-9a-zA-Z]{4,16}$/", $_POST["pass1"]))
 								return array(false, "Bad Password 1");
-							if (strlen($_POST["pass1"]) < 4 || 16 < strlen($_POST["pass1"])) //文字制限
-								return array(false, "Bad Password 1");
-							if (!mb_ereg("[0-9a-zA-Z]{4,16}", $_POST["pass2"]) || mb_ereg("[^0-9a-zA-Z]+", $_POST["pass2"]))
-								return array(false, "Bad Password 2");
-							if (strlen($_POST["pass2"]) < 4 || 16 < strlen($_POST["pass2"])) //文字制限
+
+							if (!preg_match("/^[0-9a-zA-Z]{4,16}$/", $_POST["pass2"]))
 								return array(false, "Bad Password 2");
 
 							if ($_POST["pass1"] !== $_POST["pass2"])
 								return array(false, "Password dismatch.");
 
 							$pass = $this->CryptPassword($_POST["pass1"]);
-							// MAKE
 							if (!file_exists($file)) {
 								mkdir(USER . $_POST["Newid"], 0705);
-								$this->RecordRegister($_POST["Newid"]); //ID記録
+								$this->RecordRegister($_POST["Newid"]);
 								$fp = fopen("$file", "w");
 								flock($fp, LOCK_EX);
-								$now	= time();
+								$now    = time();
 								fputs($fp, "id=$_POST[Newid]\n");
 								fputs($fp, "pass=$pass\n");
 								fputs($fp, "last=" . $now . "\n");
@@ -3942,11 +3931,10 @@ HTML;
 								fputs($fp, "time=" . START_TIME . "\n");
 								fputs($fp, "record_btl_log=1\n");
 								fclose($fp);
-								//print("ID:$_POST[Newid] success.<BR>");
 								$_SESSION["id"] = $_POST["Newid"];
 								setcookie("NO", session_id(), time() + COOKIE_EXPIRE);
-								$success	= "<div class=\"recover\">ID : $_POST[Newid] 注册成功. 请登录吧</div>";
-								return array(true, $success); //強引...
+								$success    = "<div class=\"recover\">ID : $_POST[Newid] 注册成功. 请登录吧</div>";
+								return array(true, $success);
 							}
 						}
 

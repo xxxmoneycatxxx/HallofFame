@@ -245,12 +245,12 @@ function RegularControl($value = null)
 //	$id 是否登录过
 function is_registered($id)
 {
-	if ($registered = @file(REGISTER)):
-		if (array_search($id . "\n", $registered) !== false && !mb_ereg("[\.\/]+", $id)) //改行記号必須
-			return true;
-		else
-			return false;
-	endif;
+    if ($registered = @file(REGISTER)) {
+        if (array_search($id . "\n", $registered) !== false && !preg_match("/[\.\/]+/", $id)) // 改行記号必須
+            return true;
+        else
+            return false;
+    }
 }
 //////////////////////////////////////////////////
 //	锁文件并返回文件指针
