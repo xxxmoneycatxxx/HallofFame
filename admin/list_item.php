@@ -91,28 +91,28 @@
 		print("<tr><td>\n");
 		print($i);
 		print("</td><td>");
-		print("<img src=\"" . $img_f . $item[img] . "\">");
+		print("<img src=\"" . $img_f . $item["img"] . "\">");
 		print("</td><td>\n");
-		print($item[name]);
+		print($item["name"]);
 		print("</td><td>\n");
-		print($item[type]);
+		print($item["type"]);
 		print("</td><td>\n");
-		print($item[atk][0] . "<br />" . $item[atk][1]);
+		print($item["atk"][0] . "<br />" . $item["atk"][1]);
 		print("</td><td>\n");
-		print($item[def][0] . "+" . $item[def][1] . "<br />" . $item[def][2] . "+" . $item[def][3]);
+		print($item["def"][0] . "+" . $item["def"][1] . "<br />" . $item["def"][2] . "+" . $item["def"][3]);
 		print("</td><td>\n");
-		print($item[handle]);
+		print($item["handle"]);
 		print("</td><td>\n");
-		print($item[buy]);
+		print($item["buy"]);
 		print("</td><td>\n");
-		print($item[sell]);
+		print($item["sell"]);
 		print("</td></tr>\n");
 		if ($item["need"]) {
 			print("<tr><td colspan=\"9\" style=\"text-align:left;padding-left:50px\">\n");
 			foreach ($item["need"] as $M_item => $M_amount) {
 				$M	= LoadItemData($M_item);
 				print("$M[name]");
-				print("<img src=\"" . $img_f . $M[img] . "\">");
+				print("<img src=\"" . $img_f . $M["img"] . "\">");
 				print("x" . $M_amount . " / \n");
 			}
 			print("</td></tr>\n");

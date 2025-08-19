@@ -299,7 +299,7 @@ class ClassSkillEffect
 
 			case 3020: // ManaExtend
 				$target->MAXSP	= round($target->MAXSP * 1.2);
-				print($target->Name(bold) . "'s MAXSP 提升到 {$target->MAXSP}.<br />\n");
+				print($target->Name("bold") . "'s MAXSP 提升到 {$target->MAXSP}.<br />\n");
 				break;
 			/*
 			case 3030: // Reflesh
@@ -331,7 +331,7 @@ class ClassSkillEffect
 
 			case 3055: //CastAsist
 				if ($target->expect && $target->expect_type === 1) {
-					print("<span class=\"support\">" . $target->Name(bold) . " casting shorted!</span>");
+					print("<span class=\"support\">" . $target->Name("bold") . " casting shorted!</span>");
 					$target->DelayCut(60, $this->delay, 1);
 					print("<br />\n");
 				}
@@ -341,7 +341,7 @@ class ClassSkillEffect
 			case 5067: //BananaProtection
 				if (!$target->SPECIAL["Barrier"]) {
 					$target->GetSpecial("Barrier", true);
-					print("<span class=\"support\">" . $target->Name(bold) . " got barriered!</span><br />\n");
+					print("<span class=\"support\">" . $target->Name("bold") . " got barriered!</span><br />\n");
 				}
 				break;
 			/*
@@ -426,7 +426,7 @@ class ClassSkillEffect
 				}
 				if ($target->POSITION == "back") {
 					$target->POSITION = "front";
-					print($target->Name(bold) . " 站到前排.<br />");
+					print($target->Name("bold") . " 站到前排.<br />");
 				}
 				$this->StatusChanges($skill, $target);
 				break;
@@ -451,8 +451,8 @@ class ClassSkillEffect
 				$mob	= $spawn[array_rand($spawn)];
 				$add	= CreateSummon($mob);
 				$this->JoinCharacter($user, $add);
-				$add->ShowImage(vcent);
-				print($add->Name(bold) . " 加入了队伍.<br />\n");
+				$add->ShowImage("vcent");
+				print($add->Name("bold") . " 加入了队伍.<br />\n");
 				break;
 
 			//---------------------------------------------//
@@ -463,23 +463,23 @@ class ClassSkillEffect
 				// 魔方陣描く
 				if ($skill["MagicCircleAdd"]) {
 					$this->MagicCircleAdd($user->team, $skill["MagicCircleAdd"]);
-					print($user->Name(bold) . '<span class="support"> 画魔法阵 x' . $skill["MagicCircleAdd"] . '</span><br />' . "\n");
+					print($user->Name("bold") . '<span class="support"> 画魔法阵 x' . $skill["MagicCircleAdd"] . '</span><br />' . "\n");
 				}
 				// 魔方陣消す(敵)
 				if ($skill["MagicCircleDeleteEnemy"]) {
 					$EnemyTeam	= ($user->team == TEAM_0) ? TEAM_1 : TEAM_0; //相手チームを指定
 					$this->MagicCircleDelete($EnemyTeam, $skill["MagicCircleDeleteEnemy"]);
-					print($user->Name(bold) . '<span class="dmg"> 消除了敌人魔法阵 x' . $skill["MagicCircleDeleteEnemy"] . '</span><br />' . "\n");
+					print($user->Name("bold") . '<span class="dmg"> 消除了敌人魔法阵 x' . $skill["MagicCircleDeleteEnemy"] . '</span><br />' . "\n");
 				}
 				// HP持続回復
 				if ($skill["HpRegen"]) {
 					$target->GetSpecial("HpRegen", $skill["HpRegen"]);
-					print($target->Name(bold) . '<span class="recover"> HP 回复了+' . $skill["HpRegen"] . "%</span><br />\n");
+					print($target->Name("bold") . '<span class="recover"> HP 回复了+' . $skill["HpRegen"] . "%</span><br />\n");
 				}
 				// SP持続回復
 				if ($skill["SpRegen"]) {
 					$target->GetSpecial("SpRegen", $skill["SpRegen"]);
-					print($target->Name(bold) . '<span class="support"> SP 回复了+' . $skill["SpRegen"] . "%</span><br />\n");
+					print($target->Name("bold") . '<span class="support"> SP 回复了+' . $skill["SpRegen"] . "%</span><br />\n");
 				}
 				// チャージ(詠唱)中のキャラのみに適応する技。
 				if ($skill["priority"] == "Charge" && !$target->expect)
@@ -496,8 +496,8 @@ class ClassSkillEffect
 							$add->Quick($this->delay * 2);
 						//break;//ここ取るとエラー無くなる(?)。
 						$this->JoinCharacter($user, $add);
-						$add->ShowImage(vcent);
-						print($add->Name(bold) . " 加入了队伍.<br />\n");
+						$add->ShowImage("vcent");
+						print($add->Name("bold") . " 加入了队伍.<br />\n");
 					}
 					return true;
 				}
@@ -529,9 +529,9 @@ class ClassSkillEffect
 				if ($skill["poison"]) {
 					$result	= $target->GetPoison($skill["poison"]);
 					if ($result === true)
-						print($target->Name(bold) . "<span class=\"spdmg\">中毒了</span> !<br />\n");
+						print($target->Name("bold") . "<span class=\"spdmg\">中毒了</span> !<br />\n");
 					else if ($result === "BLOCK")
-						print($target->Name(bold) . " 没有中毒.<br />\n");
+						print($target->Name("bold") . " 没有中毒.<br />\n");
 				}
 				// ノックバック(後衛化)
 				if ($skill["knockback"])
@@ -553,7 +553,7 @@ class ClassSkillEffect
 		if (!$skill["delay"])
 			return false;
 
-		print($target->Name(bold) . " delayed ");
+		print($target->Name("bold") . " delayed ");
 		$target->DelayByRate($skill["delay"], $this->delay, 1);
 		print(".<br />\n");
 	}
@@ -669,7 +669,7 @@ function RecoverSP(&$target, $value)
 //	HPの吸収
 function AbsorbHP(&$target, $value, &$user, $value2)
 {
-	print(' 从 ' . $target->Name(bold));
+	print(' 从 ' . $target->Name("bold"));
 	$target->HpDamage($value);
 	print('吸取 <span class="recover"><span class="bold">' . $value . '</span> HP</span>');
 	$user->HpRecover($value);
@@ -679,7 +679,7 @@ function AbsorbHP(&$target, $value, &$user, $value2)
 //	SPの回復
 function AbsorbSP(&$target, $value, &$user, $value2)
 {
-	print(' 从 ' . $target->Name(bold));
+	print(' 从 ' . $target->Name("bold"));
 	$target->SpDamage($value);
 	print('吸取 <span class="support"><span class="bold">' . $value . '</span> SP</span>');
 	$user->SpRecover($value);
