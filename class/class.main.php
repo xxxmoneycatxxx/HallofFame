@@ -75,13 +75,15 @@
 
 include(CLASS_USER);
 include(GLOBAL_PHP);
+
+// 定义缺失的常量
+define('MONSTER', 'MONSTER');
+define('CHECKBOX', 'CHECKBOX');
 class main extends user
 {
 
 	var $islogin	= false;
 
-	//////////////////////////////////////////////////
-	//	
 	function __construct()
 	{
 		// 删除父类构造函数调用
@@ -117,7 +119,7 @@ class main extends user
 		switch (true) {
 			case ($_GET["menu"] === "auction"):
 				include(CLASS_AUCTION);
-				$ItemAuction	= new Auction(item);
+				$ItemAuction	= new Auction("item");
 				$ItemAuction->AuctionHttpQuery("auction");
 				$ItemAuction->ItemCheckSuccess(); // 检查拍卖结束的商品
 				$ItemAuction->UserSaveData(); // 结算拍卖成功的商品，并将商品和资金划归相应用户
@@ -1406,7 +1408,7 @@ HTML;
 		$mapList	= LoadMapAppear($this);
 		foreach ($mapList as $map) {
 			list($land)	= LandInformation($map);
-			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land[name]}</a>");
+			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land["name"]}</a>");
 			//print(" ({$land[proper]})");
 			print("</p>");
 		}

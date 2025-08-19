@@ -119,17 +119,17 @@ class char
 	var $JdgCount; //決定した判断の回数=array()
 	//////////////////////////////////////////////////
 	function __construct($file = false)
-    {
-        if (!$file)
-            return 0;
+	{
+		if (!$file)
+			return 0;
 
-        $this->Number = basename($file, ".dat");
-        $this->file = $file;
-        $this->fp = FileLock($file);
+		$this->Number = basename($file, ".dat");
+		$this->file = $file;
+		$this->fp = FileLock($file);
 
-        $data = ParseFileFP($this->fp);
-        $this->SetCharData($data);
-    }
+		$data = ParseFileFP($this->fp);
+		$this->SetCharData($data);
+	}
 	//////////////////////////////////////////////////
 	//	ファイルポインタが開かれていれば閉じる
 	function fpclose()
@@ -1143,12 +1143,12 @@ class char
 			$item	= LoadItemData($this->{$place});
 			if ($place == "weapon")
 				$this->WEAPON	= $item["type"];
-			$this->atk[0]	+= $item[atk][0]; //物理攻撃力
-			$this->atk[1]	+= $item[atk][1]; //魔法〃
-			$this->def[0]	+= $item[def][0]; //物理防御(÷)
-			$this->def[1]	+= $item[def][1]; //〃(－)
-			$this->def[2]	+= $item[def][2]; //魔法防御(÷)
-			$this->def[3]	+= $item[def][3]; //〃(－)
+			$this->atk[0]	+= $item["atk"][0]; //物理攻撃力
+			$this->atk[1]	+= $item["atk"][1]; //魔法〃
+			$this->def[0]	+= $item["def"][0]; //物理防御(÷)
+			$this->def[1]	+= $item["def"][1]; //〃(－)
+			$this->def[2]	+= $item["def"][2]; //魔法防御(÷)
+			$this->def[3]	+= $item["def"][3]; //〃(－)
 
 			$this->P_MAXHP	+= $item["P_MAXHP"];
 			$this->M_MAXHP	+= $item["M_MAXHP"];

@@ -62,15 +62,17 @@ class Auction
 	var $DataChange	= false;
 	var $QUERY;
 	var $sort;
-	function Auction($type)
-	{
-		if ($type == "item") {
-			$this->AuctionType = "item";
-			$this->ItemArticleRead();
-		} else if ($type == "char") {
-			$this->AuctionType = "char";
-		}
-	}
+
+	function __construct($type)
+    {
+        if ($type == "item") {
+            $this->AuctionType = "item";
+            $this->ItemArticleRead();
+        } else if ($type == "char") {
+            $this->AuctionType = "char";
+        }
+    }
+	
 	function AuctionHttpQuery($name)
 	{
 		$this->QUERY	= $name;

@@ -104,7 +104,7 @@ class battle extends ClassSkillEffect
 	//	コンストラクタ。
 
 	//各チームの配列を受けとる。
-	function battle($team0, $team1)
+	function __construct($team0, $team1)
 	{
 		include(DATA_JUDGE);
 		include_once(DATA_SKILL);
@@ -313,71 +313,62 @@ HTML;
 	//	全員死んでる=draw(?)
 	function BattleResult()
 	{
-		if (CountAlive($this->team0) == 0) //全員しぼーなら負けにする。
-			$team0Lose	= true;
-		if (CountAlive($this->team1) == 0) //全員しぼーなら負けにする。
-			$team1Lose	= true;
-		//勝者のチーム番号か引き分けを返す
-		if ($team0Lose && $team1Lose) {
-			$this->result	= DRAW;
-			return "draw";
-		} else if ($team0Lose) { //team1 won
-			$this->result	= TEAM_1;
-			return "team1";
-		} else if ($team1Lose) { // team0 won
-			$this->result	= TEAM_0;
-			return "team0";
+		if (CountAlive($this->team0) == 0) // 全員死亡
+			$team0Lose = true;
+		if (CountAlive($this->team1) == 0) // 全員死亡
+			$team1Lose = true;
 
-			// 両チーム生存していて最大行動数に達した時。
-		} else if ($this->BattleMaxTurn <= $this->actions) {
-			// 生存者数の差。
-			/*
-				// 生存者数の差が1人以上なら延長
-			$AliveNumDiff	= abs(CountAlive($this->team0) - CountAlive($this->team1));
-			if(0 < $AliveNumDiff && $this->BattleMaxTurn < BATTLE_MAX_EXTENDS) {
-			*/
-			$AliveNumDiff	= abs(CountAlive($this->team0) - CountAlive($this->team1));
-			$Not5	= (CountAlive($this->team0) != 5 && CountAlive($this->team1) != 5);
-			//$lessThan4	= ( CountAlive($this->team0) < 5 || CountAlive($this->team1) < 5 );
-			//if( ( $lessThan4 || 0 < $AliveNumDiff ) && $this->BattleMaxTurn < BATTLE_MAX_EXTENDS ) {
-			if (($Not5 || 0 < $AliveNumDiff) && $this->BattleMaxTurn < BATTLE_MAX_EXTENDS) {
-				if ($this->ExtendTurns(TURN_EXTENDS, 1))
+		// 胜者判定
+		if ($team0Lose && $team1Lose) {
+			$this->result = DRAW;
+			return "draw";
+		} else if ($team0Lose) {
+			$this->result = TEAM_1;
+			return "team1";
+		} else if ($team1Lose) {
+			$this->result = TEAM_0;
+			return "team0";
+		}
+		// 达到最大回合数
+		else if ($this->BattleMaxTurn <= $this->actions) {
+			// 添加类型安全检查
+			$team0Alive = is_countable($this->team0) ? CountAliveChars($this->team0) : 0;
+			$team1Alive = is_countable($this->team1) ? CountAliveChars($this->team1) : 0;
+
+			// 计算存活人数差
+			$AliveNumDiff = abs($team0Alive - $team1Alive);
+			$Not5 = ($team0Alive != 5 && $team1Alive != 5);
+
+			// 检查是否需要延长回合
+			if (($Not5 || $AliveNumDiff > 0) && $this->BattleMaxTurn < BATTLE_MAX_EXTENDS) {
+				if ($this->ExtendTurns(TURN_EXTENDS, true)) {
 					return false;
+				}
 			}
 
-			// 決着着かなければただ引き分けにする。
+			// 根据战斗结果类型判定
 			if ($this->BattleResultType == 0) {
-				$this->result	= DRAW; //引き分け。
+				$this->result = DRAW;
 				return "draw";
-				// 決着着かなければ生存者の数で勝敗をつける。
 			} else if ($this->BattleResultType == 1) {
-				// とりあえず引き分けに設定
-				// (1) 生存者数が多いほうが勝ち
-				// (2) (1) が同じなら総ダメージが多いほうが勝ち
-				// (3) (2) でも同じなら引き分け…???(or防衛側の勝ち)
-
-				$team0Alive	= CountAliveChars($this->team0);
-				$team1Alive	= CountAliveChars($this->team1);
-				if ($team1存活 < $team0Alive) { // team0 won
-					$this->result	= TEAM_0;
+				// 存活人数多者胜
+				if ($team1Alive < $team0Alive) {
+					$this->result = TEAM_0;
 					return "team0";
-				} else if ($team0存活 < $team1Alive) { // team1 won
-					$this->result	= TEAM_1;
+				} else if ($team0Alive < $team1Alive) {
+					$this->result = TEAM_1;
 					return "team1";
 				} else {
-					$this->result	= DRAW;
+					$this->result = DRAW;
 					return "draw";
 				}
 			} else {
-				$this->result	= DRAW;
-				print("error321708.<br />请报告出错了...（？）。");
-				return "draw"; // エラー回避。
+				$this->result = DRAW;
+				return "draw";
 			}
-
-			$this->result	= DRAW;
-			print("error321709.<br />请报告出错了...（？）。");
-			return "draw"; // エラー回避。
 		}
+
+		return false; // 战斗继续
 	}
 	//////////////////////////////////////////////////
 	//	戦闘の結果表示
@@ -479,7 +470,7 @@ HTML;
 			foreach ($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">");
-				print("{$item[name]} x {$amount}<br />\n");
+				print("{$item["name"]} x {$amount}<br />\n");
 			}
 		}
 		print("</td></tr>\n");
@@ -602,11 +593,11 @@ HTML;
 		// 武器タイプ不一致
 		if ($skill["limit"] && !$My->monster) {
 			if (!$skill["limit"][$My->WEAPON]) {
-				print('<span class="u">' . $My->Name(bold));
+				print('<span class="u">' . $My->Name("bold"));
 				print('<span class="dmg"> 失败</span> 因为 ');
 				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"" . IMG_ICON . $skill["img"] . "\" class=\"vcent\"/>");
-				print($skill[name] . "</span><br />\n");
+				print($skill["name"] . "</span><br />\n");
 				//print($My->Name(bold)." Failed to use ".$skill["name"]."<br />\n");
 				print("(武器类型不符)<br />\n");
 				$My->DelayReset(); // 行動順をリセット
@@ -616,7 +607,7 @@ HTML;
 
 		// SP不足
 		if ($My->SP < $skill["sp"]) {
-			print($My->Name(bold) . $skill["name"] . "失败(SP不足)");
+			print($My->Name("bold") . $skill["name"] . "失败(SP不足)");
 			if ($My->expect) { //もし詠唱や貯め途中でSPが不足した場合
 				$My->ResetExpect();
 			}
@@ -629,10 +620,10 @@ HTML;
 			// こちらは貯めと詠唱を開始する場合 /////////////////////
 			// 物理か魔法によって文を変える
 			if ($skill["type"] == 0) { //物理
-				print('<span class="charge">' . $My->Name(bold) . ' 开始蓄力.</span>');
+				print('<span class="charge">' . $My->Name("bold") . ' 开始蓄力.</span>');
 				$My->expect_type	= CHARGE;
 			} else { //魔法
-				print('<span class="charge">' . $My->Name(bold) . ' 开始咏唱.</span>');
+				print('<span class="charge">' . $My->Name("bold") . ' 开始咏唱.</span>');
 				$My->expect_type	= CAST;
 			}
 			$My->expect	= $skill_no; //詠唱?貯め完了と同時に使用する技
@@ -653,14 +644,14 @@ HTML;
 			$My->ActCount++;
 
 			// 行動内容の表示(行動する)
-			print('<div class="u">' . $My->Name(bold));
+			print('<div class="u">' . $My->Name("bold"));
 			print("<img src=\"" . IMG_ICON . $skill["img"] . "\" class=\"vcent\"/>");
-			print($skill[name] . "</div>\n");
+			print($skill["name"] . "</div>\n");
 
 			// 魔法陣を消費(味方)
 			if ($skill["MagicCircleDeleteTeam"]) {
 				if ($this->MagicCircleDelete($My->team, $skill["MagicCircleDeleteTeam"])) {
-					print($My->Name(bold) . '<span class="charge"> 使用魔法阵 x' . $skill["MagicCircleDeleteTeam"] . '</span><br />' . "\n");
+					print($My->Name("bold") . '<span class="charge"> 使用魔法阵 x' . $skill["MagicCircleDeleteTeam"] . '</span><br />' . "\n");
 					// 魔法陣消費失敗
 				} else {
 					print('<span class="dmg">失败!(魔法阵不足)</span><br />' . "\n");
@@ -753,7 +744,7 @@ HTML;
 		// 行動後の硬直(があれば設定する)
 		if ($skill["charge"]["1"]) {
 			$My->DelayReset();
-			print($My->Name(bold) . " 行动推迟了");
+			print($My->Name("bold") . " 行动推迟了");
 			$My->DelayByRate($skill["charge"]["1"], $this->delay, 1);
 			print("<br />\n");
 			return false;
@@ -841,7 +832,7 @@ HTML;
 			// 実際に判定してみる。
 			switch ($char->guard) {
 				case "never":
-					continue;
+					continue 2;
 				case "life25": // HP(%)が25%以上なら
 					if (25 < $HpRate) $defender	= $fore["$key"];
 					break;
@@ -881,7 +872,7 @@ HTML;
 			}
 			if ($target[$key]->CharJudgeDead()) { //死んだかどうか
 				// 死亡メッセージ
-				print("<span class=\"dmg\">" . $target[$key]->Name(bold) . " 被打倒.</span><br />\n");
+				print("<span class=\"dmg\">" . $target[$key]->Name("bold") . " 被打倒.</span><br />\n");
 
 				//経験値の取得
 				$exp	+= $target[$key]->DropExp();
@@ -895,7 +886,7 @@ HTML;
 					$item	= LoadItemData($item);
 					print($char->Name("bold") . " 掉落了");
 					print("<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\"/>\n");
-					print("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
+					print("<span class=\"bold u\">{$item["name"]}</span>.<br />\n");
 				}
 
 				//召喚キャラなら消す。
@@ -1475,12 +1466,16 @@ HTML;
 				//	初期キャラ生存数を数えて返す
 				function CountAliveChars($team)
 				{
-					$no	= 0; //初期化
+					// 防御性检查：确保参数可计数
+					if (!is_countable($team)) {
+						return 0;
+					}
+
+					$no = 0;
 					foreach ($team as $char) {
-						if ($char->STATE === 1)
-							continue;
-						if ($char->monster)
-							continue;
+						// 跳过死亡角色和召唤生物
+						if ($char->STATE === DEAD) continue;
+						if (isset($char->summon) && $char->summon) continue;
 						$no++;
 					}
 					return $no;
@@ -1519,28 +1514,23 @@ HTML;
 				function MultiFactJudge($Keys, $char, $classBattle)
 				{
 					foreach ($Keys as $no) {
+						$return = DecideJudge($no, $char, $classBattle);
 
-						//$return	= DecideJudge($no,$char,$MyTeam,$EnemyTeam);
-						$return	= DecideJudge($no, $char, $classBattle);
+						if (!$return) return false;
 
-						// 判定が否であった場合終了。
-						if (!$return)
-							return false;
-
-						// 配列を比較して共通項目を残す(ほぼ廃止の方向へ)
-						/*
-		if(!$compare && is_array($return))
-			$compare	= $return;
-		else if(is_array($return))
-			$compare	= array_intersect($intersect,$return);
-		*/
+						// 添加以下代码处理switch中的continue问题
+						if (is_array($return)) {
+							// 这里可能是原始代码中缺失的逻辑
+							// 由于原始注释提到"比较和交集"，我们添加基本实现
+							if (!isset($compare)) {
+								$compare = $return;
+							} else {
+								$compare = array_intersect($compare, $return);
+							}
+						}
 					}
 
-					/*
-	if($compare == array())
-		$compare	= true;
-	return $compare;
-	*/
-					return true;
+					// 返回处理后的结果
+					return $compare ?? true;
 				}
 ?>

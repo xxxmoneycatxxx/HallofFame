@@ -98,7 +98,7 @@ class union extends char
 
 	//////////////////////////////////////////////////
 	//	コンストラクタ
-	function union($file = false)
+	function __construct($file = false)
 	{
 		$this->LoadData($file);
 	}
