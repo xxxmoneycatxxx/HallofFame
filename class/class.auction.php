@@ -89,10 +89,10 @@ class Auction
 			if ($Article["bidder"]) {
 				$this->UserGetItem($Article["bidder"], $Article["item"], $Article["amount"]);
 				$this->UserGetMoney($Article["exhibitor"], $Article["price"]);
-				$this->AddLog("No.{$Article[No]} <img src=\"" . IMG_ICON . $item["img"] . "\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 " . $this->UserGetNameFromTemp($Article["bidder"]) . "" . MoneyFormat($Article["price"]) . " <span class=\"recover\">中标。</span>");
+				$this->AddLog("No.{$Article["No"]} <img src=\"" . IMG_ICON . $item["img"] . "\"><span class=\"bold\">{$item["name"]} x{$Article["amount"]}</span>个 " . $this->UserGetNameFromTemp($Article["bidder"]) . "" . MoneyFormat($Article["price"]) . " <span class=\"recover\">中标。</span>");
 			} else {
 				$this->UserGetItem($Article["exhibitor"], $Article["item"], $Article["amount"]);
-				$this->AddLog("No.{$Article[No]} <img src=\"" . IMG_ICON . $item["img"] . "\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个<span class=\"dmg\">流标。</span>");
+				$this->AddLog("No.{$Article["No"]} <img src=\"" . IMG_ICON . $item["img"] . "\"><span class=\"bold\">{$item["name"]} x{$Article["amount"]}</span>个<span class=\"dmg\">流标。</span>");
 			}
 			unset($this->Article["$no"]);
 			$this->DataChange	= true;
@@ -188,11 +188,11 @@ class Auction
 		if (!$Article	= $this->Article["$ArticleNo"])
 			return false;
 		$BottomPrice	= BottomPrice($this->Article["$ArticleNo"]["price"]);
-		if ($Article["IP"] == $_SERVER[REMOTE_ADDR]) {
+		if ($Article["IP"] == $_SERVER["REMOTE_ADDR"]) {
 			ShowError("IP制限.");
 			return false;
 		}
-		if (isMobile == "i") {
+		if ("isMobile" == "i") {
 			ShowError("mobile forbid.");
 			return false;
 		}
@@ -213,7 +213,7 @@ class Auction
 		$this->Article["$ArticleNo"]["bidder"]	= $Bidder;
 		$this->DataChange	= true;
 		$item	= LoadItemData($Article["item"]);
-		$this->AddLog("No." . $Article["No"] . " <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 " . MoneyFormat($BidPrice) . "  " . $BidderName . " <span class=\"support\">出价。</span>");
+		$this->AddLog("No." . $Article["No"] . " <span class=\"bold\">{$item["name"]} x{$Article["amount"]}</span>个 " . MoneyFormat($BidPrice) . "  " . $BidderName . " <span class=\"support\">出价。</span>");
 		return true;
 	}
 	function ItemShowArticle($bidding = false)
@@ -389,11 +389,11 @@ class Auction
 			// コメント
 			"comment"	=> $comment,
 			// IP
-			"IP"	=> $_SERVER[REMOTE_ADDR],
+			"IP"	=> $_SERVER["REMOTE_ADDR"],
 		);
 		array_unshift($this->Article, $New);
 		$itemData	= LoadItemData($item);
-		$this->AddLog("No." . $this->ArticleNo . "  <img src=\"" . IMG_ICON . $itemData["img"] . "\"><span class=\"bold\">{$itemData[name]} x{$amount}</span>个<span class=\"charge\"> 加入拍卖。</span>");
+		$this->AddLog("No." . $this->ArticleNo . "  <img src=\"" . IMG_ICON . $itemData["img"] . "\"><span class=\"bold\">{$itemData["name"]} x{$amount}</span>个<span class=\"charge\"> 加入拍卖。</span>");
 		$this->DataChange	= true;
 	}
 	//////////////////////////////////////////////

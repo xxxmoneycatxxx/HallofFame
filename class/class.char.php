@@ -1389,11 +1389,11 @@ class char
 				$skill	= LoadSKillData($no);
 				//もし習得済みなら?
 				if (in_array($no, $this->skill))
-					return array(false, "{$skill[name]} 已经习得.");
+					return array(false, "{$skill["name"]} 已经习得.");
 				if ($this->UseSkillPoint($skill["learn"])) {
 					$this->GetNewSkill($skill["no"]);
 					//$this->SaveCharData();
-					return array(true, $this->Name() . "  {$skill[name]} 已经习得。");
+					return array(true, $this->Name() . "  {$skill["name"]} 已经习得。");
 				} else
 					return array(false, "技能点数不足");
 			}
