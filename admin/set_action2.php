@@ -81,7 +81,7 @@
 
 	// 行数
 	define("ROWS", $_POST["patternNum"] ? $_POST["patternNum"] : 8);
-	define("IMG", "../image/char/");
+    const IMG = "../image/char/";
 
 	// Load
 	if ($_POST["Load"] && $_POST["loadMob"]) {
