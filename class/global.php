@@ -286,18 +286,19 @@ function FileLock($file, $noExit = false)
 //文件写入（参数：文件指针）
 function WriteFileFP($fp, $text, $check = false)
 {
-	if (!$check && !trim($text)) //空白的话结束
+	// 检查文件指针是否有效
+	if (!is_resource($fp)) {
+		error_log("WriteFileFP: 无效的文件指针");
 		return false;
-	/*if(file_exists($file)):
-			ftruncate()
-		else:
-			$fp	= fopen($file,"w+");*/
+	}
+
+	if (!$check && !trim($text))
+		return false;
+
+	// 现在可以安全操作
 	ftruncate($fp, 0);
 	rewind($fp);
-	//$fp	= fopen($file,"w+");
-	//flock($fp,LOCK_EX);
 	fputs($fp, $text);
-	//print("<br>"."<br>".$text);
 }
 //////////////////////////////////////////////////
 //	写入文件
@@ -515,27 +516,6 @@ function ItemSellPrice($item)
 function ShowLogList()
 {
 	print("<div style=\"margin:15px\">\n");
-	/*// ログ警ないなら链婶山绩すればいい。
-	// common
-	print("<h4>最近的战斗(Recent Battles)</h4>\n");
-	$log	= @glob(LOG_BATTLE_NORMAL."*");
-	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file);
-	}
-	// union
-	print("<h4>BOSS战(Union Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_UNION."*");
-	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"UNION");
-	}
-	// rank
-	print("<h4>ランキング里(Rank Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_RANK."*");
-	foreach(array_reverse($log) as $file) {
-		BattleLogDetail($file,"RANK");
-	}
-	*/
-
 	print("<a href=\"?log\" class=\"a0\">全部</a> ");
 	print("<a href=\"?clog\">普通</a> ");
 	print("<a href=\"?ulog\">BOSS战</a> ");
