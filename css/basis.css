@@ -1,303 +1,175 @@
-﻿/* ==================== */
-/* CSS 变量定义 (主题化) */
-/* ==================== */
-:root {
-  /* 颜色系统 */
-  --color-damage: #c30;
-  --color-heal: #36f;
-  --color-support: #6c6;
-  --color-special: #939;
-  --color-levelup: #ff3;
-  --color-charge: #fc3;
-  
-  /* 间距系统 */
-  --spacing-medium: 1.4em;
-  --spacing-small: 0.2em;
-  --spacing-list: 1.5em;
-  
-  /* 动画参数 */
-  --anim-duration: 0.4s;
+﻿﻿*{
+  padding	: 0;
+  margin	: 0;
+  line-height	: 140%;
+  font-family	: 微软雅黑;
+  font-size:14px;
+  overflow:inherit;
 }
-
-/* ==================== */
-/* 核心重置与基础样式 */
-/* ==================== */
-* {
-  padding: 0;
-  margin: 0;
-  line-height: 140%;
-  font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
-  font-size: 14px;
-  overflow: inherit;
-  box-sizing: border-box; /* 更合理的盒模型 */
+img{
+  border:0px;
 }
-
-*, *:before, *:after {
-  box-sizing: inherit; /* 确保一致盒模型 */
+html{
+  height:100%;
 }
-
-img {
-  border: 0;
-  max-width: 100%;
-  height: auto;
-  vertical-align: middle; /* 修复图片底部间隙 */
+body{
+  height	:100%;
+  text-align	: center;
 }
-
-html {
-  height: 100%;
-  scroll-behavior: smooth; /* 平滑滚动 */
+* html div#main_frame{
+  height	: 100%;
 }
-
-body {
-  height: 100%;
-  text-align: center;
-  min-width: 320px;
-  overflow-x: hidden;
-  background-color: #f9f9f9; /* 默认背景色 */
-  color: #333; /* 默认文字色 */
+body > #main_frame{
+  height	: auto;
 }
-
-/* ==================== */
-/* 布局与容器优化 */
-/* ==================== */
-#main_frame {
-  position: relative; /* 创建定位上下文 */
-  z-index: 1; /* 确保内容在背景上方 */
+p{
+  margin-bottom	: 1em;
 }
-
-* html div#main_frame {
-  height: 100%;
+.align-right{
+  text-align	:right;
 }
-
-body > #main_frame {
-  height: auto;
-  min-height: 100%; /* 确保最小高度 */
+.align-center{
+  text-align	:center;
 }
-
-/* ==================== */
-/* 排版系统优化 */
-/* ==================== */
-p {
-  margin-bottom: 1em;
-  text-wrap: pretty; /* 更智能的文本换行 */
+.bold{
+  font-weight	: bold;
 }
-
-/* 对齐类优化 */
-[class*="align-"] {
-  display: block;
+.u{
+  text-decoration	: underline;
 }
-.align-right {
-  text-align: right;
+ul{
+  /*list-style-type:disc;*/
 }
-.align-center {
-  text-align: center;
+li{
+  margin-left:40px;
 }
-
-/* 文本效果类 */
-.bold {
-  font-weight: 700; /* 标准字重 */
+.vcent{
+  vertical-align	: middle;
+  margin	: 0 5px;
 }
-.u {
-  text-decoration: underline;
-  text-underline-offset: 0.15em; /* 更好的下划线位置 */
+.c-both{
+  clear:both;
 }
-
-/* 列表优化 */
-ul {
-  padding-left: 1.2em; /* 更合理的列表缩进 */
+.clear{
+  clear:both;
+  line-height:0;
+  height:0;
 }
-li {
-  margin-left: var(--spacing-list);
-  margin-bottom: 0.5em;
+.land{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-.vcent {
-  vertical-align: middle;
-  margin: 0 0.35em;
+.land_grass{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_grass.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-/* ==================== */
-/* 清除浮动系统 */
-/* ==================== */
-.c-both,
-.clear {
-  clear: both;
-  content: "";
-  display: table;
+.land_grass01{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_grass01.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-.clear {
-  height: auto;
-  line-height: normal;
+.land_sea{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_sea.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-/* ==================== */
-/* 地形系统优化 */
-/* ==================== */
-[class*="land_"],
-.land {
-  padding-bottom: var(--spacing-medium);
-  margin: var(--spacing-medium) 0 var(--spacing-small) 0;
-  background-position: bottom center;
-  background-repeat: no-repeat;
-  position: relative;
-  isolation: isolate; /* 创建新堆叠上下文 */
+.land_cave{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_cave.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-/* 背景图预加载提示 */
-[class*="land_"]:not([style*="background-image"]) {
-  background-color: #f0f0f0; /* 加载中背景 */
-  background-image: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite linear;
+.land_snow{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_snow.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-/* 地形背景图定义 */
-.land_grass { background-image: url(image/other/land_grass.gif); }
-.land_grass01 { background-image: url(image/other/land_grass01.gif); }
-.land_sea { background-image: url(image/other/land_sea.gif); }
-.land_cave { background-image: url(image/other/land_cave.gif); }
-.land_snow { background-image: url(image/other/land_snow.gif); }
-.land_swamp { background-image: url(image/other/land_swamp.gif); }
-.land_ocean { background-image: url(image/other/land_ocean.gif); }
-.land_sand { background-image: url(image/other/land_sand.gif); }
-.land_mount { background-image: url(image/other/land_mount.gif); }
-.land_lava { background-image: url(image/other/land_lava.gif); }
-.land_pavement01 { background-image: url(image/other/land_pavement01.gif); }
-.land_build01 { background-image: url(image/other/land_build01.gif); }
-.land_jungle { background-image: url(image/other/land_jungle.gif); }
-
-/* ==================== */
-/* 战斗特效系统增强 */
-/* ==================== */
-/* 基础颜色 */
-.dmg { color: var(--color-damage); }
-.recover { color: var(--color-heal); }
-.support { color: var(--color-support); }
-.spdmg { color: var(--color-special); }
-.levelup { 
-  font-weight: bold;
-  color: var(--color-levelup);
+.land_swamp{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_swamp.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-.charge { color: var(--color-charge); }
-
-/* 视觉增强效果 */
-.dmg {
-  text-shadow: 0 0 3px rgba(204, 51, 0, 0.5);
-  font-weight: 700; /* 伤害值加粗 */
+.land_ocean{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_ocean.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-.support {
-  text-shadow: 0 0 2px rgba(102, 204, 102, 0.4);
+.land_sand{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_sand.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-.spdmg {
-  font-weight: bold;
-  position: relative;
+.land_mount{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_mount.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-.spdmg::after {
-  content: "✨";
-  margin-left: 0.3em;
+.land_lava{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_lava.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-.levelup {
-  animation: pulse 1s infinite;
-  display: inline-block; /* 确保动画生效 */
+.land_pavement01{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_pavement01.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-.charge {
-  font-style: italic;
-  animation: chargeGlow 1.5s infinite alternate;
+.land_build01{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_build01.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-/* ==================== */
-/* 动画系统 */
-/* ==================== */
-@keyframes pulse {
-  0%, 100% { 
-    transform: scale(1);
-    text-shadow: 0 0 5px var(--color-levelup);
-  }
-  50% { 
-    transform: scale(1.05);
-    text-shadow: 0 0 15px #ff0;
-  }
+.land_jungle{
+  padding-bottom	: 20px;
+  margin	: 20px 0 3px 0;
+  background-image : url(../image/other/land_jungle.gif);
+  background-position	: bottom center;
+  background-repeat	: no-repeat;
 }
-
-@keyframes floatUp {
-  0% { transform: translateY(0.5em); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+/* for battle */
+.dmg{
+  color:#cc3300;
 }
-
-@keyframes chargeGlow {
-  0% { text-shadow: 0 0 3px var(--color-charge); }
-  100% { text-shadow: 0 0 8px #fc3, 0 0 12px #f90; }
+.recover{
+  color:#3366ff;
 }
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.support{
+  color:#66cc66;
 }
-
-/* ==================== */
-/* 响应式系统增强 */
-/* ==================== */
-@media (max-width: 768px) {
-  :root {
-    --spacing-medium: 1em;
-    --spacing-small: 0.15em;
-    --spacing-list: 1em;
-  }
-  
-  li {
-    margin-left: var(--spacing-list);
-  }
-  
-  /* 移动端优化地形显示 */
-  [class*="land_"] {
-    background-size: contain; /* 确保背景图完全显示 */
-  }
-  
-  /* 移动端简化动画 */
-  .levelup {
-    animation: none;
-    text-shadow: 0 0 5px var(--color-levelup);
-  }
+.spdmg{
+  color:#993399;
 }
-
-@media (max-width: 480px) {
-  body {
-    font-size: 13px; /* 小屏幕调整基础字号 */
-  }
-  
-  .vcent {
-    margin: 0 0.2em; /* 缩小元素间距 */
-  }
-  
-  /* 战斗特效简化 */
-  .recover::before,
-  .spdmg::after {
-    display: none; /* 小屏幕移除装饰元素 */
-  }
+.levelup{
+  font-weight:bold;
+  color:#ffff33;
 }
-
-/* ==================== */
-/* 打印样式优化 */
-/* ==================== */
-@media print {
-  body {
-    background-color: white !important;
-    color: black !important;
-    text-align: left;
-  }
-  
-  [class*="land_"] {
-    background-image: none !important;
-    border-bottom: 2px dashed #ccc;
-  }
-  
-  /* 移除所有动画效果 */
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
+/* 庇晶や鸣めの咖 */
+.charge{
+  color:#ffcc33;
 }
