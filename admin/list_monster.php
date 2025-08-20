@@ -4,8 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Monster List</title>
-	<link rel="stylesheet" href="../css/basis.css" type="text/css">
-	<link rel="stylesheet" href="../css/style.css" type="text/css">
+	<link rel="stylesheet" href="../css/global.css" type="text/css">
     <!--
       游戏怪物百科全书
       功能说明：
@@ -115,21 +114,21 @@
 		print($det);
 		print("<tr>");
 		print("<td>{$no}</td>"); //no
-		print("<td>{$m[name]}</td>"); //name
-		print("<td>{$m[level]}</td>"); //name
-		print("<td><img src=\"$img_f{$m[img]}\">$img_f{$m[img]}</td>"); //img
-		print("<td>{$m[exphold]}</td>"); //exp
-		print("<td>{$m[moneyhold]}</td>"); //money
-		print("<td>{$m[hp]}/{$m[maxhp]}</td>"); //hp
-		print("<td>{$m[sp]}/{$m[maxsp]}</td>"); //sp
-		print("<td>{$m[atk][0]}<br />{$m[atk][1]}</td>"); //atk
-		print("<td>{$m[def][0]}+{$m[def][1]}<br />{$m[def][2]}+{$m[def][3]}</td>"); //def
-		print("<td>{$m[str]} / {$m[int]} / {$m[dex]} / {$m[spd]} / {$m[luk]}</td>"); //status
+		print("<td>{$m["name"]}</td>"); //name
+		print("<td>{$m["level"]}</td>"); //name
+		print("<td><img src=\"$img_f{$m["img"]}\">$img_f{$m["img"]}</td>"); //img
+		print("<td>{$m["exphold"]}</td>"); //exp
+		print("<td>{$m["moneyhold"]}</td>"); //money
+		print("<td>{$m["hp"]}/{$m["maxhp"]}</td>"); //hp
+		print("<td>{$m["sp"]}/{$m["maxsp"]}</td>"); //sp
+		print("<td>{$m["atk"][0]}<br />{$m["atk"][1]}</td>"); //atk
+		print("<td>{$m["def"][0]}+{$m["def"][1]}<br />{$m["def"][2]}+{$m["def"][3]}</td>"); //def
+		print("<td>{$m["str"]} / {$m["int"]} / {$m["dex"]} / {$m["spd"]} / {$m["luk"]}</td>"); //status
 		if ($m["posed"])
 			print("<td>-</td>"); //position
 		else
-			print("<td>{$m[position]}</td>"); //position
-		print("<td>{$m[guard]}</td>"); //guard
+			print("<td>{$m["position"]}</td>"); //position
+		print("<td>{$m["guard"]}</td>"); //guard
 		// 行動手順
 		print("</tr>\n");
 		print("<tr><td colspan=\"13\" style=\"text-align:left\">");
@@ -153,11 +152,11 @@
 			print("</td></tr>");
 		}
 		// 落とすアイテム
-		if ($m[itemtable]) {
+		if ($m["itemtable"]) {
 			print('<tr><td colspan="3">');
 			print("<table><tbody>");
 			$dif	= 0;
-			foreach ($m[itemtable] as $itemno => $prob) {
+			foreach ($m["itemtable"] as $itemno => $prob) {
 				print("<tr><td>");
 				print(($prob / 100) . "%");
 				print("</td><td>");
@@ -187,23 +186,23 @@ function ShowItemDetail2($item, $amount = false)
 
 	print("\n");
 
-	print("<img src=\"" . $file . $item["img"] . "\" class=\"vcent\">{$item[name]}");
+	print("<img src=\"" . $file . $item["img"] . "\" class=\"vcent\">{$item["name"]}");
 
 	if ($item["type"])
-		print("<span class=\"light\"> ({$item[type]})</span>");
+		print("<span class=\"light\"> ({$item["type"]})</span>");
 	if ($amount) { //数量
 		print(" x{$amount}");
 	}
 	if ($item["atk"]["0"]) //物理攻撃
-		print(' / <span class="dmg">Atk:' . $item[atk][0] . '</span>');
+		print(' / <span class="dmg">Atk:' . $item["atk"][0] . '</span>');
 	if ($item["atk"]["1"]) //魔法攻撃
-		print(' / <span class="spdmg">Matk:' . $item[atk][1] . '</span>');
+		print(' / <span class="spdmg">Matk:' . $item["atk"][1] . '</span>');
 	if ($item["def"]) {
-		print(" / <span class=\"recover\">Def:{$item[def][0]}+{$item[def][1]}</span>");
-		print(" / <span class=\"support\">Mdef:{$item[def][2]}+{$item[def][3]}</span>");
+		print(" / <span class=\"recover\">Def:{$item["def"][0]}+{$item["def"][1]}</span>");
+		print(" / <span class=\"support\">Mdef:{$item["def"][2]}+{$item["def"][3]}</span>");
 	}
 	if ($item["handle"])
-		print(' / <span class="charge">h:' . $item[handle] . '</span>');
+		print(' / <span class="charge">h:' . $item["handle"] . '</span>');
 	//print("\n");//なんでバグるん？(IE6)
 }
 //	技の詳細を表示
@@ -216,35 +215,35 @@ function ShowSkillDetail2($skill, $radio = false)
 		print('<input type="radio" name="newskill" value="' . $skill["no"] . '" class="vcent">');
 
 	print('<img src="' . $file . $skill["img"] . '" class="vcent">');
-	print("{$skill[name]}");
+	print("{$skill["name"]}");
 
 	if ($radio)
-		print(" / <span class=\"bold\">{$skill[learn]}</span>pt");
+		print(" / <span class=\"bold\">{$skill["learn"]}</span>pt");
 
-	if ($skill[target][0] == "all") //対象
-		print(" / <span class=\"charge\">{$skill[target][0]}</span>");
-	else if ($skill[target][0] == "enemy")
-		print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
-	else if ($skill[target][0] == "friend")
-		print(" / <span class=\"recover\">{$skill[target][0]}</span>");
-	else if ($skill[target][0] == "self")
-		print(" / <span class=\"support\">{$skill[target][0]}</span>");
-	else if (isset($skill[target][0]))
-		print(" / {$skill[target][0]}");
+	if ($skill["target"][0] == "all") //対象
+		print(" / <span class=\"charge\">{$skill["target"][0]}</span>");
+	else if ($skill["target"][0] == "enemy")
+		print(" / <span class=\"dmg\">{$skill["target"][0]}</span>");
+	else if ($skill["target"][0] == "friend")
+		print(" / <span class=\"recover\">{$skill["target"][0]}</span>");
+	else if ($skill["target"][0] == "self")
+		print(" / <span class=\"support\">{$skill["target"][0]}</span>");
+	else if (isset($skill["target"][0]))
+		print(" / {$skill["target"][0]}");
 
-	if ($skill[target][1] == "all") //単体or複数or全体
-		print(" - <span class=\"charge\">{$skill[target][1]}</span>");
-	else if ($skill[target][1] == "individual")
-		print(" - <span class=\"recover\">{$skill[target][1]}</span>");
-	else if ($skill[target][1] == "multi")
-		print(" - <span class=\"spdmg\">{$skill[target][1]}</span>");
-	else if (isset($skill[target][1]))
-		print(" - {$skill[target][1]}");
+	if ($skill["target"][1] == "all") //単体or複数or全体
+		print(" - <span class=\"charge\">{$skill["target"][1]}</span>");
+	else if ($skill["target"][1] == "individual")
+		print(" - <span class=\"recover\">{$skill["target"][1]}</span>");
+	else if ($skill["target"][1] == "multi")
+		print(" - <span class=\"spdmg\">{$skill["target"][1]}</span>");
+	else if (isset($skill["target"][1]))
+		print(" - {$skill["target"][1]}");
 
 	if (isset($skill["sp"]))
-		print(" / <span class=\"support\">{$skill[sp]}sp</span>");
+		print(" / <span class=\"support\">{$skill["sp"]}sp</span>");
 	if ($skill["pow"]) {
-		print(" / <span class=\"" . ($skill["support"] ? "recover" : "dmg") . "\">{$skill[pow]}%</span>x");
+		print(" / <span class=\"" . ($skill["support"] ? "recover" : "dmg") . "\">{$skill["pow"]}%</span>x");
 		print(($skill["target"][2] ? $skill["target"][2] : "1"));
 	}
 	if ($skill["type"] == 1)
@@ -262,7 +261,7 @@ function ShowSkillDetail2($skill, $radio = false)
 		print(($skill["charge"]["1"] ? $skill["charge"]["1"] : "0") . ")");
 	}
 	if ($skill["exp"])
-		print(" / {$skill[exp]}");
+		print(" / {$skill["exp"]}");
 	print("\n");
 }
 ?>
