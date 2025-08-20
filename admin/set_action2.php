@@ -163,7 +163,7 @@
 		$skill	= LoadSkillData($i);
 		if (!$skill)
 			continue;
-		$skillList["$i"]	= $i . " - " . $skill["name"] . "(sp:{$skill[sp]})";
+		$skillList["$i"]	= $i . " - " . $skill["name"] . "(sp:{$skill["sp"]})";
 	}
 
 	print('<form method="post" action="?">' . "\n");
