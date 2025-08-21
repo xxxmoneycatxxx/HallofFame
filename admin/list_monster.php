@@ -89,18 +89,18 @@
 	define("IMG_ICON", "../image/icon/");
 
 	$det	= '<tr><td class="a">ID</td>
-<td class="a">名称</td>
-<td class="a">Lv</td>
-<td class="a">图</td>
-<td class="a">经验值</td>
-<td class="a">钱</td>
-<td class="a">hp</td>
-<td class="a">sp</td>
-<td class="a">atk</td>
-<td class="a">def</td>
-<td class="a">str / int / dex / spd / luk</td>
-<td class="a">位置</td>
-<td class="a">保护</td>' . "\n";
+			   <td class="a">名称</td>
+			   <td class="a">Lv</td>
+			   <td class="a">图</td>
+			   <td class="a">经验值</td>
+			   <td class="a">钱</td>
+			   <td class="a">hp</td>
+			   <td class="a">sp</td>
+			   <td class="a">atk</td>
+			   <td class="a">def</td>
+			   <td class="a">str / int / dex / spd / luk</td>
+			   <td class="a">位置</td>
+			   <td class="a">保护</td>' . "\n";
 	$img_f	= "../image/char/";
 
 	print('<table border="0" cellspacing="1"><tbody>');
