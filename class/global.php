@@ -735,7 +735,7 @@ function BattleLogDetail($log)
 	print("<br />");
 }
 //////////////////////////////////////////////////
-//	里飘ログを搀枉する
+//	显示战斗日志详细内容
 function ShowBattleLog($logId, $type = false)
 {
 	$db = $GLOBALS['DB'];
@@ -771,19 +771,6 @@ function ShowSkillDetail($skill, $radio = false)
 
 	if ($radio)
 		print(" / <span class=\"bold\">需要 {$skill["learn"]} 点技能</span>");
-
-	/*原版英文内容
-		if($skill[target][0] == "all")//滦据
-			print(" / <span class=\"charge\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "enemy")
-			print(" / <span class=\"dmg\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "friend")
-			print(" / <span class=\"recover\">{$skill[target][0]}</span>");
-		else if($skill[target][0] == "self")
-			print(" / <span class=\"support\">{$skill[target][0]}</span>");
-		else if(isset($skill[target][0]))
-			print(" / {$skill[target][0]}");
-*/
 
 	if ($skill["target"][0] == "all") //转换技能对象为中文表述
 		print(" / <span class=\"charge\">战场</span>");
