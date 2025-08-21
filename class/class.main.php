@@ -1668,12 +1668,12 @@ HTML;
 								$this->AddItem($_POST["item_no"], $amount);
 								$this->SaveUserItem();
 								if (1 < $amount) {
-									$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
-									ShowResult("{$img}{$item[name]}  {$amount}个 买入 (" . MoneyFormat($item["buy"]) . " x{$amount} = " . MoneyFormat($need) . ")", "margin15");
+									$img    = "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\" />";
+									ShowResult("{$img}{$item["name"]}  {$amount}个 买入 (" . MoneyFormat($item["buy"]) . " x{$amount} = " . MoneyFormat($need) . ")", "margin15");
 									return true;
 								} else {
-									$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
-									ShowResult("{$img}{$item[name]}个 买入 (" . MoneyFormat($need) . ")", "margin15");
+									$img    = "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\" />";
+									ShowResult("{$img}{$item["name"]}个 买入 (" . MoneyFormat($need) . ")", "margin15");
 									return true;
 								}
 							} else { //資金不足
@@ -1700,8 +1700,8 @@ HTML;
 							$this->SaveUserItem();
 							if ($DeletedAmount != 1)
 								$add    = " x{$DeletedAmount}";
-							$img    = "<img src=\"" . IMG_ICON . $item[img] . "\" class=\"vcent\" />";
-							ShowResult("{$img}{$item[name]}{$add}" . MoneyFormat($price * $DeletedAmount) . " 出售", "margin15");
+							$img    = "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\" />";
+							ShowResult("{$img}{$item["name"]}{$add}" . MoneyFormat($price * $DeletedAmount) . " 出售", "margin15");
 							return true;
 						}
 						break;
@@ -1841,34 +1841,34 @@ HTML;
 				print("<h4>购买</h4>\n");
 
 				print <<< JS_HTML
-<script type="text/javascript">
-<!--
-function toggleCSS(id) {
-    // 切换四组元素的 CSS 类名
-    ['a','b','c','d'].forEach(suffix => {
-        const el = document.getElementById('i' + id + suffix);
-        if (el) el.classList.toggle('tdToggleBg');
-    });
-    // 聚焦输入框
-    const textField = document.getElementById('text_' + id);
-    if (textField) textField.focus();
-}
-function toggleCheckBox(id) {
-    const checkBox = document.getElementById('check_' + id);
-    if (!checkBox) return;
-    // 切换复选框状态
-    checkBox.checked = !checkBox.checked;
-    // 聚焦输入框（仅在勾选时）
-    if (checkBox.checked) {
-        const textField = document.getElementById('text_' + id);
-        if (textField) textField.focus();
-    }
-    // 更新样式
-    toggleCSS(id);
-}
-// -->
-</script>
-JS_HTML;
+						<script type="text/javascript">
+						<!--
+						function toggleCSS(id) {
+							// 切换四组元素的 CSS 类名
+							['a','b','c','d'].forEach(suffix => {
+								const el = document.getElementById('i' + id + suffix);
+								if (el) el.classList.toggle('tdToggleBg');
+							});
+							// 聚焦输入框
+							const textField = document.getElementById('text_' + id);
+							if (textField) textField.focus();
+						}
+						function toggleCheckBox(id) {
+							const checkBox = document.getElementById('check_' + id);
+							if (!checkBox) return;
+							// 切换复选框状态
+							checkBox.checked = !checkBox.checked;
+							// 聚焦输入框（仅在勾选时）
+							if (checkBox.checked) {
+								const textField = document.getElementById('text_' + id);
+								if (textField) textField.focus();
+							}
+							// 更新样式
+							toggleCSS(id);
+						}
+						// -->
+						</script>
+						JS_HTML;
 
 				print('<form action="?menu=buy" method="post">' . "\n");
 				print("<table cellspacing=\"0\">\n");

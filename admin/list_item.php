@@ -71,14 +71,14 @@
 	print("<table cellspacing=\"1\"><tbody>");
 	$img_f	= "../image/icon/";
 	$des	= '<tr><td class="a">ID</td>
-<td class="a">图</td>
-<td class="a">名字</td>
-<td class="a">类型</td>
-<td class="a">atk</td>
-<td class="a">def</td>
-<td class="a">handle</td>
-<td class="a">卖价</td>
-<td class="a">买价</td></tr>';
+				<td class="a">图</td>
+				<td class="a">名字</td>
+				<td class="a">类型</td>
+				<td class="a">atk</td>
+				<td class="a">def</td>
+				<td class="a">handle</td>
+				<td class="a">卖价</td>
+				<td class="a">买价</td></tr>';
 	$count = 0;
 	for ($i = 1000; $i < 10000; $i++) {
 		$item	= LoadItemData($i);

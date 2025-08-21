@@ -456,23 +456,7 @@ class char
 		$temp	= $this->Pattern;
 		$this->Pattern	= $this->PatternMemo;
 		$this->PatternMemo	= $temp;
-		/*
-		//$serial	= serialize(array("judge"=>$this->judge,"action"=>$this->action));
-		$serial	= implode("<>",$this->judge)."|".implode("<>",$this->action);
 
-		if(!$this->PatternMemo) {
-			$No	= $this->MaxPatterns();
-			$judge	= array_fill(0,$No,"1000");
-			$action	= array_fill(0,$No,"1000");
-		} else {
-			list($judge,$action)	= explode("|",$this->PatternMemo);
-			$judge	= explode("<>",$judge);
-			$action	= explode("<>",$action);
-		}
-		$this->PatternMemo	= $serial;
-		$this->judge	= $judge;
-		$this->action	= $action;
-	*/
 		return true;
 	}
 	//////////////////////////////////////////////////

@@ -85,24 +85,25 @@
  */
 
 // 初始化数据库连接
-function initDatabase() {
-    $dbPath = DB_PATH;
-    $dbDir = dirname($dbPath);
-    
-    // 自动创建目录
-    if (!is_dir($dbDir) && !mkdir($dbDir, 0755, true)) {
-        throw new RuntimeException("无法创建数据库目录: $dbDir");
-    }
+function initDatabase()
+{
+	$dbPath = DB_PATH;
+	$dbDir = dirname($dbPath);
 
-    try {
-        $db = new PDO('sqlite:' . $dbPath, null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT => 5  // 查询超时设置
-        ]);
-        
-        // 首次运行时创建表结构
-        if (DB_INIT) {
-            $db->exec("CREATE TABLE battle_logs (
+	// 自动创建目录
+	if (!is_dir($dbDir) && !mkdir($dbDir, 0755, true)) {
+		throw new RuntimeException("无法创建数据库目录: $dbDir");
+	}
+
+	try {
+		$db = new PDO('sqlite:' . $dbPath, null, null, [
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+			PDO::ATTR_TIMEOUT => 5  // 查询超时设置
+		]);
+
+		// 首次运行时创建表结构
+		if (DB_INIT) {
+			$db->exec("CREATE TABLE battle_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 battle_time INTEGER NOT NULL,
                 team0_name TEXT NOT NULL,
@@ -116,17 +117,17 @@ function initDatabase() {
                 battle_content TEXT NOT NULL,
                 battle_type TEXT NOT NULL
             )");
-            
-            // 添加索引优化查询性能
-            $db->exec("CREATE INDEX idx_battle_type ON battle_logs(battle_type)");
-            $db->exec("CREATE INDEX idx_battle_time ON battle_logs(battle_time DESC)");
-        }
-        
-        return $db;
-    } catch (PDOException $e) {
-        error_log("数据库连接失败: " . $e->getMessage());
-        die("系统维护中，请稍后再试");
-    }
+
+			// 添加索引优化查询性能
+			$db->exec("CREATE INDEX idx_battle_type ON battle_logs(battle_type)");
+			$db->exec("CREATE INDEX idx_battle_time ON battle_logs(battle_time DESC)");
+		}
+
+		return $db;
+	} catch (PDOException $e) {
+		error_log("数据库连接失败: " . $e->getMessage());
+		die("系统维护中，请稍后再试");
+	}
 }
 
 $GLOBALS['DB'] = initDatabase();
@@ -683,55 +684,55 @@ function LogShowRanking()
 //	战斗日志总结（简略）
 function BattleLogDetail($log)
 {
-    // 检查 $log 是否是有效的数组
-    if (!is_array($log) || !isset($log['battle_time'])) {
-        return; // 或记录错误
-    }
-    
-    $date = date("m/d H:i:s", (int)$log['battle_time']); // 确保转换为整数
+	// 检查 $log 是否是有效的数组
+	if (!is_array($log) || !isset($log['battle_time'])) {
+		return; // 或记录错误
+	}
 
-    // 根据类型生成链接
-    $linkType = "";
-    $logParam = $log['id'];
+	$date = date("m/d H:i:s", (int)$log['battle_time']); // 确保转换为整数
 
-    switch ($log['battle_type']) {
-        case 'rank':
-            $linkType = "rlog";
-            break;
-        case 'union':
-            $linkType = "ulog";
-            break;
-        default:
-            $linkType = "log";
-    }
+	// 根据类型生成链接
+	$linkType = "";
+	$logParam = $log['id'];
 
-    print("[ <a href=\"?{$linkType}={$logParam}\">{$date}</a> ]&nbsp;\n");
-    print("<span class=\"bold\">战斗{$log['total_turns']}</span>回合&nbsp;\n");
+	switch ($log['battle_type']) {
+		case 'rank':
+			$linkType = "rlog";
+			break;
+		case 'union':
+			$linkType = "ulog";
+			break;
+		default:
+			$linkType = "log";
+	}
 
-    // 胜负显示逻辑 - 修复后的正确逻辑
-    $winner = (int)$log['winner'];
-    
-    if ($winner === TEAM_0) {  // 团队0胜利
-        print("[胜]&nbsp;<span class=\"recover\">{$log['team0_name']}</span>");
-        print("({$log['team0_count']}:{$log['team0_avg_level']})");
-        print(" vs ");
-        print("<span class=\"dmg\">{$log['team1_name']}</span>");
-        print("({$log['team1_count']}:{$log['team1_avg_level']})");
-    } elseif ($winner === TEAM_1) {  // 团队1胜利
-        print("[败]&nbsp;<span class=\"dmg\">{$log['team0_name']}</span>");
-        print("({$log['team0_count']}:{$log['team0_avg_level']})");
-        print(" vs ");
-        print("<span class=\"recover\">{$log['team1_name']}</span>");
-        print("({$log['team1_count']}:{$log['team1_avg_level']})");
-    } else {  // 平局
-        print("[平]&nbsp;{$log['team0_name']}");
-        print("({$log['team0_count']}:{$log['team0_avg_level']})");
-        print(" vs ");
-        print("{$log['team1_name']}");
-        print("({$log['team1_count']}:{$log['team1_avg_level']})");
-    }
+	print("[ <a href=\"?{$linkType}={$logParam}\">{$date}</a> ]&nbsp;\n");
+	print("<span class=\"bold\">战斗{$log['total_turns']}</span>回合&nbsp;\n");
 
-    print("<br />");
+	// 胜负显示逻辑 - 修复后的正确逻辑
+	$winner = (int)$log['winner'];
+
+	if ($winner === TEAM_0) {  // 团队0胜利
+		print("[胜]&nbsp;<span class=\"recover\">{$log['team0_name']}</span>");
+		print("({$log['team0_count']}:{$log['team0_avg_level']})");
+		print(" vs ");
+		print("<span class=\"dmg\">{$log['team1_name']}</span>");
+		print("({$log['team1_count']}:{$log['team1_avg_level']})");
+	} elseif ($winner === TEAM_1) {  // 团队1胜利
+		print("[败]&nbsp;<span class=\"dmg\">{$log['team0_name']}</span>");
+		print("({$log['team0_count']}:{$log['team0_avg_level']})");
+		print(" vs ");
+		print("<span class=\"recover\">{$log['team1_name']}</span>");
+		print("({$log['team1_count']}:{$log['team1_avg_level']})");
+	} else {  // 平局
+		print("[平]&nbsp;{$log['team0_name']}");
+		print("({$log['team0_count']}:{$log['team0_avg_level']})");
+		print(" vs ");
+		print("{$log['team1_name']}");
+		print("({$log['team1_count']}:{$log['team1_avg_level']})");
+	}
+
+	print("<br />");
 }
 //////////////////////////////////////////////////
 //	里飘ログを搀枉する
@@ -912,7 +913,8 @@ function ShowItemDetail($item, $amount = false, $text = false, $need = false)
 {
 	if (!$item) return false;
 
-	$html	= "";
+	$html	= "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">";
+
 	// 篮希猛
 	if ($item["refine"])
 		$html	.= "+{$item["refine"]} ";
@@ -1030,10 +1032,10 @@ function ShowUpDate()
 		fclose($fp);
 	}
 	print <<< EOD
-	<input type="password" class="text" name="updatepass" style="width:100px" value="$_POST[updatepass]">
-	<input type="submit" class="btn" value="update">
-	</form>
-EOD;
+				<input type="password" class="text" name="updatepass" style="width:100px" value="$_POST[updatepass]">
+				<input type="submit" class="btn" value="update">
+				</form>
+			EOD;
 	print("<p><a href=\"?\">Back</a></p></div>");
 }
 //////////////////////////////////////////////////
