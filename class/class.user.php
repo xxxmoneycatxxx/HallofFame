@@ -150,7 +150,6 @@ class user
 			return false;
 		}
 	}
-
 	//////////////////////////////////////////////////
 	//	IDが結局のところ存在しているかたしかめる
 	function is_exist()
@@ -314,14 +313,12 @@ class user
 			return array($hour, $minutes, $seconds);
 		}
 	}
-
 	//////////////////////////////////////////////////
 	//	お金を増やす
 	function GetMoney($no)
 	{
 		$this->money	+= $no;
 	}
-
 	//////////////////////////////////////////////////
 	//	お金を減らす
 	function TakeMoney($no)
@@ -333,7 +330,6 @@ class user
 			return true;
 		}
 	}
-
 	//////////////////////////////////////////////////
 	//	時間を消費する(総消費時間の加算)
 	function WasteTime($time)
@@ -365,12 +361,8 @@ class user
 		$dir	= USER . $this->id;
 		$this->char	= array(); //配列の初期化だけしておく
 		foreach (glob("$dir/*") as $adr) {
-			//print("substr:".substr($adr,-20,16)."<br>");//確認用
-			//$number	= substr($adr,-20,16);//↓1行と同じ結果
 			$number	= basename($adr, ".dat");
-			if (is_numeric($number)) { //キャラデータファイル
-				//$chardata	= ParseFile($adr);// (2007/7/30 $adr -> $fp)
-				//$this->char[$number]	= new char($chardata);
+			if (is_numeric($number)) { //キャラデータファイ
 				$this->char[$number]	= new char($adr);
 				$this->char[$number]->SetUser($this->id); //キャラが誰のか設定する
 			}
@@ -388,10 +380,6 @@ class user
 		// そんなキャラいない場合。
 		if (!file_exists($file))
 			return false;
-
-		// 居る場合。
-		//$chardata	= ParseFile($file);
-		//$this->char[$CharNo]	= new char($chardata);
 		$this->char[$CharNo]	= new char($file);
 		$this->char[$CharNo]->SetUser($this->id); //キャラが誰のか設定する
 		return $this->char[$CharNo];
@@ -407,7 +395,6 @@ class user
 		else
 			$this->item[$no]++;
 	}
-
 	//////////////////////////////////////////////////
 	//	アイテムを削除
 	function DeleteItem($no, $amount = false)
@@ -431,7 +418,6 @@ class user
 
 		return $amount;
 	}
-
 	//////////////////////////////////////////////////
 	//	アイテムデータを読む
 	function LoadUserItem()
@@ -452,7 +438,6 @@ class user
 			$this->item	= array();
 		}
 	}
-
 	//////////////////////////////////////////////////
 	//	アイテムデータを保存する
 	function SaveUserItem()
@@ -482,7 +467,6 @@ class user
 			WriteFile($file, $text, 1);
 		}
 	}
-
 	//////////////////////////////////////////////////
 	//	時間を経過させる。(Timeの増加)
 	function DataUpDate(&$data)
@@ -495,38 +479,27 @@ class user
 		if (MAX_TIME < $data["time"])
 			$data["time"]	= MAX_TIME;
 	}
-
 	//////////////////////////////////////////////////
 	//	データをセットする。
 	//	※?
 	function SetData(&$data)
 	{
-
 		foreach ($data as $key => $val) {
 			$this->{$key}	= $val;
 		}
-		/*
-		$this->name	= $data["name"];
-		$this->login	= $data["login"];
-		$this->last	= $data["last"];
-		$this->start	= $data["start"];
-		*/
 	}
-
 	//////////////////////////////////////////////////
 	//	パスワードを暗号化する
 	function CryptPassword($pass)
 	{
 		return substr(crypt($pass, CRYPT_KEY), strlen(CRYPT_KEY));
 	}
-
 	//////////////////////////////////////////////////
 	//	名前を消す
 	function DeleteName()
 	{
 		$this->name	= NULL;
 	}
-
 	//////////////////////////////////////////////////
 	//	データを保存する形式に変換する。(テキスト)
 	function DataSavingFormat()
@@ -558,23 +531,8 @@ class user
 			if ($this->{$val})
 				$text	.= "$val=" . (is_array($this->{$val}) ? implode("<>", $this->{$val}) : $this->{$val}) . "\n";
 		}
-
-
-		/*
-		$Save	= get_object_vars($this);
-		unset($Save["char"]);
-		unset($Save["item"]);
-		unset($Save["islogin"]);
-		foreach($Save as $key => $val) {
-			$text	.= "$key=".(is_array($val) ? implode("<>",$val) : $val)."\n";
-		}
-		*/
-
-		//print("<pre>".print_r($AAA,1)."</pre>");
-
 		return $text;
 	}
-
 	//////////////////////////////////////////////////
 	//	データを保存する
 	function SaveData()
@@ -583,19 +541,9 @@ class user
 		$file	= USER . $this->id . "/" . DATA;
 
 		if (file_exists($this->file) && $this->fp) {
-			//print("BBB");
-			//ftruncate($this->fp,0);
-			//rewind($this->fp);
-			//$fp	= fopen($file,"w+");
-			//flock($fp,LOCK_EX);
-			//fputs($this->fp,$this->DataSavingFormat());
 			WriteFileFP($this->fp, $this->DataSavingFormat());
 			fclose($this->fp);
 			unset($this->fp);
-			//WriteFile("./user/1234/data2.dat",$this->DataSavingFormat());
-			//WriteFile($file,$this->DataSavingFormat());
-			//WriteFileFP($this->fp,$this->DataSavingFormat());
-			//fclose($this->fp);
 		} else {
 			if (file_exists($file))
 				WriteFile($file, $this->DataSavingFormat());
@@ -670,9 +618,4 @@ class user
 		if (file_exists($file))
 			unlink($file);
 	}
-
-	//////////////////////////////////////////////////
-	//	
-	//function Load
-
 }
