@@ -66,8 +66,6 @@ db/ *数据库？但这个项目是用写入文件的方式存数据。总之是
     auction_log.dat
     auction.dat
     bbs_town.dat
-    bbs.dat
-    Color.dat *没有看到哪里有引用
     ctrltime.dat
     managed.dat
     ranking.dat
