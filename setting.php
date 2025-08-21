@@ -102,7 +102,6 @@ const CLASS_JS_ITEMLIST = CLASS_DIR . "class.JS_item_list.php";
 const CLASS_SMITHY = CLASS_DIR . "class.smithy.php";
 const CLASS_AUCTION = CLASS_DIR . "class.auction.php";
 const GLOBAL_PHP = CLASS_DIR . "global.php";
-const COLOR_FILE = CLASS_DIR . "../db/Color.dat";
 
 // DATA FILE
 const DATA_DIR = "./data/";
