@@ -72,27 +72,6 @@ class Ranking
     var $UserName;
     var $UserRecord;
 
-    //////////////////////////////////////////////
-    // 文件から読み込んでランキングを配列にする
-    /*
-    
-    $this->Ranking[0][0]= *********;// 首位
-    
-    $this->Ranking[1][0]= *********;// 同一 2位
-    $this->Ranking[1][1]= *********;
-    
-    $this->Ranking[2][0]= *********;// 同一 3位
-    $this->Ranking[2][1]= *********;
-    $this->Ranking[2][2]= *********;
-    
-    $this->Ranking[3][0]= *********;// 同一 4位
-    $this->Ranking[3][1]= *********;
-    $this->Ranking[3][2]= *********;
-    $this->Ranking[3][3]= *********;
-    
-    ...........
-    
-    */
     function __construct()
     {
         $file    = RANKING;
@@ -173,32 +152,15 @@ class Ranking
             else
                 $DefendMatch    = false;
 
-            //$MyID    = $id;
-
             //自分より1個上の人が相手。
             $RivalRankKey    = array_rand($this->Ranking[$RivalPlace]);
             $RivalID    = $this->Ranking[$RivalPlace][$RivalRankKey]["id"]; //対戦する相手のID
             $Rival    = new user($RivalID);
 
-            /*
-            dump($this->Ranking);
-            dump($RivalID);
-            dump($MyID);
-            dump($MyRank);//エラーでたら頑張れ
-            return 0;
-            */
-
             $Result    = $this->RankBattle($user, $Rival, $MyPlace, $RivalPlace);
             $Return    = $this->ProcessByResult($Result, $user, $Rival, $DefendMatch);
 
             return $Return;
-            // 勝利なら順位交代
-            //if($message == "Battle" && $result === 0) {
-            //    $this->ChangePlace($user,$Rival);
-            //}
-
-            //$this->SaveRanking();
-            //return array($message,$result);
         }
 
         // 2位-最下位の人の処理。////////////////////////////////
@@ -222,18 +184,6 @@ class Ranking
             $Return    = $this->ProcessByResult($Result, $user, $Rival, $DefendMatch);
 
             return $Return;
-            //if($message != "Battle")
-            //    return array($message,$result);
-
-            // 戦闘闘闘闘を行って勝利なら順位交代
-            /*
-            if($message == "Battle" && $result === 0) {
-                $this->ChangePlace($MyID,$RivalID);
-                //dump($this->Ranking);
-                $this->SaveRanking();
-            }
-            return array($message,$result);
-            */
         }
     }
 
@@ -245,11 +195,6 @@ class Ranking
         $UserPlace    = "[" . ($UserPlace + 1) . "位]";
         $RivalPlace    = "[" . ($RivalPlace + 1) . "位]";
 
-        /*
-            ■ 相手のユーザ自体が既に存在しない場合の処理
-            アカウントが削除処理された時にランキングからも消えるようにしたから
-            本来出ないエラーかもしれない。
-        */
         if ($Rival->is_exist() == false) {
             ShowError("对手不存在(不战而胜)");
             $this->DeleteRank($DefendID);
@@ -263,22 +208,16 @@ class Ranking
         $Party_Defender        = $Rival->RankParty();
 
 
-        // ランク用パーテテティーがありません！！！
         if ($Party_Challenger === false) {
             ShowError("戦うメンバーがいません（？）。");
             return "CHALLENGER_NO_PARTY";
         }
 
-        // ランク用パーテテティーがありません！！！
         if ($Party_Defender === false) {
-            //$defender->RankRecord(0,"DEFEND",$DefendMatch);
-            //$defender->SaveData();
             ShowError($Rival->name . " 对战的人物还未决定<br />(不战而胜)");
             return "DEFENDER_NO_PARTY"; //不战而胜とする
         }
 
-        //dump($Party_Challenger);
-        //dump($Party_Defender);
         include(CLASS_BATTLE);
         $battle    = new battle($Party_Challenger, $Party_Defender);
         $battle->SetBackGround("colosseum");
@@ -287,10 +226,6 @@ class Ranking
         $battle->Process(); //戦闘闘闘闘開始
         $battle->RecordLog("RANK");
         $Result    = $battle->ReturnBattleResult(); // 戦闘闘闘闘結果
-
-        // 戦闘闘闘闘を受けて立った側の成績はここで変える。
-        //$defender->RankRecord($Result,"DEFEND",$DefendMatch);
-        //$defender->SaveData();
 
         //return array("Battle",$Result);
         if ($Result === TEAM_0) {

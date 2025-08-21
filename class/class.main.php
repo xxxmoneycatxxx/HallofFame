@@ -719,7 +719,7 @@ class main extends user
 
 				$this->SaveUserItem();
 				$char->SaveCharData($this->id);
-				ShowResult("{$char->name} 的 {$item[name]} 装备.", "margin15");
+				ShowResult("{$char->name} 的 {$item["name"]} 装备.", "margin15");
 				return true;
 				break;
 			// スキル習得

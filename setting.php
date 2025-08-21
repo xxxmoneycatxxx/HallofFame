@@ -162,8 +162,8 @@ const BACK = "back";
 
 const TEAM_0 = 0;
 const TEAM_1 = 1;
-const WIN = 0;
-const LOSE = 1;
+// const WIN = 0; // 已弃用
+// const LOSE = 1; // 已弃用
 const DRAW = "d";
 
 const ALIVE = 0;
