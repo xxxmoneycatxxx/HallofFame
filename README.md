@@ -109,4 +109,24 @@ index.php *项目入口
 setting.php *全局配置
 ```
 
+数据结构
+```
+battle_logs
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    battle_time INTEGER NOT NULL,
+    team0_name TEXT NOT NULL,
+    team1_name TEXT NOT NULL,
+    team0_count INTEGER NOT NULL,
+    team1_count INTEGER NOT NULL,
+    team0_avg_level REAL NOT NULL,
+    team1_avg_level REAL NOT NULL,
+    winner INTEGER NOT NULL,
+    total_turns INTEGER NOT NULL,
+    battle_content TEXT NOT NULL,
+    battle_type TEXT NOT NULL
+
+......
+
+```
+
 ### 暂时就这样
