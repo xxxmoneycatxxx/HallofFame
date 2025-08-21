@@ -6,8 +6,6 @@
 ### 项目结构
 ```
 admin/ *管理后台
-    gomi/ *静态资源
-        *.gif(s)
     admin.php *游戏管理后台主界面
     list_enchant.php *物品附魔(精炼？)效果测试脚本
     list_item.php *游戏道具列表页面，通过PHP脚本从data.item.php数据文件加载道具信息
