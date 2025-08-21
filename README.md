@@ -25,7 +25,7 @@ class/ *功能实现
     class.battle.php *战斗系统核心类
     class.char.php *角色核心类
     class.css_btl_image.php *CSS战斗画面渲染类
-    class.JS_itemlist.php *JavaScript动态道具列表类
+    class.JS_item_list.php *JavaScript动态道具列表类
     class.main.php *主控制器类
     class.monster.php *怪物角色类
     class.rank.php *排名系统类

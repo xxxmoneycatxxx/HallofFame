@@ -188,7 +188,7 @@ class JS_ItemList
 		$JS_armor	.= ($JS_armor?" + \n'":"'None.")."<input type=\"hidden\" name=\"list_type\" value=\"armor\">'";
 		$JS_item	.= ($JS_item?" + \n'":"'None.")."<input type=\"hidden\" name=\"list_type\" value=\"item\">'";
 		$JS_other	.= ($JS_other?" + \n'":"'None.")."<input type=\"hidden\" name=\"list_type\" value=\"other\">'";
-*/
+		*/
 		if ($this->Table) {
 			$insert	= "insert = '" . $this->TableInsert . "'";
 			$Table0	= "html = '" . $this->Table . "' + insert + html;";
