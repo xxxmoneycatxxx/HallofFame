@@ -817,7 +817,7 @@ class char
 	//	装備をはずす。
 	function ClassChange($job)
 	{
-		include_once(DATA_CLASSCHANGE);
+		include_once(DATA_CLASS_CHANGE);
 		if (CanClassChange($this, $job)) {
 			$this->job = $job;
 			$this->SetJobData();

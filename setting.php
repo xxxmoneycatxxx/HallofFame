@@ -116,7 +116,7 @@ const DATA_JUDGE = DATA_DIR . "data.judge.php";
 const DATA_MONSTER = DATA_DIR . "data.monster.php";
 const DATA_LAND = DATA_DIR . "data.land_info.php";
 const DATA_LAND_APPEAR = DATA_DIR . "data.land_appear.php";
-const DATA_CLASSCHANGE = DATA_DIR . "data.classchange.php";
+const DATA_CLASS_CHANGE = DATA_DIR . "data.class_change.php";
 const DATA_CREATE = DATA_DIR . "data.create.php";
 const DATA_TOWN = DATA_DIR . "data.town_appear.php";
 

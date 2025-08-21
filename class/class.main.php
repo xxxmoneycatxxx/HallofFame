@@ -973,7 +973,7 @@ HTML_BYEBYE;
 
 		// 転職可能な職
 		if ($JobData["change"]) {
-			include_once(DATA_CLASSCHANGE);
+			include_once(DATA_CLASS_CHANGE);
 			foreach ($JobData["change"] as $job) {
 				if (CanClassChange($char, $job))
 					$CanChange[]	= $job; //転職できる候補。

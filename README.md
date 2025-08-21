@@ -41,7 +41,7 @@ css/ *css资源
 
 data/ *游戏数据（？）事实上不太好分类
     data.base_char.php *角色基础职业生成函数
-    data.classchange.php *角色转职资格验证函数
+    data.class_change.php *角色转职资格验证函数
     data.create.php *可制作道具列表生成函数
     data.enchant.php *道具附魔效果添加函数
     data.gd_item.php *道具分类展示页面
