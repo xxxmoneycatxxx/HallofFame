@@ -934,7 +934,7 @@ EOD;
 				$message = <<< HTML_BYEBYE
 <div class="margin15">
 {$Name} 解雇?<br>
-<form action="?char={$_GET[char]}" method="post">
+<form action="?char={$_GET["char"]}" method="post">
 <input type="submit" class="btn" name="kick" value="Yes">
 <input type="submit" class="btn" value="No">
 </form>
