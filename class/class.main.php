@@ -3371,7 +3371,6 @@ JS_HTML;
 									</tr>
 								</tbody>
 							</table>
-							<!--<tr><td>None</td><td><input type="checkbox" name="none" value="1"></td></tr>-->
 							颜色:
 							<SELECT class=bgcolor name=color>
 								<OPTION style="COLOR: #ffffff" value=ffffff selected>SampleColor</OPTION>
@@ -3615,18 +3614,6 @@ JS_HTML;
 					<?php
 							return $Result;
 						}
-						////////// Show //////////////////////////////////////////////////////
-						/*
- * ShowCharStat
- * ShowHunt
- * ShowItem
- * ShowShop
- * ShowRank
- * ShowRecruit
- * ShowSetting
- */
-
-						//////////////////////////////////////////////////
 						//	戦闘時に選択したメンバーを記憶する
 						function MemorizeParty()
 						{
@@ -3664,12 +3651,12 @@ JS_HTML;
 							$start	= substr($this->start, 0, 10);
 							$term	= 60 * 60 * 1;
 							if (($last - $start) < $term) {
-					?>
-						<div style="margin:5px 15px">
-							<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
-						</div>
+								?>
+									<div style="margin:5px 15px">
+										<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+									</div>
 
-					<?php
+								<?php
 							}
 						}
 
@@ -3712,16 +3699,16 @@ JS_HTML;
 
 							if ($type == "CHECKBOX") {
 								print <<< HTML
-<script type="text/javascript">
-<!--
-function toggleCheckBox(id) {
-id0 = "box" + id;
-\$("box" + id).checked = \$("box" + id).checked?false:true;
-Element.toggleClassName("text"+id,'unselect');
-}
-// -->
-</script>
-HTML;
+										<script type="text/javascript">
+										<!--
+										function toggleCheckBox(id) {
+										id0 = "box" + id;
+										\$("box" + id).checked = \$("box" + id).checked?false:true;
+										Element.toggleClassName("text"+id,'unselect');
+										}
+										// -->
+										</script>
+										HTML;
 							}
 
 							print('<table cellspacing="0" style="width:100%"><tbody><tr>'); //横幅100%
@@ -3786,7 +3773,7 @@ HTML;
 							echo "this->pass:$this->pass<br>";
 							echo "SES[id]:$_SESSION[id]<br>";
 							echo "SES[pass]:$_SESSION[pass]<br>";
-							echo "SES[pass]:" . $this->CryptPassword($_SESSION[pass]) . "(crypted)<br>";
+							echo "SES[pass]:" . $this->CryptPassword($_SESSION["pass"]) . "(crypted)<br>";
 							echo "CK[NO]:$_COOKIE[NO]<br>";
 							echo "SES[NO]:" . session_id();
 							dump($_COOKIE);
@@ -3806,10 +3793,7 @@ HTML;
 						{
 							//logout
 							if (isset($_POST["logout"])) {
-								//	$_SESSION["pass"]	= NULL;
-								//	echo $_SESSION["pass"];
 								unset($_SESSION["pass"]);
-								//	session_destroy();
 								return false;
 							}
 

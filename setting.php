@@ -16,7 +16,7 @@
  */
 
 // 游戏设置
-const TITLE = "荣誉圣殿中文版 （Hall of Fame）"; //网页标题
+const TITLE = "荣誉圣殿 ~Hall of Fame~"; //网页标题
 const MAX_TIME = 100; //最大体力
 const TIME_GAIN_DAY = 500; //每日所获得的体力
 const MAX_CHAR = 5; //最大角色数量
