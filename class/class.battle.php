@@ -228,41 +228,33 @@ HTML;
 	//	戦闘記録を保存する
 	function RecordLog($type = false)
 	{
-		if ($type == "RANK") {
-			$file	= LOG_BATTLE_RANK;
-			$log	= @glob(LOG_BATTLE_RANK . "*");
-			$logAmount = MAX_BATTLE_LOG_RANK;
-		} else if ($type == "UNION") {
-			$file	= LOG_BATTLE_UNION;
-			$log	= @glob(LOG_BATTLE_UNION . "*");
-			$logAmount = MAX_BATTLE_LOG_UNION;
-		} else {
-			$file	= LOG_BATTLE_NORMAL;
-			$log	= @glob(LOG_BATTLE_NORMAL . "*");
-			$logAmount = MAX_BATTLE_LOG;
-		}
+		$db = $GLOBALS['DB'];
 
-		// 古いログを消す
-		$i	= 0;
-		while ($logAmount <= count($log)) {
-			unlink($log["$i"]);
-			unset($log["$i"]);
-			$i++;
-		}
+		// 确定战斗类型
+		$battleType = 'normal';
+		if ($type == "RANK") $battleType = 'rank';
+		if ($type == "UNION") $battleType = 'union';
 
-		// 新しいログを作る
-		$time	= time() . substr(microtime(), 2, 6);
-		$file	.= $time . ".dat";
+		// 准备插入数据
+		$stmt = $db->prepare("INSERT INTO battle_logs (
+        battle_time, team0_name, team1_name, team0_count, team1_count, 
+        team0_avg_level, team1_avg_level, winner, total_turns, battle_content, battle_type
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-		$head	= $time . "\n"; //開始時間(1行目)
-		$head	.= $this->team0_name . "<>" . $this->team1_name . "\n"; //参加チーム(2行目)
-		$head	.= count($this->team0) . "<>" . count($this->team1) . "\n"; //参加人数(3行目)
-		$head	.= $this->team0_ave_lv . "<>" . $this->team1_ave_lv . "\n"; //平均レベル(4行目)
-		$head	.= $this->result . "\n"; //勝利チーム(5行目)
-		$head	.= $this->actions . "\n"; //総ターン数(6行目)
-		$head	.= "\n"; // 改行(7行目)
-
-		WriteFile($file, $head . ob_get_contents());
+		// 执行插入
+		$stmt->execute([
+			time(),
+			$this->team0_name,
+			$this->team1_name,
+			count($this->team0),
+			count($this->team1),
+			$this->team0_ave_lv,
+			$this->team1_ave_lv,
+			$this->result,
+			$this->actions,
+			ob_get_contents(),
+			$battleType
+		]);
 	}
 	//////////////////////////////////////////////////
 	//	戦闘処理(これを実行して戦闘が処理される)

@@ -50,7 +50,10 @@
  */
 
 
-//include("./setting.php");
+include("./setting.php");
+include("./class/global.php");
+$DB = $GLOBALS['DB'];
+
 if (!defined("ADMIN_PASSWORD"))
 	exit(1);
 
@@ -108,15 +111,15 @@ if ($_POST["logout"]) {
 
 		// 菜单
 		print <<< MENU
-<form action="?" method="post">
-<a href="?">管理首页</a>
-<a href="?menu=user">用户管理</a>
-<a href="?menu=data">数据管理</a>
-<a href="?menu=other">其他</a>
-<input type="submit" value="注销" name="logout" />
-</form>
-<hr>
-MENU;
+				<form action="?" method="post">
+				<a href="?">管理首页</a>
+				<a href="?menu=user">用户管理</a>
+				<a href="?menu=data">数据管理</a>
+				<a href="?menu=other">其他</a>
+				<input type="submit" value="注销" name="logout" />
+				</form>
+				<hr>
+				MENU;
 
 		// 用户列表
 		if ($_GET["menu"] === "user") {
@@ -144,7 +147,7 @@ MENU;
 				print("</form>\n");
 			}
 			print('<br><form action="?" method="post">');
-			print('删除用户:<input type="text" name="deletePass" size="">');
+			print('输入管理密码以删除用户:<input type="text" name="deletePass" size="">');
 			print('<input type="submit" name="deleteUser" value="删除">');
 			print('<input type="hidden" name="userID" value="' . $_POST["userID"] . '">');
 			print("</form>\n");
@@ -153,7 +156,6 @@ MENU;
 		// 用户数据删除
 		else if ($_POST["deleteUser"]) {
 			if ($_POST["deletePass"] == ADMIN_PASSWORD) {
-				include(GLOBAL_PHP);
 				include(CLASS_USER);
 				$userD = new user($_POST["userID"]);
 				$userD->DeleteUser();
@@ -196,33 +198,32 @@ MENU;
 		// 数据汇总
 		else if ($_GET["menu"] === "data") {
 			print <<< DATA
-<br>
-<form action="?" method="post">
-<ul>
-<li><input type="submit" name="UserDataDetail" value=" 管理 ">(※1)用户数据汇总表示</li>
-<li><input type="submit" name="UserCharDetail" value=" 管理 ">(※1)人物数据汇总表示</li>
-<li><input type="submit" name="ItemDataDetail" value=" 管理 ">(※1)道具数据汇总表示</li>
-<li><input type="submit" name="UserIpShow" value=" 管理 ">(※1)用户IP表示</li>
-<li><input type="submit" name="searchBroken" value=" 管理 ">(※1)有可能是已损坏的数据<input type="text" name="brokenSize" value="100" size=""></li>
-<li><input type="submit" name="adminBattleLog" value=" 管理 ">战斗记录管理</li>
-<li><input type="submit" name="adminAuction" value=" 管理 ">拍卖管理</li>
-<li><input type="submit" name="adminRanking" value=" 管理 ">排名管理</li>
-<li><input type="submit" name="adminTown" value=" 管理 ">广场管理</li>
-<li><input type="submit" name="adminRegister" value=" 管理 ">用户登录数据管理</li>
-<li><input type="submit" name="adminUserName" value=" 管理 ">用户名管理</li>
-<li><input type="submit" name="adminUpDate" value=" 管理 ">更新数据管理</li>
-<li><input type="submit" name="adminAutoControl" value=" 管理 ">自动管理记录</li>
-</ul>
-<p>(※1)将会比较消耗性能。<br>
-甚至超过增加的数据处理。
-</p>
-</form>
-DATA;
+					<br>
+					<form action="?" method="post">
+					<ul>
+					<li><input type="submit" name="UserDataDetail" value=" 管理 ">(※1)用户数据汇总表示</li>
+					<li><input type="submit" name="UserCharDetail" value=" 管理 ">(※1)人物数据汇总表示</li>
+					<li><input type="submit" name="ItemDataDetail" value=" 管理 ">(※1)道具数据汇总表示</li>
+					<li><input type="submit" name="UserIpShow" value=" 管理 ">(※1)用户IP表示</li>
+					<li><input type="submit" name="searchBroken" value=" 管理 ">(※1)有可能是已损坏的数据<input type="text" name="brokenSize" value="100" size=""></li>
+					<li><input type="submit" name="adminBattleLog" value=" 管理 ">战斗记录管理</li>
+					<li><input type="submit" name="adminAuction" value=" 管理 ">拍卖管理</li>
+					<li><input type="submit" name="adminRanking" value=" 管理 ">排名管理</li>
+					<li><input type="submit" name="adminTown" value=" 管理 ">广场管理</li>
+					<li><input type="submit" name="adminRegister" value=" 管理 ">用户登录数据管理</li>
+					<li><input type="submit" name="adminUserName" value=" 管理 ">用户名管理</li>
+					<li><input type="submit" name="adminUpDate" value=" 管理 ">更新数据管理</li>
+					<li><input type="submit" name="adminAutoControl" value=" 管理 ">自动管理记录</li>
+					</ul>
+					<p>(※1)将会比较消耗性能。<br>
+					甚至超过增加的数据处理。
+					</p>
+					</form>
+					DATA;
 		}
 
 		// 数据汇总(用户数据)
 		else if ($_POST["UserDataDetail"]) {
-			include(GLOBAL_PHP);
 			include(CLASS_USER);
 			$userFileList = glob(USER . "*");
 			foreach ($userFileList as $user) {
@@ -236,7 +237,6 @@ DATA;
 
 		// 数据汇总(人物数据)
 		else if ($_POST["UserCharDetail"]) {
-			include(GLOBAL_PHP);
 			$userFileList = glob(USER . "*");
 			foreach ($userFileList as $user) {
 				$userDir = glob($user . "/*");
@@ -278,7 +278,6 @@ DATA;
 
 		// 数据汇总(道具数据)
 		else if ($_POST["ItemDataDetail"]) {
-			include(GLOBAL_PHP);
 			$userFileList = glob(USER . "*");
 			$userAmount = count($userFileList);
 			$items = array();
@@ -295,7 +294,6 @@ DATA;
 
 		// 用户IP
 		else if ($_POST["UserIpShow"]) {
-			include(GLOBAL_PHP);
 			$userFileList = glob(USER . "*");
 			$ipList = array();
 			foreach ($userFileList as $user) {
@@ -336,39 +334,56 @@ DATA;
 
 		// 战斗记录管理
 		else if ($_POST["adminBattleLog"]) {
+			$db = $GLOBALS['DB'];
+
 			if ($_POST["deleteLogCommon"]) {
-				$dir = LOG_BATTLE_NORMAL;
-				$logFile = glob($dir . "*");
-				foreach ($logFile as $file) {
-					unlink($file);
-				}
-				print("<p>通常战斗记录删除。</p>\n");
+				// 删除普通战斗记录
+				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'normal'");
+				$stmt->execute();
+				$count = $stmt->rowCount();
+				print("<p>已删除普通战斗记录：{$count}条</p>\n");
 			} else if ($_POST["deleteLogUnion"]) {
-				$dir = LOG_BATTLE_UNION;
-				$logFile = glob($dir . "*");
-				foreach ($logFile as $file) {
-					unlink($file);
-				}
-				print("<p>BOSS战斗记录删除。</p>\n");
+				// 删除BOSS战斗记录
+				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'union'");
+				$stmt->execute();
+				$count = $stmt->rowCount();
+				print("<p>已删除BOSS战斗记录：{$count}条</p>\n");
 			} else if ($_POST["deleteLogRanking"]) {
-				$dir = LOG_BATTLE_RANK;
-				$logFile = glob($dir . "*");
-				foreach ($logFile as $file) {
-					unlink($file);
-				}
-				print("<p>排行战斗记录删除。</p>\n");
+				// 删除排行战记录
+				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'rank'");
+				$stmt->execute();
+				$count = $stmt->rowCount();
+				print("<p>已删除排行战记录：{$count}条</p>\n");
 			}
+
+			// 添加统计功能
+			$stmt = $db->query("SELECT battle_type, COUNT(*) as count FROM battle_logs GROUP BY battle_type");
+			$stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			$statHtml = "<p>当前战斗记录统计：</p><ul>";
+			foreach ($stats as $stat) {
+				$typeName = [
+					'normal' => '普通战斗',
+					'union' => 'BOSS战',
+					'rank' => '排行战'
+				][$stat['battle_type']] ?? $stat['battle_type'];
+
+				$statHtml .= "<li>{$typeName}: {$stat['count']}条</li>";
+			}
+			$statHtml .= "</ul>";
+
 			print <<< DATA
-<br>
-<form action="?" method="post">
-<input type="hidden" name="adminBattleLog" value="1">
-<ul>
-<li><input type="submit" name="deleteLogCommon" value=" 管理 ">通常战斗记录全部删除</li>
-<li><input type="submit" name="deleteLogUnion" value=" 管理 ">BOSS战斗记录全部删除</li>
-<li><input type="submit" name="deleteLogRanking" value=" 管理 ">排名记录全部删除</li>
-</ul>
-</form>
-DATA;
+					{$statHtml}
+					<br>
+					<form action="?" method="post">
+					<input type="hidden" name="adminBattleLog" value="1">
+					<ul>
+					<li><input type="submit" name="deleteLogCommon" value="删除普通战斗记录">通常战斗记录全部删除</li>
+					<li><input type="submit" name="deleteLogUnion" value="删除BOSS战斗记录">BOSS战斗记录全部删除</li>
+					<li><input type="submit" name="deleteLogRanking" value="删除排行战记录">排名记录全部删除</li>
+					</ul>
+					</form>
+					DATA;
 		}
 
 		// 拍卖管理
@@ -500,48 +515,48 @@ DATA;
 		// 其他-1
 		else if ($_GET["menu"] === "other") {
 			print("
-<p>管理</p>\n
-<ul>\n
-<li><a href=\"" . ADMIN_DIR . "list_item.php\">道具列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "list_enchant.php\">装备效果列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "list_job.php\">职业列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "list_monster.php\">怪物列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "list_skill3.php\">技能列表</a></li>\n
-<li><a href=\"" . ADMIN_DIR . "set_action2.php\">行动模式设定机</a></li>\n
-</ul>\n
-");
+				<p>管理</p>\n
+				<ul>\n
+				<li><a href=\"" . ADMIN_DIR . "list_item.php\">道具列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_enchant.php\">装备效果列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_job.php\">职业列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_monster.php\">怪物列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_skill3.php\">技能列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "set_action2.php\">行动模式设定机</a></li>\n
+				</ul>\n
+				");
 		}
 
 		// 其他-2
 		else {
 			print("<p>基本設定</p>\n
-<table border=\"1\">\n
-<tr><td>定义</td><td>说明</td><td>值</td></tr>
-<tr><td>TITLE</td><td>标题</td><td>" . TITLE . "</td></tr>\n
-<tr><td>MAX_TIME</td><td>最大体力</td><td>" . MAX_TIME . "Time</td></tr>\n
-<tr><td>TIME_GAIN_DAY</td><td>每天所给的体力</td><td>" . TIME_GAIN_DAY . "Time</td></tr>\n
-<tr><td>CONTROL_PERIOD</td><td>自动管理周期</td><td>" . CONTROL_PERIOD . "s(" . (CONTROL_PERIOD / 60 / 60) . "hour)" . "</td></tr>\n
-<tr><td>RECORD_IP</td><td>IP记录(1=ON)</td><td>" . RECORD_IP . "</td></tr>\n
-<tr><td>SELLING_PRICE</td><td>卖值</td><td>" . SELLING_PRICE . "</td></tr>\n
-<tr><td>EXP_RATE</td><td>经验值倍率</td><td>x" . EXP_RATE . "</td></tr>\n
-<tr><td>MONEY_RATE</td><td>掉钱倍率</td><td>x" . MONEY_RATE . "</td></tr>\n
-<tr><td>AUCTION_MAX</td><td>最大出品数</td><td>" . AUCTION_MAX . "</td></tr>\n
-<tr><td>JUDGE_LIST_AUTO_LOAD</td><td>条件判定列表自动取得(1=自动)</td><td>" . JUDGE_LIST_AUTO_LOAD . "</td></tr>\n
-<tr><td>AUCTION_TOGGLE</td><td>拍卖ON/OFF(1=ON)</td><td>" . AUCTION_TOGGLE . "</td></tr>\n
-<tr><td>AUCTION_EXHIBIT_TOGGLE</td><td>出品ON/OFF(1=ON)</td><td>" . AUCTION_EXHIBIT_TOGGLE . "</td></tr>\n
-<tr><td>RANK_TEAM_SET_TIME</td><td>排名队伍設定周期</td><td>" . RANK_TEAM_SET_TIME . "s(" . (RANK_TEAM_SET_TIME / 60 / 60) . "hour)" . "</td></tr>\n
-<tr><td>RANK_BATTLE_NEXT_LOSE</td><td>失败后再挑战时间</td><td>" . RANK_BATTLE_NEXT_LOSE . "s(" . (RANK_BATTLE_NEXT_LOSE / 60 / 60) . "hour)" . "</td></tr>\n
-<tr><td>RANK_BATTLE_NEXT_WIN</td><td>赢得排名站再战的时间</td><td>" . RANK_BATTLE_NEXT_WIN . "s</td></tr>\n
-<tr><td>NORMAL_BATTLE_TIME</td><td>普通战斗消耗体力</td><td>" . NORMAL_BATTLE_TIME . "Time</td></tr>\n
-<tr><td>MAX_BATTLE_LOG</td><td>战斗记录保存数(通常怪)</td><td>" . MAX_BATTLE_LOG . "</td></tr>\n
-<tr><td>MAX_BATTLE_LOG_UNION</td><td>战斗记录保存数(BOSS)</td><td>" . MAX_BATTLE_LOG_UNION . "</td></tr>\n
-<tr><td>MAX_BATTLE_LOG_RANK</td><td>战斗记录保存数(排名)</td><td>" . MAX_BATTLE_LOG_RANK . "</td></tr>\n
-<tr><td>UNION_BATTLE_TIME</td><td>BOSS战消耗体力</td><td>" . UNION_BATTLE_TIME . "Time</td></tr>\n
-<tr><td>UNION_BATTLE_NEXT</td><td>BOSS战再挑战时间</td><td>" . UNION_BATTLE_NEXT . "s</td></tr>\n
-<tr><td>BBS_BOTTOM_TOGGLE</td><td>下边是否加上bbs链接(1=ON)</td><td>" . BBS_BOTTOM_TOGGLE . "</td></tr>\n
-</table>\n
-");
+				<table border=\"1\">\n
+				<tr><td>定义</td><td>说明</td><td>值</td></tr>
+				<tr><td>TITLE</td><td>标题</td><td>" . TITLE . "</td></tr>\n
+				<tr><td>MAX_TIME</td><td>最大体力</td><td>" . MAX_TIME . "Time</td></tr>\n
+				<tr><td>TIME_GAIN_DAY</td><td>每天所给的体力</td><td>" . TIME_GAIN_DAY . "Time</td></tr>\n
+				<tr><td>CONTROL_PERIOD</td><td>自动管理周期</td><td>" . CONTROL_PERIOD . "s(" . (CONTROL_PERIOD / 60 / 60) . "hour)" . "</td></tr>\n
+				<tr><td>RECORD_IP</td><td>IP记录(1=ON)</td><td>" . RECORD_IP . "</td></tr>\n
+				<tr><td>SELLING_PRICE</td><td>卖值</td><td>" . SELLING_PRICE . "</td></tr>\n
+				<tr><td>EXP_RATE</td><td>经验值倍率</td><td>x" . EXP_RATE . "</td></tr>\n
+				<tr><td>MONEY_RATE</td><td>掉钱倍率</td><td>x" . MONEY_RATE . "</td></tr>\n
+				<tr><td>AUCTION_MAX</td><td>最大出品数</td><td>" . AUCTION_MAX . "</td></tr>\n
+				<tr><td>JUDGE_LIST_AUTO_LOAD</td><td>条件判定列表自动取得(1=自动)</td><td>" . JUDGE_LIST_AUTO_LOAD . "</td></tr>\n
+				<tr><td>AUCTION_TOGGLE</td><td>拍卖ON/OFF(1=ON)</td><td>" . AUCTION_TOGGLE . "</td></tr>\n
+				<tr><td>AUCTION_EXHIBIT_TOGGLE</td><td>出品ON/OFF(1=ON)</td><td>" . AUCTION_EXHIBIT_TOGGLE . "</td></tr>\n
+				<tr><td>RANK_TEAM_SET_TIME</td><td>排名队伍設定周期</td><td>" . RANK_TEAM_SET_TIME . "s(" . (RANK_TEAM_SET_TIME / 60 / 60) . "hour)" . "</td></tr>\n
+				<tr><td>RANK_BATTLE_NEXT_LOSE</td><td>失败后再挑战时间</td><td>" . RANK_BATTLE_NEXT_LOSE . "s(" . (RANK_BATTLE_NEXT_LOSE / 60 / 60) . "hour)" . "</td></tr>\n
+				<tr><td>RANK_BATTLE_NEXT_WIN</td><td>赢得排名站再战的时间</td><td>" . RANK_BATTLE_NEXT_WIN . "s</td></tr>\n
+				<tr><td>NORMAL_BATTLE_TIME</td><td>普通战斗消耗体力</td><td>" . NORMAL_BATTLE_TIME . "Time</td></tr>\n
+				<tr><td>MAX_BATTLE_LOG</td><td>战斗记录保存数(通常怪)</td><td>" . MAX_BATTLE_LOG . "</td></tr>\n
+				<tr><td>MAX_BATTLE_LOG_UNION</td><td>战斗记录保存数(BOSS)</td><td>" . MAX_BATTLE_LOG_UNION . "</td></tr>\n
+				<tr><td>MAX_BATTLE_LOG_RANK</td><td>战斗记录保存数(排名)</td><td>" . MAX_BATTLE_LOG_RANK . "</td></tr>\n
+				<tr><td>UNION_BATTLE_TIME</td><td>BOSS战消耗体力</td><td>" . UNION_BATTLE_TIME . "Time</td></tr>\n
+				<tr><td>UNION_BATTLE_NEXT</td><td>BOSS战再挑战时间</td><td>" . UNION_BATTLE_NEXT . "s</td></tr>\n
+				<tr><td>BBS_BOTTOM_TOGGLE</td><td>下边是否加上bbs链接(1=ON)</td><td>" . BBS_BOTTOM_TOGGLE . "</td></tr>\n
+				</table>\n
+				");
 		}
 
 		print <<< ADMIN
@@ -552,11 +567,11 @@ DATA;
 ADMIN;
 	} else {
 		print <<< LOGIN
-<form action="?" method="post">
-请输入管理密码:<input type="text" name="pass" />
-<input type="submit" value="进入后台" />
-</form>
-LOGIN;
+				<form action="?" method="post">
+				请输入管理密码:<input type="text" name="pass" />
+				<input type="submit" value="进入后台" />
+				</form>
+				LOGIN;
 	}
 
 	?>

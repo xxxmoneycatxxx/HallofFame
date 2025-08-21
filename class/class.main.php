@@ -421,13 +421,13 @@ class main extends user
 				ShowGameData();
 				return true;
 			case ($_GET["log"]):
-				ShowBattleLog($_GET["log"]);
+				ShowBattleLog(intval($_GET["log"]));
 				return true;
 			case ($_GET["ulog"]):
-				ShowBattleLog($_GET["ulog"], "UNION");
+				ShowBattleLog(intval($_GET["ulog"]));
 				return true;
 			case ($_GET["rlog"]):
-				ShowBattleLog($_GET["rlog"], "RANK");
+				ShowBattleLog(intval($_GET["rlog"]));
 				return true;
 		}
 	}
@@ -1444,17 +1444,31 @@ HTML;
 		}
 
 		// union
-		print("<div style=\"margin:0 15px\">\n");
-		print("<h4>BOSS战记录 <a href=\"?ulog\">全表示</a></h4>\n");
-		print("<div style=\"margin:0 20px\">\n");
-		$log	= @glob(LOG_BATTLE_UNION . "*");
-		foreach (array_reverse($log) as $file) {
-			$limit++;
-			BattleLogDetail($file, "UNION");
-			if (15 <= $limit)
-				break;
-		}
-		print("</div></div>\n");
+		print("<h4>BOSS战记录 <a href=\"?ulog\">全显示</a></h4>\n");
+    print("<div style=\"margin:0 20px\">\n");
+    
+    try {
+        $db = $GLOBALS['DB'];
+        $stmt = $db->prepare("SELECT * FROM battle_logs 
+                             WHERE battle_type = 'union' 
+                             ORDER BY battle_time DESC 
+                             LIMIT 15");
+        $stmt->execute();
+        $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($logs) {
+            foreach ($logs as $log) {
+                BattleLogDetail($log, "UNION");
+            }
+        } else {
+            print("<p>暂无BOSS战记录</p>\n");
+        }
+    } catch (PDOException $e) {
+        error_log("数据库查询错误: " . $e->getMessage());
+        print("<p class='error'>无法加载战斗记录</p>\n");
+    }
+    
+    print("</div></div>\n");
 	}
 	//////////////////////////////////////////////////
 	//	モンスターの表示

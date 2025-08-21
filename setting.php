@@ -130,10 +130,10 @@ const GAME_DATA_JUDGE = DATA_DIR . "data.gd_judge.php";
 const GAME_DATA_MONSTER = DATA_DIR . "data.gd_monster.php";
 
 const TUTORIAL = DATA_DIR . "data.tutorial.php";
+
 // DAT
 const AUCTION_ITEM = "./db/auction.dat"; //アイテムオ〖クション脱のファイル
 const AUCTION_ITEM_LOG = "./db/auction_log.dat"; //アイテムオ〖クション脱のログファイル
-
 const REGISTER = "./db/register.dat";
 const UPDATE = "./db/update.dat";
 const CTRL_TIME_FILE = "./db/ctrltime.dat"; //年袋瓷妄のための箕粗淡脖ファイル
@@ -142,6 +142,10 @@ const BBS_BOTTOM = "./db/bbs.dat";
 const BBS_TOWN = "./db/bbs_town.dat";
 const MANAGE_LOG_FILE = "./db/managed.dat"; //年袋瓷妄淡峡ファイル
 const USER_NAME = "./db/username.dat"; //叹涟瘦赂ファイル
+
+// 数据库文件路径
+const DB_PATH = "./db/game.db"; // SQLite数据库文件路径
+define('DB_INIT', !file_exists(DB_PATH)); // 首次初始化标志
 
 // dir
 const IMG_CHAR = "./image/char/";
@@ -152,10 +156,6 @@ const USER = "./user/";
 const UNION = "./union/";
 const DATA = "data.dat";
 const ITEM = "item.dat";
-
-const LOG_BATTLE_NORMAL = "./log/normal/";
-const LOG_BATTLE_RANK = "./log/rank/";
-const LOG_BATTLE_UNION = "./log/union/";
 
 // 觉轮年盗
 const FRONT = "front";

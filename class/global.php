@@ -84,6 +84,54 @@
  * 3. SELLING_PRICE: 道具出售价格系数
  */
 
+// 初始化数据库连接
+function initDatabase() {
+    $dbPath = DB_PATH;
+    $dbDir = dirname($dbPath);
+    
+    // 自动创建目录
+    if (!is_dir($dbDir) && !mkdir($dbDir, 0755, true)) {
+        throw new RuntimeException("无法创建数据库目录: $dbDir");
+    }
+
+    try {
+        $db = new PDO('sqlite:' . $dbPath, null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT => 5  // 查询超时设置
+        ]);
+        
+        // 首次运行时创建表结构
+        if (DB_INIT) {
+            $db->exec("CREATE TABLE battle_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                battle_time INTEGER NOT NULL,
+                team0_name TEXT NOT NULL,
+                team1_name TEXT NOT NULL,
+                team0_count INTEGER NOT NULL,
+                team1_count INTEGER NOT NULL,
+                team0_avg_level REAL NOT NULL,
+                team1_avg_level REAL NOT NULL,
+                winner INTEGER NOT NULL,
+                total_turns INTEGER NOT NULL,
+                battle_content TEXT NOT NULL,
+                battle_type TEXT NOT NULL
+            )");
+            
+            // 添加索引优化查询性能
+            $db->exec("CREATE INDEX idx_battle_type ON battle_logs(battle_type)");
+            $db->exec("CREATE INDEX idx_battle_time ON battle_logs(battle_time DESC)");
+        }
+        
+        return $db;
+    } catch (PDOException $e) {
+        error_log("数据库连接失败: " . $e->getMessage());
+        die("系统维护中，请稍后再试");
+    }
+}
+
+$GLOBALS['DB'] = initDatabase();
+
+
 //////////////////////////////////////////////////
 //	商店列表
 function ShopList()
@@ -512,7 +560,7 @@ function ItemSellPrice($item)
 }
 
 //////////////////////////////////////////////////
-//	里飘ログの山绩
+//	显示日志列表
 function ShowLogList()
 {
 	print("<div style=\"margin:15px\">\n");
@@ -521,43 +569,45 @@ function ShowLogList()
 	print("<a href=\"?ulog\">BOSS战</a> ");
 	print("<a href=\"?rlog\">排行战</a>");
 
-	// common
+	$db = $GLOBALS['DB'];
+
+	// 普通战斗日志（原Recent Battles）
 	print("<h4>最近的战斗 - <a href=\"?clog\">全部显示</a>(Recent Battles)</h4>\n");
-	$log	= @glob(LOG_BATTLE_NORMAL . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file);
-		$limit++;
-		if (30 <= $limit) {
-			break;
-		}
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'normal' 
+                         ORDER BY battle_time DESC LIMIT 30");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
-	// union
-	$limit	= 0;
+
+	// BOSS战区块（原Union Battle）
 	print("<h4>BOSS战 - <a href=\"?ulog\">全部显示</a>(Union Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_UNION . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file, "UNION");
-		$limit++;
-		if (30 <= $limit) {
-			break;
-		}
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'union' 
+                         ORDER BY battle_time DESC LIMIT 30");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
-	// rank
-	$limit	= 0;
+
+	// 排行战区块（原Rank Battle）
 	print("<h4>排名战 - <a href=\"?rlog\">全部显示</a>(Rank Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_RANK . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file, "RANK");
-		$limit++;
-		if (30 <= $limit) {
-			break;
-		}
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'rank' 
+                         ORDER BY battle_time DESC LIMIT 30");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
 
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	里飘ログの山绩
+//	显示战斗日志(普通)
 function LogShowCommon()
 {
 	print("<div style=\"margin:15px\">\n");
@@ -568,14 +618,21 @@ function LogShowCommon()
 	print("<a href=\"?rlog\">排行战</a>");
 	// common
 	print("<h4>最近的战斗 - 全记录(Recent Battles)</h4>\n");
-	$log	= @glob(LOG_BATTLE_NORMAL . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file);
+
+	$db = $GLOBALS['DB'];
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'normal' 
+                         ORDER BY battle_time DESC");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
+
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	里飘ログの山绩(union)
+//	显示战斗日志(BOSS)
 function LogShowUnion()
 {
 	print("<div style=\"margin:15px\">\n");
@@ -586,14 +643,21 @@ function LogShowUnion()
 	print("<a href=\"?rlog\">排行战</a>");
 	// union
 	print("<h4>BOSS战 - 全记录(Union Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_UNION . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file, "UNION");
+
+	$db = $GLOBALS['DB'];
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'union' 
+                         ORDER BY battle_time DESC");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
+
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	里飘ログの山绩(ranking)
+//	显示战斗日志(Ranking / 排名)
 function LogShowRanking()
 {
 	print("<div style=\"margin:15px\">\n");
@@ -602,89 +666,95 @@ function LogShowRanking()
 	print("<a href=\"?clog\">普通</a> ");
 	print("<a href=\"?ulog\">BOSS战</a> ");
 	print("<a href=\"?rlog\" class=\"a0\">排行战</a>");
-	// rank
-	print("<h4>排名赛-全记录(Rank Battle Log)</h4>\n");
-	$log	= @glob(LOG_BATTLE_RANK . "*");
-	foreach (array_reverse($log) as $file) {
-		BattleLogDetail($file, "RANK");
+
+	$db = $GLOBALS['DB'];
+	$stmt = $db->prepare("SELECT * FROM battle_logs 
+                         WHERE battle_type = 'rank' 
+                         ORDER BY battle_time DESC");
+	$stmt->execute();
+	$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($logs as $log) {
+		BattleLogDetail($log);
 	}
+
 	print("</div>\n");
 }
 //////////////////////////////////////////////////
-//	里飘ログの拒嘿を山绩(リンク)
-function BattleLogDetail($log, $type = false)
+//	战斗日志总结（简略）
+function BattleLogDetail($log)
 {
-	$fp	= fopen($log, "r");
+    // 检查 $log 是否是有效的数组
+    if (!is_array($log) || !isset($log['battle_time'])) {
+        return; // 或记录错误
+    }
+    
+    $date = date("m/d H:i:s", (int)$log['battle_time']); // 确保转换为整数
 
-	// 眶乖だけ粕み哈む。
-	$time	= fgets($fp); //倡幌箕粗 1乖誊
-	$team	= explode("<>", fgets($fp)); //チ〖ム叹 2乖誊
-	$number	= explode("<>", trim(fgets($fp))); //客眶 3乖誊
-	$avelv	= explode("<>", trim(fgets($fp))); //士堆レベル 4乖誊
-	$win	= trim(fgets($fp)); // 尽网チ〖ム 5乖誊
-	$act	= trim(fgets($fp)); // 另乖瓢眶 6乖誊
-	fclose($fp);
+    // 根据类型生成链接
+    $linkType = "";
+    $logParam = $log['id'];
 
-	$date	= date("m/d H:i:s", substr($time, 0, 10));
-	// 尽网チ〖ムによって咖を尸けて山绩
-	if ($type == "RANK")
-		print("[ <a href=\"?rlog={$time}\">{$date}</a> ]&nbsp;\n");
-	else if ($type == "UNION")
-		print("[ <a href=\"?ulog={$time}\">{$date}</a> ]&nbsp;\n");
-	else
-		print("[ <a href=\"?log={$time}\">{$date}</a> ]&nbsp;\n");
-	print("<span class=\"bold\">战斗$act</span>回合&nbsp;\n"); //另タ〖ン眶
-	if ($win === "0")
-		print("[胜]&nbsp;<span class=\"recover\">{$team[0]}</span>");
-	else if ($win === "1")
-		print("[败]&nbsp;<span class=\"dmg\">{$team[0]}</span>");
-	else
-		print("[平]&nbsp;{$team[0]}");
+    switch ($log['battle_type']) {
+        case 'rank':
+            $linkType = "rlog";
+            break;
+        case 'union':
+            $linkType = "ulog";
+            break;
+        default:
+            $linkType = "log";
+    }
 
-	print("({$number[0]}:{$avelv[0]})");
+    print("[ <a href=\"?{$linkType}={$logParam}\">{$date}</a> ]&nbsp;\n");
+    print("<span class=\"bold\">战斗{$log['total_turns']}</span>回合&nbsp;\n");
 
-	print(" vs ");
+    // 胜负显示逻辑 - 修复后的正确逻辑
+    $winner = (int)$log['winner'];
+    
+    if ($winner === TEAM_0) {  // 团队0胜利
+        print("[胜]&nbsp;<span class=\"recover\">{$log['team0_name']}</span>");
+        print("({$log['team0_count']}:{$log['team0_avg_level']})");
+        print(" vs ");
+        print("<span class=\"dmg\">{$log['team1_name']}</span>");
+        print("({$log['team1_count']}:{$log['team1_avg_level']})");
+    } elseif ($winner === TEAM_1) {  // 团队1胜利
+        print("[败]&nbsp;<span class=\"dmg\">{$log['team0_name']}</span>");
+        print("({$log['team0_count']}:{$log['team0_avg_level']})");
+        print(" vs ");
+        print("<span class=\"recover\">{$log['team1_name']}</span>");
+        print("({$log['team1_count']}:{$log['team1_avg_level']})");
+    } else {  // 平局
+        print("[平]&nbsp;{$log['team0_name']}");
+        print("({$log['team0_count']}:{$log['team0_avg_level']})");
+        print(" vs ");
+        print("{$log['team1_name']}");
+        print("({$log['team1_count']}:{$log['team1_avg_level']})");
+    }
 
-	if ($win === "0")
-		print("<span class=\"dmg\">{$team[1]}</span>");
-	else if ($win === "1")
-		print("<span class=\"recover\">{$team[1]}</span>");
-	else
-		print("{$team[1]}");
-
-	print("({$number[1]}:{$avelv[1]})<br />");
+    print("<br />");
 }
 //////////////////////////////////////////////////
 //	里飘ログを搀枉する
-function ShowBattleLog($no, $type = false)
+function ShowBattleLog($logId, $type = false)
 {
-	if ($type == "RANK")
-		$file	= LOG_BATTLE_RANK . $no . ".dat";
-	else if ($type == "UNION")
-		$file	= LOG_BATTLE_UNION . $no . ".dat";
-	else
-		$file	= LOG_BATTLE_NORMAL . $no . ".dat";
-	if (!file_exists($file)) { //ログが痰い
+	$db = $GLOBALS['DB'];
+
+	$stmt = $db->prepare("SELECT * FROM battle_logs WHERE id = ?");
+	$stmt->execute([$logId]);
+	$log = $stmt->fetch(PDO::FETCH_ASSOC);
+
+	if (!$log) {
 		print("没有找到记录");
 		return false;
 	}
 
-	$log	= file($file);
-	$row	= 6; //ログの部乖誊から今き叫すか?
-	$time	= substr($log[0], 0, 10);
-
-	//print('<table style="width:100%;text-align:center" class="break"><tr><td>'."\n");
 	print('<div style="padding:15px 0;width:100%;text-align:center" class="break">');
 	print("<h2>战斗记录*</h2>");
 	print("\n战斗开始于<br />");
-	print(date("m/d H:i:s", substr($time, 0, 10)));
+	print(date("m/d H:i:s", $log['battle_time']));
 	print("</div>\n");
-	//print("</td></tr></table>\n");
 
-	while ($log["$row"]) {
-		print($log["$row"]);
-		$row++;
-	}
+	print($log['battle_content']);
 }
 //////////////////////////////////////////////////
 //	显示技能描述内容
