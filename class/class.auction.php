@@ -354,10 +354,10 @@ class Auction
 		$Now	= time();
 		$end	= $Now + round($now + (60 * 60 * $time));
 		// 開始价格のあれ
-		if (ereg("^[0-9]", $StartPrice)) {
-			$price	= (int)$StartPrice;
+		if (preg_match('/^[0-9]/', $StartPrice)) {
+			$price = (int)$StartPrice;
 		} else {
-			$price	= 0;
+			$price = 0;
 		}
 		// コメント処理
 		$comment	= str_replace("\t", "", $comment);
