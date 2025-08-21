@@ -39,8 +39,7 @@ class/ *功能实现
     global.php *全局核心功能库
 
 css/ *css资源
-    basis.css *战斗相关css
-    style.css *全局页面css
+    global.css *全局页面css
 
 data/ *游戏数据（？）事实上不太好分类
     data.base_char.php *角色基础职业生成函数
