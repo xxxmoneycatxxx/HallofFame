@@ -1,7 +1,7 @@
-## PHP Web Game - Hall Of Fame
 ## PHP页游 - 荣誉圣殿
+**PHP Web Game - Hall Of Fame**
 
-实测在php5.6.9下顺利运行。
+改造后在php7.4.3下顺利运行。可能存在少量报错，欢迎反馈。
 
 ### 项目结构
 ```
@@ -77,6 +77,7 @@ db/ *数据库？但这个项目是用写入文件的方式存数据。总之是
     register.dat
     update.dat
     username.dat
+    game.db *战斗日志sqlite化改造
   
 image/ *image资源
     char/
@@ -90,12 +91,6 @@ image/ *image资源
     other/
         *.gif(s)
     *.gif(s)
-
-log/ *战斗日志
-    normal/ *小怪战斗日志
-        *.dat(s)
-    union/ *BOSS战斗日志
-        *.dat(s)
 
 union/ *BOSS数据
     *.dat(s) *格式为（例）：
