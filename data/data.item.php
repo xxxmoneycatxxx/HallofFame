@@ -1,6 +1,5 @@
 ﻿<?php
-if (file_exists("DATA_ENCHANT"))
-	include(DATA_ENCHANT);
+include(DATA_ENCHANT);
 /**
  * 道具数据加载函数
  * 
