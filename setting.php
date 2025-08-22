@@ -147,9 +147,9 @@ const USER_NAME = DB_DIR . "username.dat"; //叹涟瘦赂ファイル
 
 // dir
 const IMG_ICON = BASE_IMAGE_PATH . 'icon/'; 
-const IMG_CHAR = BASE_IMAGE_PATH . 'char/';
-const IMG_CHAR_REV = BASE_IMAGE_PATH . 'char_rev/';
-const IMG_OTHER = BASE_IMAGE_PATH . 'other/';
+const IMG_CHAR = "./image/char/";
+const IMG_CHAR_REV = "./image/char_rev/";
+const IMG_OTHER = "./image/other/";
 const USER = "./user/";
 const UNION = "./union/";
 const DATA = "data.dat";
