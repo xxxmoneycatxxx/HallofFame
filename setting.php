@@ -87,8 +87,14 @@ const UNION_BATTLE_NEXT = 60 * 20; //BOSS战再挑战时间
 // files
 const INDEX = "index.php";
 
+define('ROOT_PATH', __DIR__);
+define('CLASS_DIR', ROOT_PATH . '/class/');
+define('DATA_DIR', ROOT_PATH . '/data/');
+define('DB_DIR', ROOT_PATH . '/db/');
+define('BASE_IMAGE_PATH', '/image/');
+define('DB_PATH', ROOT_PATH . '/db/game.db');
+
 // CLASS FILE
-const CLASS_DIR = "./class/";
 const BTL_IMG_CSS = CLASS_DIR . "class.css_btl_image.php"; // CSS山绩
 const CLASS_MAIN = CLASS_DIR . "class.main.php";
 const CLASS_USER = CLASS_DIR . "class.user.php";
@@ -104,7 +110,6 @@ const CLASS_AUCTION = CLASS_DIR . "class.auction.php";
 const GLOBAL_PHP = CLASS_DIR . "global.php";
 
 // DATA FILE
-const DATA_DIR = "./data/";
 const DATA_BASE_CHAR = DATA_DIR . "data.base_char.php";
 const DATA_JOB = DATA_DIR . "data.job.php";
 const DATA_ITEM = DATA_DIR . "data.item.php";
@@ -131,24 +136,20 @@ const GAME_DATA_MONSTER = DATA_DIR . "data.gd_monster.php";
 const TUTORIAL = DATA_DIR . "data.tutorial.php";
 
 // DAT
-const AUCTION_ITEM = "./db/auction.dat"; //アイテムオ〖クション脱のファイル
-const AUCTION_ITEM_LOG = "./db/auction_log.dat"; //アイテムオ〖クション脱のログファイル
-const REGISTER = "./db/register.dat";
-const UPDATE = "./db/update.dat";
-const CTRL_TIME_FILE = "./db/ctrltime.dat"; //年袋瓷妄のための箕粗淡脖ファイル
-const RANKING = "./db/ranking.dat";
-const MANAGE_LOG_FILE = "./db/managed.dat"; //年袋瓷妄淡峡ファイル
-const USER_NAME = "./db/username.dat"; //叹涟瘦赂ファイル
-
-// 数据库文件路径
-const DB_PATH = "./db/game.db"; // SQLite数据库文件路径
-define('DB_INIT', !file_exists(DB_PATH)); // 首次初始化标志
+const AUCTION_ITEM = DB_DIR . "auction.dat"; //アイテムオ〖クション脱のファイル
+const AUCTION_ITEM_LOG = DB_DIR . "auction_log.dat"; //アイテムオ〖クション脱のログファイル
+const REGISTER = DB_DIR . "register.dat";
+const UPDATE = DB_DIR . "update.dat";
+const CTRL_TIME_FILE = DB_DIR . "ctrltime.dat"; //年袋瓷妄のための箕粗淡脖ファイル
+const RANKING = DB_DIR . "ranking.dat";
+const MANAGE_LOG_FILE = DB_DIR . "managed.dat"; //年袋瓷妄淡峡ファイル
+const USER_NAME = DB_DIR . "username.dat"; //叹涟瘦赂ファイル
 
 // dir
-const IMG_CHAR = "./image/char/";
-const IMG_CHAR_REV = "./image/char_rev/";
-const IMG_ICON = "./image/icon/";
-const IMG_OTHER = "./image/other/";
+const IMG_ICON = BASE_IMAGE_PATH . 'icon/'; 
+const IMG_CHAR = BASE_IMAGE_PATH . 'char/';
+const IMG_CHAR_REV = BASE_IMAGE_PATH . 'char_rev/';
+const IMG_OTHER = BASE_IMAGE_PATH . 'other/';
 const USER = "./user/";
 const UNION = "./union/";
 const DATA = "data.dat";

@@ -133,12 +133,6 @@
 		print("</tr>\n");
 		print("<tr><td colspan=\"13\" style=\"text-align:left\">");
 		print("<table><tbody>");
-		/*
-		$Pattern	= explode("|",$m["Pattern"]);
-		$m["judge"]	= explode("<>",$Pattern[0]);
-		$m["quantity"]	= explode("<>",$Pattern[1]);
-		$m["action"]	= explode("<>",$Pattern[2]);
-		*/
 		foreach ($m["judge"] as $key => $val) {
 			print("<tr><td>");
 			$judge	= LoadJudgeData($val);
@@ -208,7 +202,7 @@ function ShowItemDetail2($item, $amount = false)
 //	技の詳細を表示
 function ShowSkillDetail2($skill, $radio = false)
 {
-	$file	= "../image/icon/";
+	$file	= "../../image/icon/";
 	if (!$skill) return false;
 
 	if ($radio)

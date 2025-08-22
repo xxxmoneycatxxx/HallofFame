@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="../css/global.css" type="text/css">
-	<title>skl_list3</title>
+	<title>skill_list</title>
 	<!-- 
 	游戏技能百科全书
 	功能说明：
@@ -82,7 +82,8 @@
 
 <body>
 	<?php
-	include("../data/data.skill.php");
+	include('../setting.php');
+	include('../data/data.skill.php');
 	include("../class/global.php");
 	define("IMG_ICON", "../image/icon/");
 

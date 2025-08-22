@@ -87,53 +87,92 @@
 // 初始化数据库连接
 function initDatabase()
 {
+	// 确保配置常量已定义
+	if (!defined('DB_PATH')) {
+		throw new RuntimeException("数据库配置未定义，请检查 setting.php");
+	}
+
 	$dbPath = DB_PATH;
 	$dbDir = dirname($dbPath);
 
-	// 自动创建目录
-	if (!is_dir($dbDir) && !mkdir($dbDir, 0755, true)) {
-		throw new RuntimeException("无法创建数据库目录: $dbDir");
-	}
-
 	try {
+		// 自动创建数据库目录
+		if (!is_dir($dbDir)) {
+			if (!mkdir($dbDir, 0755, true)) {
+				throw new RuntimeException("无法创建数据库目录: $dbDir");
+			}
+		}
+
+		// 初始化数据库连接
 		$db = new PDO('sqlite:' . $dbPath, null, null, [
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-			PDO::ATTR_TIMEOUT => 5  // 查询超时设置
+			PDO::ATTR_TIMEOUT => 3,  // 查询超时3秒
+			PDO::ATTR_PERSISTENT => false // 禁用持久连接
 		]);
 
 		// 首次运行时创建表结构
-		if (DB_INIT) {
-			$db->exec("CREATE TABLE battle_logs (
-						id INTEGER PRIMARY KEY AUTOINCREMENT,
-						battle_time INTEGER NOT NULL,
-						team0_name TEXT NOT NULL,
-						team1_name TEXT NOT NULL,
-						team0_count INTEGER NOT NULL,
-						team1_count INTEGER NOT NULL,
-						team0_avg_level REAL NOT NULL,
-						team1_avg_level REAL NOT NULL,
-						winner INTEGER NOT NULL,
-						total_turns INTEGER NOT NULL,
-						battle_content TEXT NOT NULL,
-						battle_type TEXT NOT NULL
-					)");
+		if (!file_exists($dbPath) || filesize($dbPath) == 0) {
+			$db->exec("PRAGMA journal_mode = WAL;"); // 启用WAL模式提高并发性能
+
+			$db->exec("CREATE TABLE IF NOT EXISTS battle_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                battle_time INTEGER NOT NULL,
+                team0_name TEXT NOT NULL,
+                team1_name TEXT NOT NULL,
+                team0_count INTEGER NOT NULL,
+                team1_count INTEGER NOT NULL,
+                team0_avg_level REAL NOT NULL,
+                team1_avg_level REAL NOT NULL,
+                winner INTEGER NOT NULL,
+                total_turns INTEGER NOT NULL,
+                battle_content TEXT NOT NULL,
+                battle_type TEXT NOT NULL CHECK(battle_type IN ('normal', 'union', 'rank'))
+            )");
 
 			$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
-						id INTEGER PRIMARY KEY AUTOINCREMENT,
-						user_name TEXT NOT NULL,
-						message TEXT NOT NULL,
-						post_time INTEGER NOT NULL
-					)");
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_name TEXT NOT NULL,
+                message TEXT NOT NULL,
+                post_time INTEGER NOT NULL
+            )");
 
 			// 添加索引优化查询性能
-			$db->exec("CREATE INDEX idx_battle_type ON battle_logs(battle_type)");
-			$db->exec("CREATE INDEX idx_battle_time ON battle_logs(battle_time DESC)");
+			$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_type ON battle_logs(battle_type)");
+			$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_time ON battle_logs(battle_time DESC)");
+			$db->exec("CREATE INDEX IF NOT EXISTS idx_bbs_time ON town_bbs(post_time DESC)");
+
+			// 添加视图简化复杂查询
+			$db->exec("CREATE VIEW IF NOT EXISTS v_battle_stats AS
+                SELECT battle_type, 
+                       COUNT(*) AS total, 
+                       AVG(total_turns) AS avg_turns,
+                       SUM(CASE WHEN winner = 0 THEN 1 ELSE 0 END) AS team0_wins,
+                       SUM(CASE WHEN winner = 1 THEN 1 ELSE 0 END) AS team1_wins
+                FROM battle_logs
+                GROUP BY battle_type");
 		}
 
 		return $db;
 	} catch (PDOException $e) {
+		// 数据库连接失败时记录详细错误
 		error_log("数据库连接失败: " . $e->getMessage());
-		die("系统维护中，请稍后再试");
+		error_log("数据库路径: $dbPath");
+
+		// 返回伪连接对象防止系统崩溃
+		return new class {
+			public function prepare($sql)
+			{
+				throw new PDOException("数据库不可用");
+			}
+			public function query($sql)
+			{
+				throw new PDOException("数据库不可用");
+			}
+		};
+	} catch (Exception $e) {
+		// 其他类型异常处理
+		error_log("系统错误: " . $e->getMessage());
+		return null;
 	}
 }
 
@@ -181,7 +220,7 @@ function ShopList()
 		7000,
 		7001,
 		7500,
-		//7510,7511,7512,7513,7520,// 重置道具
+		7510,7511,7512,7513,7520, // 重置道具
 		8000,
 		8009,
 		8012,

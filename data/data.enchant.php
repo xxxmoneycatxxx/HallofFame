@@ -50,176 +50,178 @@
  * 2. 所有数值加成都会更新到道具的option描述
  * 3. 特殊前缀效果会修改道具的AddName字段
  */
-function AddEnchantData(&$item, $opt) {
-    // 预处理：清理option结尾逗号
-    $item["option"] = rtrim($item["option"], ", ");
+if (!function_exists('AddEnchantData')) {
+    function AddEnchantData(&$item, $opt)
+    {
+        // 预处理：清理option结尾逗号
+        $item["option"] = rtrim($item["option"], ", ");
 
-    // 数字型附魔代码处理
-    if (is_numeric($opt)) {
-        $value = (int)$opt;
-        $handled = true;
+        // 数字型附魔代码处理
+        if (is_numeric($opt)) {
+            $value = (int)$opt;
+            $handled = true;
 
-        // 物理攻击加成 (100-119)
-        if ($value >= 100 && $value <= 119) {
-            $bonus = $value - 99;
-            $item["atk"][0] += $bonus;
-            $item["option"] .= ", Atk+$bonus";
-        }
-        // 魔法攻击加成 (150-169)
-        elseif ($value >= 150 && $value <= 169) {
-            $bonus = $value - 149;
-            $item["atk"][1] += $bonus;
-            $item["option"] .= ", Matk+$bonus";
-        }
-        // 物理攻击倍率 (200-203)
-        elseif ($value >= 200 && $value <= 203) {
-            $rates = [1.05, 1.10, 1.15, 1.20];
-            $rate = $rates[$value - 200];
-            $item["atk"][0] = round($item["atk"][0] * $rate);
-            $item["option"] .= ", Atk+" . (($rate-1)*100) . "%";
-        }
-        // 魔法攻击倍率 (250-253)
-        elseif ($value >= 250 && $value <= 253) {
-            $rates = [1.05, 1.10, 1.15, 1.20];
-            $rate = $rates[$value - 250];
-            $item["atk"][1] = round($item["atk"][1] * $rate);
-            $item["option"] .= ", Matk+" . (($rate-1)*100) . "%";
-        }
-        // 物理防御加成 (300-304)
-        elseif ($value >= 300 && $value <= 304) {
-            $bonus = $value - 299;
-            $item["def"][0] += $bonus;
-            $item["option"] .= ", Def+$bonus";
-        }
-        // 魔法防御加成 (350-354)
-        elseif ($value >= 350 && $value <= 354) {
-            $bonus = $value - 349;
-            $item["def"][2] += $bonus;
-            $item["option"] .= ", Mdef+$bonus";
-        }
-        else {
-            $handled = false;
-        }
-        
-        if ($handled) {
-            $item["option"] = ltrim($item["option"], ", ");
-            return;
-        }
-    }
-
-    // 字符串型附魔代码处理
-    if (is_string($opt)) {
-        $handled = true;
-        $prefix = substr($opt, 0, 1);
-        $suffix = substr($opt, 1);
-
-        switch ($prefix) {
-            // 生命值固定加成 (H00-H05)
-            case 'H':
-                if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 5) {
-                    $bonus = ($suffix + 1) * 10;
-                    $item["P_MAXHP"] += $bonus;
-                    $item["option"] .= ", MAXHP+$bonus";
-                }
-                break;
-            
-            // 生命值百分比加成 (HM0-HM5)
-            case 'M':
-                if ($opt[0] === 'H' && is_numeric($opt[2])) { // 处理HM前缀
-                    $suffixVal = (int)$opt[2];
-                    if ($suffixVal >= 0 && $suffixVal <= 5) {
-                        $bonus = $suffixVal + 1;
-                        $item["M_MAXHP"] += $bonus;
-                        $item["option"] .= ", MAXHP+{$bonus}%";
-                    }
-                }
-                break;
-            
-            // 法力值固定加成 (S00-S03)
-            case 'S':
-                if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 3) {
-                    $bonus = ($suffix + 1) * 10;
-                    $item["P_MAXSP"] += $bonus;
-                    $item["option"] .= ", MAXSP+$bonus";
-                }
-                break;
-            
-            // 属性加成统一处理 (P/I/D/A/L)
-            case 'P': // 力量
-            case 'I': // 智力
-            case 'D': // 敏捷
-            case 'A': // 速度
-            case 'L': // 幸运
-                if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 9) {
-                    $bonus = $suffix + 1;
-                    $propMap = [
-                        'P' => 'P_STR',
-                        'I' => 'P_INT',
-                        'D' => 'P_DEX',
-                        'A' => 'P_SPD',
-                        'L' => 'P_LUK'
-                    ];
-                    $textMap = [
-                        'P' => 'STR',
-                        'I' => 'INT',
-                        'D' => 'DEX',
-                        'A' => 'SPD',
-                        'L' => 'LUK'
-                    ];
-                    
-                    $prop = $propMap[$prefix];
-                    $text = $textMap[$prefix];
-                    $item[$prop] += $bonus;
-                    $item["option"] .= ", {$text}+{$bonus}";
-                }
-                break;
-                
-            default:
+            // 物理攻击加成 (100-119)
+            if ($value >= 100 && $value <= 119) {
+                $bonus = $value - 99;
+                $item["atk"][0] += $bonus;
+                $item["option"] .= ", Atk+$bonus";
+            }
+            // 魔法攻击加成 (150-169)
+            elseif ($value >= 150 && $value <= 169) {
+                $bonus = $value - 149;
+                $item["atk"][1] += $bonus;
+                $item["option"] .= ", Matk+$bonus";
+            }
+            // 物理攻击倍率 (200-203)
+            elseif ($value >= 200 && $value <= 203) {
+                $rates = [1.05, 1.10, 1.15, 1.20];
+                $rate = $rates[$value - 200];
+                $item["atk"][0] = round($item["atk"][0] * $rate);
+                $item["option"] .= ", Atk+" . (($rate - 1) * 100) . "%";
+            }
+            // 魔法攻击倍率 (250-253)
+            elseif ($value >= 250 && $value <= 253) {
+                $rates = [1.05, 1.10, 1.15, 1.20];
+                $rate = $rates[$value - 250];
+                $item["atk"][1] = round($item["atk"][1] * $rate);
+                $item["option"] .= ", Matk+" . (($rate - 1) * 100) . "%";
+            }
+            // 物理防御加成 (300-304)
+            elseif ($value >= 300 && $value <= 304) {
+                $bonus = $value - 299;
+                $item["def"][0] += $bonus;
+                $item["option"] .= ", Def+$bonus";
+            }
+            // 魔法防御加成 (350-354)
+            elseif ($value >= 350 && $value <= 354) {
+                $bonus = $value - 349;
+                $item["def"][2] += $bonus;
+                $item["option"] .= ", Mdef+$bonus";
+            } else {
                 $handled = false;
-        }
-        
-        if ($handled) {
-            $item["option"] = ltrim($item["option"], ", ");
-            return;
-        }
-    }
+            }
 
-    // 特殊前缀处理（保持原逻辑）
-    switch ($opt) {
-        case "X00":
-            if ($item["type2"] == "WEAPON") {
-                $item["atk"][0] += 5;
-                $item["option"] .= ", Atk+5";
-                $item["AddName"] = "力量";
-            } else {
-                $item["def"][0] += 2;
-                $item["option"] .= ", Def+2";
-                $item["AddName"] = "稳固";
+            if ($handled) {
+                $item["option"] = ltrim($item["option"], ", ");
+                return;
             }
-            break;
-            
-        case "X01":
-            if ($item["type2"] == "WEAPON") {
-                $item["atk"][1] += 5;
-                $item["option"] .= ", Matk+5";
-                $item["AddName"] = "智慧";
-            } else {
-                $item["def"][2] += 2;
-                $item["option"] .= ", Mdef+2";
-                $item["AddName"] = "睿智";
+        }
+
+        // 字符串型附魔代码处理
+        if (is_string($opt)) {
+            $handled = true;
+            $prefix = substr($opt, 0, 1);
+            $suffix = substr($opt, 1);
+
+            switch ($prefix) {
+                // 生命值固定加成 (H00-H05)
+                case 'H':
+                    if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 5) {
+                        $bonus = ($suffix + 1) * 10;
+                        $item["P_MAXHP"] += $bonus;
+                        $item["option"] .= ", MAXHP+$bonus";
+                    }
+                    break;
+
+                // 生命值百分比加成 (HM0-HM5)
+                case 'M':
+                    if ($opt[0] === 'H' && is_numeric($opt[2])) { // 处理HM前缀
+                        $suffixVal = (int)$opt[2];
+                        if ($suffixVal >= 0 && $suffixVal <= 5) {
+                            $bonus = $suffixVal + 1;
+                            $item["M_MAXHP"] += $bonus;
+                            $item["option"] .= ", MAXHP+{$bonus}%";
+                        }
+                    }
+                    break;
+
+                // 法力值固定加成 (S00-S03)
+                case 'S':
+                    if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 3) {
+                        $bonus = ($suffix + 1) * 10;
+                        $item["P_MAXSP"] += $bonus;
+                        $item["option"] .= ", MAXSP+$bonus";
+                    }
+                    break;
+
+                // 属性加成统一处理 (P/I/D/A/L)
+                case 'P': // 力量
+                case 'I': // 智力
+                case 'D': // 敏捷
+                case 'A': // 速度
+                case 'L': // 幸运
+                    if (is_numeric($suffix) && $suffix >= 0 && $suffix <= 9) {
+                        $bonus = $suffix + 1;
+                        $propMap = [
+                            'P' => 'P_STR',
+                            'I' => 'P_INT',
+                            'D' => 'P_DEX',
+                            'A' => 'P_SPD',
+                            'L' => 'P_LUK'
+                        ];
+                        $textMap = [
+                            'P' => 'STR',
+                            'I' => 'INT',
+                            'D' => 'DEX',
+                            'A' => 'SPD',
+                            'L' => 'LUK'
+                        ];
+
+                        $prop = $propMap[$prefix];
+                        $text = $textMap[$prefix];
+                        $item[$prop] += $bonus;
+                        $item["option"] .= ", {$text}+{$bonus}";
+                    }
+                    break;
+
+                default:
+                    $handled = false;
             }
-            break;
-            
-        case "M01":
-            $item["P_MAXHP"] += 10;
-            $item["option"] .= ", MAXHP+10";
-            $item["AddName"] = "哥布林之";
-            break;
-            
-        // 保留空操作case
-        case 400:
-            break;
+
+            if ($handled) {
+                $item["option"] = ltrim($item["option"], ", ");
+                return;
+            }
+        }
+
+        // 特殊前缀处理（保持原逻辑）
+        switch ($opt) {
+            case "X00":
+                if ($item["type2"] == "WEAPON") {
+                    $item["atk"][0] += 5;
+                    $item["option"] .= ", Atk+5";
+                    $item["AddName"] = "力量";
+                } else {
+                    $item["def"][0] += 2;
+                    $item["option"] .= ", Def+2";
+                    $item["AddName"] = "稳固";
+                }
+                break;
+
+            case "X01":
+                if ($item["type2"] == "WEAPON") {
+                    $item["atk"][1] += 5;
+                    $item["option"] .= ", Matk+5";
+                    $item["AddName"] = "智慧";
+                } else {
+                    $item["def"][2] += 2;
+                    $item["option"] .= ", Mdef+2";
+                    $item["AddName"] = "睿智";
+                }
+                break;
+
+            case "M01":
+                $item["P_MAXHP"] += 10;
+                $item["option"] .= ", MAXHP+10";
+                $item["AddName"] = "哥布林之";
+                break;
+
+            // 保留空操作case
+            case 400:
+                break;
+        }
+
+        $item["option"] = ltrim($item["option"], ", ");
     }
-    
-    $item["option"] = ltrim($item["option"], ", ");
 }

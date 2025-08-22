@@ -50,9 +50,6 @@
  */
 
 
-include("./setting.php");
-include("./class/global.php");
-$DB = $GLOBALS['DB'];
 
 if (!defined("ADMIN_PASSWORD"))
 	exit(1);
@@ -423,17 +420,8 @@ if ($_POST["logout"]) {
 		}
 
 		// 广场管理
-		// 广场管理
 		else if ($_POST["adminTown"]) {
 			$db = $GLOBALS['DB'];
-
-			// 创建广场留言表
-			$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_name TEXT NOT NULL,
-        message TEXT NOT NULL,
-        post_time INTEGER NOT NULL
-    )");
 
 			print("<p>广场管理</p>\n");
 
@@ -608,8 +596,8 @@ if ($_POST["logout"]) {
 				<li><a href=\"" . ADMIN_DIR . "list_job.php\">职业列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_monster.php\">怪物列表</a></li>\n
-				<li><a href=\"" . ADMIN_DIR . "list_skill3.php\">技能列表</a></li>\n
-				<li><a href=\"" . ADMIN_DIR . "set_action2.php\">行动模式设定机</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "list_skill.php\">技能列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "set_action.php\">行动模式设定机</a></li>\n
 				</ul>\n
 				");
 		}

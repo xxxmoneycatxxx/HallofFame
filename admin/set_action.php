@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>SetAction02</title>
+	<title>SetAction</title>
 	<!-- 
 	怪物行动模式设置工具
 	功能说明：
