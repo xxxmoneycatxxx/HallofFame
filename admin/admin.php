@@ -423,21 +423,107 @@ if ($_POST["logout"]) {
 		}
 
 		// 广场管理
+		// 广场管理
 		else if ($_POST["adminTown"]) {
-			$file = BBS_TOWN;
+			$db = $GLOBALS['DB'];
+
+			// 创建广场留言表
+			$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_name TEXT NOT NULL,
+        message TEXT NOT NULL,
+        post_time INTEGER NOT NULL
+    )");
+
 			print("<p>广场管理</p>\n");
-			// 数据修改
-			if ($_POST["changeData"]) {
-				changeData($file, $_POST["fileData"]);
+
+			// 处理删除请求
+			if ($_POST["deleteMessage"]) {
+				$stmt = $db->prepare("DELETE FROM town_bbs WHERE id = ?");
+				$stmt->execute([$_POST["messageId"]]);
+				print("<p>留言已删除</p>");
 			}
-			print('<form action="?" method="post">');
-			print('<textarea name="fileData" style="width:800px;height:300px;">');
-			print(file_get_contents($file));
-			print("</textarea><br>\n");
-			print('<input type="submit" name="changeData" value="修改">');
-			print('<input type="submit" value="更新">');
+
+			// 处理修改请求
+			if ($_POST["updateMessage"]) {
+				$stmt = $db->prepare("UPDATE town_bbs SET message = ? WHERE id = ?");
+				$stmt->execute([$_POST["newMessage"], $_POST["messageId"]]);
+				print("<p>留言已更新</p>");
+			}
+
+			// 显示留言列表
+			$stmt = $db->query("SELECT * FROM town_bbs ORDER BY post_time DESC");
+			$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if ($messages) {
+				print("<table border='1' cellpadding='5'>");
+				print("<tr><th>ID</th><th>用户</th><th>时间</th><th>内容</th><th>操作</th></tr>");
+
+				foreach ($messages as $msg) {
+					$time = date("Y-m-d H:i", $msg["post_time"]);
+
+					print("<tr>");
+					print("<td>{$msg['id']}</td>");
+					print("<td>{$msg['user_name']}</td>");
+					print("<td>{$time}</td>");
+					print("<td>{$msg['message']}</td>");
+					print("<td>");
+					print('<form action="?" method="post" style="display:inline">');
+					print('<input type="hidden" name="messageId" value="' . $msg['id'] . '">');
+					print('<input type="hidden" name="adminTown" value="1">');
+					print('<input type="submit" name="deleteMessage" value="删除">');
+					print("</form>");
+					print('<form action="?" method="post" style="display:inline">');
+					print('<input type="hidden" name="messageId" value="' . $msg['id'] . '">');
+					print('<input type="hidden" name="adminTown" value="1">');
+					print('<input type="text" name="newMessage" value="' . htmlspecialchars($msg['message']) . '">');
+					print('<input type="submit" name="updateMessage" value="更新">');
+					print("</form>");
+					print("</td>");
+					print("</tr>");
+				}
+
+				print("</table>");
+			} else {
+				print("<p>暂无留言</p>");
+			}
+
+			// 添加搜索功能
+			print('<form action="?" method="post" style="margin-top:20px">');
+			print('<h3>搜索留言</h3>');
+			print('关键词: <input type="text" name="searchKeyword">');
+			print('<input type="submit" name="searchMessages" value="搜索">');
 			print('<input type="hidden" name="adminTown" value="1">');
-			print("</form>\n");
+			print("</form>");
+
+			// 处理搜索请求
+			if ($_POST["searchMessages"]) {
+				$keyword = "%{$_POST['searchKeyword']}%";
+				$stmt = $db->prepare("SELECT * FROM town_bbs WHERE message LIKE ? ORDER BY post_time DESC");
+				$stmt->execute([$keyword]);
+				$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+				if ($results) {
+					print("<h3>搜索结果</h3>");
+					print("<table border='1' cellpadding='5'>");
+					print("<tr><th>ID</th><th>用户</th><th>时间</th><th>内容</th></tr>");
+
+					foreach ($results as $msg) {
+						$time = date("Y-m-d H:i", $msg["post_time"]);
+
+						print("<tr>");
+						print("<td>{$msg['id']}</td>");
+						print("<td>{$msg['user_name']}</td>");
+						print("<td>{$time}</td>");
+						print("<td>{$msg['message']}</td>");
+						print("</tr>");
+					}
+
+					print("</table>");
+				} else {
+					print("<p>未找到匹配的留言</p>");
+				}
+			}
 		}
 
 		// 用户登录数据管理

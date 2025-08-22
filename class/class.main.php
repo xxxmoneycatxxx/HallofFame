@@ -1445,30 +1445,30 @@ HTML;
 
 		// union
 		print("<h4>BOSS战记录 <a href=\"?ulog\">全显示</a></h4>\n");
-    print("<div style=\"margin:0 20px\">\n");
-    
-    try {
-        $db = $GLOBALS['DB'];
-        $stmt = $db->prepare("SELECT * FROM battle_logs 
+		print("<div style=\"margin:0 20px\">\n");
+
+		try {
+			$db = $GLOBALS['DB'];
+			$stmt = $db->prepare("SELECT * FROM battle_logs 
                              WHERE battle_type = 'union' 
                              ORDER BY battle_time DESC 
                              LIMIT 15");
-        $stmt->execute();
-        $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        if ($logs) {
-            foreach ($logs as $log) {
-                BattleLogDetail($log, "UNION");
-            }
-        } else {
-            print("<p>暂无BOSS战记录</p>\n");
-        }
-    } catch (PDOException $e) {
-        error_log("数据库查询错误: " . $e->getMessage());
-        print("<p class='error'>无法加载战斗记录</p>\n");
-    }
-    
-    print("</div></div>\n");
+			$stmt->execute();
+			$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if ($logs) {
+				foreach ($logs as $log) {
+					BattleLogDetail($log, "UNION");
+				}
+			} else {
+				print("<p>暂无BOSS战记录</p>\n");
+			}
+		} catch (PDOException $e) {
+			error_log("数据库查询错误: " . $e->getMessage());
+			print("<p class='error'>无法加载战斗记录</p>\n");
+		}
+
+		print("</div></div>\n");
 	}
 	//////////////////////////////////////////////////
 	//	モンスターの表示
@@ -3258,32 +3258,73 @@ JS_HTML;
 						//	普通の1行掲示板
 						function TownBBS()
 						{
-							$file	= BBS_TOWN;
-						?>
-						<form action="?town" method="post">
-							<input type="text" maxlength="60" name="message" class="text" style="width:300px" />
-							<input type="submit" value="post" class="btn" style="width:100px" />
-						</form>
-						<?php
-							if (!file_exists($file))
-								return false;
-							$log	= file($file);
-							if ($_POST["message"] && strlen($_POST["message"]) < 121) {
-								$_POST["message"]	= htmlspecialchars($_POST["message"], ENT_QUOTES);
-								$_POST["message"]	= stripslashes($_POST["message"]);
+							$db = $GLOBALS['DB']; // 获取全局数据库连接
 
-								$name	= "<span class=\"bold\">{$this->name}</span>";
-								$message	= $name . " > " . $_POST["message"];
-								if ($this->UserColor)
-									$message	= "<span style=\"color:{$this->UserColor}\">" . $message . "</span>";
-								$message	.= " <span class=\"light\">(" . date("Mj G:i") . ")</span>\n";
-								array_unshift($log, $message);
-								while (50 < count($log))
-									array_pop($log);
-								WriteFile($file, implode(null, $log));
+							// 创建数据库表（如果不存在）
+							try {
+								$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            post_time INTEGER NOT NULL
+        )");
+							} catch (PDOException $e) {
+								error_log("创建表失败: " . $e->getMessage());
+								ShowError("系统错误，请稍后再试");
+								return;
 							}
-							foreach ($log as $mes)
-								print(nl2br($mes));
+
+							print <<< HTML
+									<form action="?town" method="post">
+										<input type="text" maxlength="60" name="message" class="text" style="width:300px" />
+										<input type="submit" value="post" class="btn" style="width:100px" />
+									</form>
+									HTML;
+
+							// 处理新消息
+							if ($_POST["message"] && strlen($_POST["message"]) < 121) {
+								try {
+									$stmt = $db->prepare("INSERT INTO town_bbs (user_name, message, post_time) 
+                                VALUES (:user_name, :message, :post_time)");
+
+									$userName = $this->name ? $this->name : "无名";
+									$message = htmlspecialchars($_POST["message"], ENT_QUOTES);
+									$message = stripslashes($message);
+									$time = time();
+
+									$stmt->bindParam(':user_name', $userName);
+									$stmt->bindParam(':message', $message);
+									$stmt->bindParam(':post_time', $time);
+									$stmt->execute();
+								} catch (PDOException $e) {
+									error_log("插入数据失败: " . $e->getMessage());
+									ShowError("发布失败，请重试");
+								}
+							}
+
+							// 显示消息
+							try {
+								$stmt = $db->query("SELECT * FROM town_bbs ORDER BY post_time DESC LIMIT 50");
+								$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+								foreach ($logs as $log) {
+									$name = $log['user_name'];
+									$message = $log['message'];
+									$date = date("M j G:i", $log['post_time']);
+
+									$formatted = "<span class=\"bold\">{$name}</span> &gt; {$message}";
+
+									if ($this->UserColor) {
+										$formatted = "<span style=\"color:{$this->UserColor}\">{$formatted}</span>";
+									}
+
+									$formatted .= " <span class=\"light\">({$date})</span><br>\n";
+									print nl2br($formatted);
+								}
+							} catch (PDOException $e) {
+								error_log("查询失败: " . $e->getMessage());
+								ShowError("无法加载消息");
+							}
 						}
 						//////////////////////////////////////////////////
 						function SettingProcess()
@@ -3651,12 +3692,12 @@ JS_HTML;
 							$start	= substr($this->start, 0, 10);
 							$term	= 60 * 60 * 1;
 							if (($last - $start) < $term) {
-								?>
-									<div style="margin:5px 15px">
-										<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
-									</div>
+					?>
+						<div style="margin:5px 15px">
+							<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+						</div>
 
-								<?php
+					<?php
 							}
 						}
 

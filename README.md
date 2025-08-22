@@ -65,7 +65,6 @@ data/ *游戏数据（？）事实上不太好分类
 db/ *数据库？但这个项目是用写入文件的方式存数据。总之是放数据的地方
     auction_log.dat
     auction.dat
-    bbs_town.dat
     ctrltime.dat
     managed.dat
     ranking.dat
@@ -104,7 +103,7 @@ index.php *项目入口
 setting.php *全局配置
 ```
 
-数据结构
+数据结构(game.db)
 ```
 battle_logs
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -119,6 +118,13 @@ battle_logs
     total_turns INTEGER NOT NULL,
     battle_content TEXT NOT NULL,
     battle_type TEXT NOT NULL
+
+town_bbs
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_name TEXT NOT NULL,
+    message TEXT NOT NULL,
+    post_time INTEGER NOT NULL
+
 
 ......
 
