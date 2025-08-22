@@ -104,19 +104,26 @@ function initDatabase()
 		// 首次运行时创建表结构
 		if (DB_INIT) {
 			$db->exec("CREATE TABLE battle_logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                battle_time INTEGER NOT NULL,
-                team0_name TEXT NOT NULL,
-                team1_name TEXT NOT NULL,
-                team0_count INTEGER NOT NULL,
-                team1_count INTEGER NOT NULL,
-                team0_avg_level REAL NOT NULL,
-                team1_avg_level REAL NOT NULL,
-                winner INTEGER NOT NULL,
-                total_turns INTEGER NOT NULL,
-                battle_content TEXT NOT NULL,
-                battle_type TEXT NOT NULL
-            )");
+						id INTEGER PRIMARY KEY AUTOINCREMENT,
+						battle_time INTEGER NOT NULL,
+						team0_name TEXT NOT NULL,
+						team1_name TEXT NOT NULL,
+						team0_count INTEGER NOT NULL,
+						team1_count INTEGER NOT NULL,
+						team0_avg_level REAL NOT NULL,
+						team1_avg_level REAL NOT NULL,
+						winner INTEGER NOT NULL,
+						total_turns INTEGER NOT NULL,
+						battle_content TEXT NOT NULL,
+						battle_type TEXT NOT NULL
+					)");
+
+			$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
+						id INTEGER PRIMARY KEY AUTOINCREMENT,
+						user_name TEXT NOT NULL,
+						message TEXT NOT NULL,
+						post_time INTEGER NOT NULL
+					)");
 
 			// 添加索引优化查询性能
 			$db->exec("CREATE INDEX idx_battle_type ON battle_logs(battle_type)");

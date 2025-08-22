@@ -137,7 +137,6 @@ const REGISTER = "./db/register.dat";
 const UPDATE = "./db/update.dat";
 const CTRL_TIME_FILE = "./db/ctrltime.dat"; //年袋瓷妄のための箕粗淡脖ファイル
 const RANKING = "./db/ranking.dat";
-const BBS_TOWN = "./db/bbs_town.dat";
 const MANAGE_LOG_FILE = "./db/managed.dat"; //年袋瓷妄淡峡ファイル
 const USER_NAME = "./db/username.dat"; //叹涟瘦赂ファイル
 

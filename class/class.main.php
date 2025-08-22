@@ -3260,20 +3260,6 @@ JS_HTML;
 						{
 							$db = $GLOBALS['DB']; // 获取全局数据库连接
 
-							// 创建数据库表（如果不存在）
-							try {
-								$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_name TEXT NOT NULL,
-            message TEXT NOT NULL,
-            post_time INTEGER NOT NULL
-        )");
-							} catch (PDOException $e) {
-								error_log("创建表失败: " . $e->getMessage());
-								ShowError("系统错误，请稍后再试");
-								return;
-							}
-
 							print <<< HTML
 									<form action="?town" method="post">
 										<input type="text" maxlength="60" name="message" class="text" style="width:300px" />
