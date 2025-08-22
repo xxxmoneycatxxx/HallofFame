@@ -444,7 +444,7 @@ HTML;
 			foreach ($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">");
-				print("{$item[name]} x {$amount}<br />\n");
+				print("{$item["name"]} x {$amount}<br />\n");
 			}
 		}
 
@@ -551,7 +551,7 @@ HTML;
 			$this->UseSkill($skill, $return, $char, $MyTeam, $EnemyTeam);
 			// 行動できなかった場合の処理
 		} else {
-			print($char->Name(bold) . " 陷入沉思结果忘了行动.<br />(无更多行动模式)<br />\n");
+			print($char->Name("bold") . " 陷入沉思结果忘了行动.<br />(无更多行动模式)<br />\n");
 			$char->DelayReset();
 		}
 
