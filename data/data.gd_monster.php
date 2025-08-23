@@ -68,17 +68,17 @@ include_once(DATA_MONSTER);
 			1017	=> array("cave", "洞窟のボス。倒すと奥に行けるようになる。"),
 		);
 		$Detail	= "<tr>
-<td class=\"td6\">Image</td>
-<td class=\"td6\">EXP</td>
-<td class=\"td6\">MONEY</td>
-<td class=\"td6\">HP</td>
-<td class=\"td6\">SP</td>
-<td class=\"td6\">STR</td>
-<td class=\"td6\">INT</td>
-<td class=\"td6\">DEX</td>
-<td class=\"td6\">SPD</td>
-<td class=\"td6\">LUK</td>
-</tr>";
+					<td class=\"td6\">Image</td>
+					<td class=\"td6\">EXP</td>
+					<td class=\"td6\">MONEY</td>
+					<td class=\"td6\">HP</td>
+					<td class=\"td6\">SP</td>
+					<td class=\"td6\">STR</td>
+					<td class=\"td6\">INT</td>
+					<td class=\"td6\">DEX</td>
+					<td class=\"td6\">SPD</td>
+					<td class=\"td6\">LUK</td>
+					</tr>";
 		foreach ($List as $No => $exp) {
 			$monster	= CreateMonster($No);
 			$char	= new char($monster);
@@ -87,23 +87,23 @@ include_once(DATA_MONSTER);
 			//print('<img src="'.IMG_CHAR.$monster["img"].'" />'."\n");
 			$char->ShowCharWithLand($exp[0]);
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[exphold]}\n");
+			print("{$monster["exphold"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[moneyhold]}\n");
+			print("{$monster["moneyhold"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[maxhp]}\n");
+			print("{$monster["maxhp"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[maxsp]}\n");
+			print("{$monster["maxsp"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[str]}\n");
+			print("{$monster["str"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[int]}\n");
+			print("{$monster["int"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[dex]}\n");
+			print("{$monster["dex"]}\n");
 			print("</td><td class=\"td7\">\n");
-			print("{$monster[spd]}\n");
+			print("{$monster["spd"]}\n");
 			print("</td><td class=\"td8\">\n");
-			print("{$monster[luk]}\n");
+			print("{$monster["luk"]}\n");
 			print("</td></tr>\n");
 			print("<tr><td class=\"td7\" colspan=\"11\">\n");
 			print("$exp[1]");
