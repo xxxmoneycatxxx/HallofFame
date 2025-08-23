@@ -25,8 +25,8 @@
  * - 附魔效果生成函数：AddEnchantData()
  */
 
-include("../data/data.create.php");  // 物品创建数据
-include("../data/data.enchant.php"); // 物品附魔数据
+include_once("../data/data.create.php");  // 物品创建数据
+include_once("../data/data.enchant.php"); // 物品附魔数据
 
 // 获取剑类武器的低级和高级附魔可能性
 list($low, $high) = ItemAbilityPossibility("剑");

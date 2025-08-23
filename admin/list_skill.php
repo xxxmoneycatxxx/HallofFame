@@ -82,9 +82,9 @@
 
 <body>
 	<?php
-	include('../setting.php');
-	include('../data/data.skill.php');
-	include("../class/global.php");
+	include_once('../setting.php');
+	include_once('../data/data.skill.php');
+	include_once("../class/global.php");
 	define("IMG_ICON", "../image/icon/");
 
 

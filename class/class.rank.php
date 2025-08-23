@@ -221,7 +221,7 @@ class Ranking
 
 		//dump($Party_Challenger);
 		//dump($Party_Defender);
-		include(CLASS_BATTLE);
+		include_once(CLASS_BATTLE);
 		$battle	= new battle($Party_Challenger, $Party_Defender);
 		$battle->SetBackGround("colosseum");
 		$battle->SetTeamName($challenger->name, $defender->name);

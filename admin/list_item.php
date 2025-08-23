@@ -67,7 +67,7 @@
 
 <body>
 	<?php
-	include("../data/data.item.php");
+	include_once("../data/data.item.php");
 	print("<table cellspacing=\"1\"><tbody>");
 	$img_f	= "../image/icon/";
 	$des	= '<tr><td class="a">ID</td>

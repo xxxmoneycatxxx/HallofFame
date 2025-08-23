@@ -11,7 +11,7 @@
  * 此文件是游戏的入口点，负责初始化游戏环境并启动主控制器
  * 通过实例化main类，触发整个游戏流程的执行
  */
-include("setting.php");
-include(CLASS_MAIN);
+include_once("setting.php");
+include_once(CLASS_MAIN);
 
 new main();

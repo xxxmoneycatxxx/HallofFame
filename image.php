@@ -19,7 +19,7 @@
  * /image.php?bg=grass&f11=warrior&b12=mage&f21=monster
  */
 
-include("setting.php");
+include_once("setting.php");
 
 $img = new image();
 $img->SetBackGround("gif");  // 设置背景图像

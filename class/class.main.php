@@ -73,8 +73,8 @@
  * 4. Foot() - 输出HTML尾部
  */
 
-include(CLASS_USER);
-include(GLOBAL_PHP);
+include_once(CLASS_USER);
+include_once(GLOBAL_PHP);
 
 // 定义缺失的常量
 define('MONSTER', 'MONSTER');
@@ -120,7 +120,7 @@ class main extends user
 		// 这里还没有读取用户数据
 		switch (true) {
 			case ($_GET["menu"] === "auction"):
-				include(CLASS_AUCTION);
+				include_once(CLASS_AUCTION);
 				$ItemAuction	= new Auction("item");
 				$ItemAuction->AuctionHttpQuery("auction");
 				$ItemAuction->ItemCheckSuccess(); // 检查拍卖结束的商品
@@ -128,7 +128,7 @@ class main extends user
 				break;
 
 			case ($_GET["menu"] === "rank"):
-				include(CLASS_RANKING);
+				include_once(CLASS_RANKING);
 				$Ranking	= new Ranking();
 				break;
 		}
@@ -136,7 +136,7 @@ class main extends user
 			//if( false ):
 			// 登录
 			include_once(DATA_ITEM);
-			include(CLASS_CHAR);
+			include_once(CLASS_CHAR);
 			if ($this->FirstLogin())
 				return 0;
 
@@ -222,8 +222,8 @@ class main extends user
 					// 队伍
 				case ($_GET["union"]):
 					$this->CharDataLoadAll(); //读取角色数据
-					include(CLASS_UNION);
-					include(DATA_MONSTER);
+					include_once(CLASS_UNION);
+					include_once(DATA_MONSTER);
 					if ($this->UnionProcess()) {
 						// 战斗
 						$this->SaveData();
@@ -251,8 +251,8 @@ class main extends user
 					// 纸片人系统展示
 				case ($_GET["char"]):
 					$this->CharDataLoadAll(); //读取角色数据
-					include(DATA_SKILL);
-					include(DATA_JUDGE_SETUP);
+					include_once(DATA_SKILL);
+					include_once(DATA_JUDGE_SETUP);
 					$this->LoadUserItem(); //读取用户道具数据
 					$this->CharStatProcess();
 					$this->fpCloseAll();
@@ -282,7 +282,7 @@ class main extends user
 				case ($_GET["menu"] === "create"):
 					$this->LoadUserItem();
 					$this->SmithyCreateHeader();
-					include(DATA_CREATE); //读取制作图纸信息
+					include_once(DATA_CREATE); //读取制作图纸信息
 					if ($this->SmithyCreateProcess())
 						$this->SaveData();
 
@@ -481,7 +481,7 @@ class main extends user
 		$overlap	= array_count_values($MonsterNumbers);
 
 		// 敵情報を読んで配列に入れる。
-		include(CLASS_MONSTER);
+		include_once(CLASS_MONSTER);
 		foreach ($MonsterNumbers as $Number) {
 			if (1 < $overlap[$Number]) //1匹以上出現するなら名前に記号をつける。
 				$enemy[]	= new monster(CreateMonster($Number, true));
@@ -1219,7 +1219,7 @@ HTML;
 		print("<div style=\"padding:15px 15px 0 15px\">\n");
 		print("\t<div class=\"bold u\">可装备道具</div>\n");
 		if ($this->item) {
-			include(CLASS_JS_ITEMLIST);
+			include_once(CLASS_JS_ITEMLIST);
 			$EquipList	= new JS_ItemList();
 			$EquipList->SetID("equip");
 			$EquipList->SetName("type_equip");
@@ -1253,7 +1253,7 @@ HTML;
 			<?php
 
 			// スキル表示 //////////////////////////////////////
-			//include(DATA_SKILL);//ActionPatternに移動
+			//include_once(DATA_SKILL);//ActionPatternに移動
 			include_once(DATA_SKILL_TREE);
 			if ($char->skill) {
 				print('<div class="u bold">掌握技能</div>');
@@ -1348,7 +1348,7 @@ HTML;
 		//dump($enemy[0]->judge);
 		//dump($party[0]->judge);
 
-		include(CLASS_BATTLE);
+		include_once(CLASS_BATTLE);
 		$battle	= new battle($party, $enemy);
 		$battle->SetTeamName($this->name, "ドッペル");
 		$battle->LimitTurns($turns); //最大ターン数は10
@@ -1401,8 +1401,8 @@ HTML;
 	//	
 	function HuntShow()
 	{
-		include(DATA_LAND);
-		include(DATA_LAND_APPEAR);
+		include_once(DATA_LAND);
+		include_once(DATA_LAND_APPEAR);
 		print('<div style="margin:15px">');
 		print('<h4>普通怪物</h4>');
 		print('<div style="margin:0 20px">');
@@ -1419,8 +1419,8 @@ HTML;
 		print("</div>\n");
 		$files	= glob(UNION . "*");
 		if ($files) {
-			include(CLASS_UNION);
-			include(DATA_MONSTER);
+			include_once(CLASS_UNION);
+			include_once(DATA_MONSTER);
 			foreach ($files as $file) {
 				$UnionMons	= new union($file);
 				if ($UnionMons->is_Alive())
@@ -1475,7 +1475,7 @@ HTML;
 	function MonsterShow()
 	{
 		$land_id	= $_GET["common"];
-		include(DATA_LAND);
+		include_once(DATA_LAND);
 		include_once(DATA_LAND_APPEAR);
 		// まだ行けないマップなのに行こうとした。
 		if (!in_array($_GET["common"], LoadMapAppear($this))) {
@@ -1502,8 +1502,8 @@ HTML;
 		</div>
 		</form>
 		<?php
-		include(DATA_MONSTER);
-		include(CLASS_MONSTER);
+		include_once(DATA_MONSTER);
+		include_once(CLASS_MONSTER);
 		foreach ($monster_list as $id => $val) {
 			if ($val[1])
 				$monster[]	= new monster(CreateMonster($id));
@@ -1544,14 +1544,14 @@ HTML;
 				return false;
 			}
 			// 敵パーティー(または一匹)
-			include(DATA_LAND);
-			include(DATA_MONSTER);
+			include_once(DATA_LAND);
+			include_once(DATA_MONSTER);
 			list($Land, $MonsterList)	= LandInformation($_GET["common"]);
 			$EneNum	= $this->EnemyNumber($MyParty);
 			$EnemyParty	= $this->EnemyParty($EneNum, $MonsterList);
 
 			$this->WasteTime(NORMAL_BATTLE_TIME); //時間の消費
-			include(CLASS_BATTLE);
+			include_once(CLASS_BATTLE);
 			$battle	= new battle($MyParty, $EnemyParty);
 			$battle->SetBackGround($Land["land"]); //背景
 			$battle->SetTeamName($this->name, $Land["name"]);
@@ -1591,7 +1591,7 @@ HTML;
 			<div style="margin:0 20px">
 				<?php
 				if ($this->item) {
-					include(CLASS_JS_ITEMLIST);
+					include_once(CLASS_JS_ITEMLIST);
 					$goods	= new JS_ItemList();
 					$goods->SetID("my");
 					$goods->SetName("type");
@@ -1717,7 +1717,7 @@ HTML;
 					<h4>Goods List</h4>
 					<div style="margin:0 20px">
 						<?php
-						include(CLASS_JS_ITEMLIST);
+						include_once(CLASS_JS_ITEMLIST);
 						$ShopList	= ShopList(); //売ってるものデータ
 
 						$goods	= new JS_ItemList();
@@ -2232,7 +2232,7 @@ JS_HTML;
 				if (MAX_CHAR <= count($this->char))
 					return false;
 
-				include(DATA_BASE_CHAR);
+				include_once(DATA_BASE_CHAR);
 				if ($_POST["recruit"]) {
 					// キャラのタイプ
 					switch ($_POST["recruit_no"]) {
@@ -2453,7 +2453,7 @@ JS_HTML;
 						ShowError("times?");
 						return false;
 					}
-					include(CLASS_SMITHY);
+					include_once(CLASS_SMITHY);
 					$obj_item	= new Item($_POST["item_no"]);
 					// その道具が精錬できない場合
 					if (!$obj_item->CanRefine()) {
@@ -2507,7 +2507,7 @@ JS_HTML;
 
 					// 精錬可能な物の表示
 					if ($this->item) {
-						include(CLASS_JS_ITEMLIST);
+						include_once(CLASS_JS_ITEMLIST);
 						$possible	= CanRefineType();
 						$possible	= array_flip($possible);
 						//配列の先頭の値が"0"なので1にする(isset使わずにtrueにするため)
@@ -2646,7 +2646,7 @@ JS_HTML;
 							foreach ($item["need"] as $M_item => $M_amount) {
 								$this->DeleteItem($M_item, $M_amount);
 							}
-							include(CLASS_SMITHY);
+							include_once(CLASS_SMITHY);
 							$item	= new item($_POST["ItemNo"]);
 							$item->CreateItem();
 							// 付加効果
@@ -2670,7 +2670,7 @@ JS_HTML;
 							//$result	= $this->SmithyCreateProcess();
 
 							$CanCreate	= CanCreate($this);
-							include(CLASS_JS_ITEMLIST);
+							include_once(CLASS_JS_ITEMLIST);
 							$CreateList	= new JS_ItemList();
 							$CreateList->SetID("create");
 							$CreateList->SetName("type_create");
@@ -2987,7 +2987,7 @@ JS_HTML;
 							if (!AUCTION_EXHIBIT_TOGGLE)
 								return false;
 
-							include(CLASS_JS_ITEMLIST);
+							include_once(CLASS_JS_ITEMLIST);
 							$possible	= CanExhibitType();
 					?>
 						<div class="u bold">如何参展</div>
@@ -3145,7 +3145,7 @@ JS_HTML;
 
 							$this->UnionSetTime();
 
-							include(CLASS_BATTLE);
+							include_once(CLASS_BATTLE);
 							$battle	= new battle($MyParty, $EnemyParty);
 							$battle->SetUnionBattle();
 							$battle->SetBackGround($Union->UnionLand); //背景
@@ -3209,7 +3209,7 @@ JS_HTML;
 						//	町の表示
 						function TownShow()
 						{
-							include(DATA_TOWN);
+							include_once(DATA_TOWN);
 							print('<div style="margin:15px;">' . "\n");
 							print("<h4>街</h4>");
 							print('<div class="town" style="height:auto;">' . "\n");
@@ -4128,14 +4128,14 @@ JS_HTML;
 											$job = 2;
 											$gend = 1;
 									}
-									include(DATA_BASE_CHAR);
+									include_once(DATA_BASE_CHAR);
 									$char	= new char();
 									$char->SetCharData(array_merge(BaseCharStatus($job), array("name" => $_POST["first_name"], "gender" => "$gend")));
 									$char->SaveCharData($this->id);
 									return false;
 								} while (0);
 
-								include(DATA_BASE_CHAR);
+								include_once(DATA_BASE_CHAR);
 								$war_male	= new char();
 								$war_male->SetCharData(array_merge(BaseCharStatus("1"), array("gender" => "0")));
 								$war_female	= new char();

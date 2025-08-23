@@ -84,7 +84,7 @@ class Auction
 			if (AuctionLeftTime($Now, $Article["end"]))
 				continue;
 			if (!function_exists("LoadItemData"))
-				include(DATA_ITEM);
+				include_once(DATA_ITEM);
 			$item	= LoadItemData($Article["item"]);
 			if ($Article["bidder"]) {
 				$this->UserGetItem($Article["bidder"], $Article["item"], $Article["amount"]);

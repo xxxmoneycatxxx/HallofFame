@@ -85,36 +85,37 @@
  */
 
 // 初始化数据库连接
-function initDatabase()
-{
-	// 确保配置常量已定义
-	if (!defined('DB_PATH')) {
-		throw new RuntimeException("数据库配置未定义，请检查 setting.php");
-	}
-
-	$dbPath = DB_PATH;
-	$dbDir = dirname($dbPath);
-
-	try {
-		// 自动创建数据库目录
-		if (!is_dir($dbDir)) {
-			if (!mkdir($dbDir, 0755, true)) {
-				throw new RuntimeException("无法创建数据库目录: $dbDir");
-			}
+if (!function_exists('initDatabase')) {
+	function initDatabase()
+	{
+		// 确保配置常量已定义
+		if (!defined('DB_PATH')) {
+			throw new RuntimeException("数据库配置未定义，请检查 setting.php");
 		}
 
-		// 初始化数据库连接
-		$db = new PDO('sqlite:' . $dbPath, null, null, [
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-			PDO::ATTR_TIMEOUT => 3,  // 查询超时3秒
-			PDO::ATTR_PERSISTENT => false // 禁用持久连接
-		]);
+		$dbPath = DB_PATH;
+		$dbDir = dirname($dbPath);
 
-		// 首次运行时创建表结构
-		if (!file_exists($dbPath) || filesize($dbPath) == 0) {
-			$db->exec("PRAGMA journal_mode = WAL;"); // 启用WAL模式提高并发性能
+		try {
+			// 自动创建数据库目录
+			if (!is_dir($dbDir)) {
+				if (!mkdir($dbDir, 0755, true)) {
+					throw new RuntimeException("无法创建数据库目录: $dbDir");
+				}
+			}
 
-			$db->exec("CREATE TABLE IF NOT EXISTS battle_logs (
+			// 初始化数据库连接
+			$db = new PDO('sqlite:' . $dbPath, null, null, [
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_TIMEOUT => 3,  // 查询超时3秒
+				PDO::ATTR_PERSISTENT => false // 禁用持久连接
+			]);
+
+			// 首次运行时创建表结构
+			if (!file_exists($dbPath) || filesize($dbPath) == 0) {
+				$db->exec("PRAGMA journal_mode = WAL;"); // 启用WAL模式提高并发性能
+
+				$db->exec("CREATE TABLE IF NOT EXISTS battle_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 battle_time INTEGER NOT NULL,
                 team0_name TEXT NOT NULL,
@@ -129,53 +130,53 @@ function initDatabase()
                 battle_type TEXT NOT NULL CHECK(battle_type IN ('normal', 'union', 'rank'))
             )");
 
-			$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
+				$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_name TEXT NOT NULL,
                 message TEXT NOT NULL,
                 post_time INTEGER NOT NULL
             )");
 
-			// 添加索引优化查询性能
-			$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_type ON battle_logs(battle_type)");
-			$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_time ON battle_logs(battle_time DESC)");
-			$db->exec("CREATE INDEX IF NOT EXISTS idx_bbs_time ON town_bbs(post_time DESC)");
+				// 添加索引优化查询性能
+				$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_type ON battle_logs(battle_type)");
+				$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_time ON battle_logs(battle_time DESC)");
+				$db->exec("CREATE INDEX IF NOT EXISTS idx_bbs_time ON town_bbs(post_time DESC)");
 
-			// 添加视图简化复杂查询
-			$db->exec("CREATE VIEW IF NOT EXISTS v_battle_stats AS
+				// 添加视图简化复杂查询
+				$db->exec("CREATE VIEW IF NOT EXISTS v_battle_stats AS
                 SELECT battle_type, 
-                       COUNT(*) AS total, 
-                       AVG(total_turns) AS avg_turns,
-                       SUM(CASE WHEN winner = 0 THEN 1 ELSE 0 END) AS team0_wins,
-                       SUM(CASE WHEN winner = 1 THEN 1 ELSE 0 END) AS team1_wins
+					COUNT(*) AS total, 
+					AVG(total_turns) AS avg_turns,
+					SUM(CASE WHEN winner = 0 THEN 1 ELSE 0 END) AS team0_wins,
+					SUM(CASE WHEN winner = 1 THEN 1 ELSE 0 END) AS team1_wins
                 FROM battle_logs
                 GROUP BY battle_type");
+			}
+
+			return $db;
+		} catch (PDOException $e) {
+			// 数据库连接失败时记录详细错误
+			error_log("数据库连接失败: " . $e->getMessage());
+			error_log("数据库路径: $dbPath");
+
+			// 返回伪连接对象防止系统崩溃
+			return new class {
+				public function prepare($sql)
+				{
+					throw new PDOException("数据库不可用");
+				}
+				public function query($sql)
+				{
+					throw new PDOException("数据库不可用");
+				}
+			};
+		} catch (Exception $e) {
+			// 其他类型异常处理
+			error_log("系统错误: " . $e->getMessage());
+			return null;
 		}
-
-		return $db;
-	} catch (PDOException $e) {
-		// 数据库连接失败时记录详细错误
-		error_log("数据库连接失败: " . $e->getMessage());
-		error_log("数据库路径: $dbPath");
-
-		// 返回伪连接对象防止系统崩溃
-		return new class {
-			public function prepare($sql)
-			{
-				throw new PDOException("数据库不可用");
-			}
-			public function query($sql)
-			{
-				throw new PDOException("数据库不可用");
-			}
-		};
-	} catch (Exception $e) {
-		// 其他类型异常处理
-		error_log("系统错误: " . $e->getMessage());
-		return null;
 	}
 }
-
 $GLOBALS['DB'] = initDatabase();
 
 
@@ -183,48 +184,15 @@ $GLOBALS['DB'] = initDatabase();
 //	商店列表
 function ShopList()
 {
-	return array(
-		1002,
-		1003,
-		1004,
-		1100,
-		1101,
-		1200,
-		1700,
-		1701,
-		1702,
-		1703,
-		1800,
-		1801,
-		2000,
-		2001,
-		3000,
-		3001,
-		3002,
-		3100,
-		3101,
-		5000,
-		5001,
-		5002,
-		5003,
-		5100,
-		5101,
-		5102,
-		5103,
-		5200,
-		5201,
-		5202,
-		5203,
-		5500,
-		5501,
-		7000,
-		7001,
-		7500,
-		7510,7511,7512,7513,7520, // 重置道具
-		8000,
-		8009,
-		8012,
-	);
+    return array(
+        1002, 1003, 1004, 1100, 1101, 1200, 
+        1700, 1701, 1702, 1703, 1800, 1801,
+        2000, 2001, 3000, 3001, 3002, 3100, 3101,
+        5000, 5001, 5002, 5003, 5100, 5101, 5102, 5103,
+        5200, 5201, 5202, 5203, 5500, 5501,
+        7000, 7001, 7500, 7510, 7511, 7512, 7513, 7520,
+        8000, 8009, 8012
+    );
 }
 //////////////////////////////////////////////////
 //	可以拍卖的道具类型
@@ -414,7 +382,6 @@ function WriteFile($file, $text, $check = false)
 //	读取文件并将其存储在数组中(参数:文件指针)
 function ParseFileFP($fp)
 {
-
 	if (!$fp) return false;
 	while (!feof($fp)) {
 		$str	= fgets($fp);
@@ -439,28 +406,56 @@ function ParseFileFP($fp)
 //	ファイルを粕んで芹误に呈羌
 function ParseFile($file)
 {
-
-	$fp		= fopen($file, "r+");
-	if (!$fp) return false;
-	flock($fp, LOCK_EX | LOCK_NB);
-	while (!feof($fp)) {
-		$str	= fgets($fp);
-		$str	= trim($str);
-		if (!$str) continue;
-		$pos	= strpos($str, "=");
-		if ($pos === false)
-			continue;
-		$key	= substr($str, 0, $pos);
-		$val	= substr($str, ++$pos);
-		$data[$key]	= trim($val);
+	// 添加文件存在检查
+	if (!file_exists($file)) {
+		// 记录错误日志并返回空数组
+		error_log("ParseFile error: File not found - $file");
+		return [];
 	}
-	//print("<pre>");
-	//print_r($data);
-	//print("</pre>");
-	if ($data)
-		return $data;
-	else
-		return false;
+
+	$fp = @fopen($file, "r+");
+	if (!$fp) {
+		// 添加错误日志记录
+		error_log("ParseFile error: Unable to open file - $file");
+		return [];
+	}
+
+	// 添加文件锁定超时处理
+	$locked = false;
+	$attempts = 0;
+	while ($attempts < 5) {
+		if (flock($fp, LOCK_EX | LOCK_NB)) {
+			$locked = true;
+			break;
+		}
+		usleep(100000); // 等待100ms
+		$attempts++;
+	}
+
+	if (!$locked) {
+		fclose($fp);
+		error_log("ParseFile error: File lock timeout - $file");
+		return [];
+	}
+
+	$data = [];
+	while (!feof($fp)) {
+		$str = fgets($fp);
+		$str = trim($str);
+		if (!$str) continue;
+
+		$pos = strpos($str, "=");
+		if ($pos === false) continue;
+
+		$key = substr($str, 0, $pos);
+		$val = substr($str, $pos + 1);
+		$data[$key] = trim($val);
+	}
+
+	flock($fp, LOCK_UN);
+	fclose($fp);
+
+	return $data;
 }
 //////////////////////////////////////////////////
 //	
@@ -1015,21 +1010,21 @@ function ShowError($message, $add = false)
 //	マニュアルを山绩する
 function ShowManual()
 {
-	include(MANUAL);
+	include_once(MANUAL);
 	return true;
 }
 //////////////////////////////////////////////////
 //	マニュアルを山绩する
 function ShowManual2()
 {
-	include(MANUAL_HIGH);
+	include_once(MANUAL_HIGH);
 	return true;
 }
 //////////////////////////////////////////////////
 //	チュ〖トリアルを山绩する
 function ShowTutorial()
 {
-	include(TUTORIAL);
+	include_once(TUTORIAL);
 	return true;
 }
 //////////////////////////////////////////////////
@@ -1086,19 +1081,19 @@ function ShowGameData()
 	</div><?php
 			switch ($_GET["gamedata"]) {
 				case "job":
-					include(GAME_DATA_JOB);
+					include_once(GAME_DATA_JOB);
 					break;
 				case "item":
-					include(GAME_DATA_ITEM);
+					include_once(GAME_DATA_ITEM);
 					break;
 				case "judge":
-					include(GAME_DATA_JUDGE);
+					include_once(GAME_DATA_JUDGE);
 					break;
 				case "monster":
-					include(GAME_DATA_MONSTER);
+					include_once(GAME_DATA_MONSTER);
 					break;
 				default:
-					include(GAME_DATA_JOB);
+					include_once(GAME_DATA_JOB);
 					break;
 			}
 		}
@@ -1137,7 +1132,7 @@ function ShowGameData()
 		{
 			print('<div style="margin:15px">' . "\n");
 			print('<h4>Ranking - ' . date("Y年n月j日 G:i:s") . '</h4>' . "\n");
-			include(CLASS_RANKING);
+			include_once(CLASS_RANKING);
 			$Rank	= new Ranking();
 			$Rank->ShowRanking();
 			print('</div>' . "\n");

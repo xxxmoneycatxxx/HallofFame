@@ -85,7 +85,7 @@
 
 	// Load
 	if ($_POST["Load"] && $_POST["loadMob"]) {
-		include("../data/data.monster.php");
+		include_once("../data/data.monster.php");
 		$monster	= CreateMonster($_POST["loadMob"]);
 		if ($monster) {
 			for ($i = 0; $i < ROWS; $i++) {
@@ -147,7 +147,7 @@
 		print("</textarea>\n");
 	}
 	// 判定の種類
-	include("../data/data.judge_setup.php");
+	include_once("../data/data.judge_setup.php");
 	for ($i = 1000; $i < 10000; $i++) {
 		$judge	= LoadJudgeData($i);
 		if (!$judge)
@@ -158,7 +158,7 @@
 	}
 
 	// 全スキル
-	include("../data/data.skill.php");
+	include_once("../data/data.skill.php");
 	for ($i = 1000; $i < 10000; $i++) {
 		$skill	= LoadSkillData($i);
 		if (!$skill)

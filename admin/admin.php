@@ -49,7 +49,7 @@
  * 3. 谨慎执行删除操作
  */
 
-
+require_once __DIR__ . '/../class/global.php';
 
 if (!defined("ADMIN_PASSWORD"))
 	exit(1);
@@ -153,7 +153,7 @@ if ($_POST["logout"]) {
 		// 用户数据删除
 		else if ($_POST["deleteUser"]) {
 			if ($_POST["deletePass"] == ADMIN_PASSWORD) {
-				include(CLASS_USER);
+				include_once(CLASS_USER);
 				$userD = new user($_POST["userID"]);
 				$userD->DeleteUser();
 				print($_POST["userID"] . "被删除。");
@@ -165,6 +165,7 @@ if ($_POST["logout"]) {
 		// 用户数据(详细)
 		else if ($_POST["UserFileDet"]) {
 			$file = USER . $_POST["userID"] . "/" . $_POST["userFile"];
+
 			// 数据修改
 			if ($_POST["changeData"]) {
 				$fp = @fopen($file, "w") or die("file lock error!");
@@ -176,22 +177,33 @@ if ($_POST["logout"]) {
 			}
 
 			print("<p>$file</p>\n");
-			print('<form action="?" method="post">');
-			print('<textarea name="fileData" style="width:800px;height:300px;">');
-			print(file_get_contents($file));
-			print("</textarea><br>\n");
-			print('<input type="submit" name="changeData" value="修改">');
-			print('<input type="submit" value="更新">');
-			print('<input type="hidden" name="userFile" value="' . $_POST["userFile"] . '">');
-			print('<input type="hidden" name="userID" value="' . $_POST["userID"] . '">');
-			print('<input type="hidden" name="UserFileDet" value="1">');
-			print("</form>\n");
+
+			// 添加文件存在检查
+			if (!file_exists($file)) {
+				print("<div class='error'>文件不存在或无法访问</div>");
+			} else {
+				$fileContents = @file_get_contents($file);
+				if ($fileContents === false) {
+					print("<div class='error'>无法读取文件内容</div>");
+				} else {
+					print('<form action="?" method="post">');
+					print('<textarea name="fileData" style="width:800px;height:300px;">');
+					print(htmlspecialchars($fileContents));
+					print("</textarea><br>\n");
+					print('<input type="submit" name="changeData" value="修改">');
+					print('<input type="submit" value="更新">');
+					print('<input type="hidden" name="userFile" value="' . $_POST["userFile"] . '">');
+					print('<input type="hidden" name="userID" value="' . $_POST["userID"] . '">');
+					print('<input type="hidden" name="UserFileDet" value="1">');
+					print("</form>\n");
+				}
+			}
+
 			print('<form action="?" method="post">');
 			print('<input type="submit" name="UserData" value="放弃">');
 			print('<input type="hidden" name="userID" value="' . $_POST["userID"] . '">');
 			print("</form>\n");
 		}
-
 		// 数据汇总
 		else if ($_GET["menu"] === "data") {
 			print <<< DATA
@@ -221,7 +233,7 @@ if ($_POST["logout"]) {
 
 		// 数据汇总(用户数据)
 		else if ($_POST["UserDataDetail"]) {
-			include(CLASS_USER);
+			include_once(CLASS_USER);
 			$userFileList = glob(USER . "*");
 			foreach ($userFileList as $user) {
 				$user = new user(basename($user, ".dat"));
@@ -235,11 +247,25 @@ if ($_POST["logout"]) {
 		// 数据汇总(人物数据)
 		else if ($_POST["UserCharDetail"]) {
 			$userFileList = glob(USER . "*");
+			$charAmount = 0;
+			$totalLevel = 0;
+			// 添加统计变量初始化
+			$totalStr = $totalInt = $totalDex = $totalSpd = $totalLuk = 0;
+			$totalMale = $totalFemale = 0;
+			$totalJob = [];
+
 			foreach ($userFileList as $user) {
 				$userDir = glob($user . "/*");
 				foreach ($userDir as $fileName) {
 					if (!is_numeric(basename($fileName, ".dat"))) continue;
+
+					// 修改：检查ParseFile返回值
 					$charData = ParseFile($fileName);
+					if (empty($charData) || !isset($charData["level"])) {
+						error_log("Skipping invalid char file: $fileName");
+						continue;
+					}
+
 					$charAmount++;
 					$totalLevel += $charData["level"];
 					$totalStr += $charData["str"];
@@ -247,13 +273,19 @@ if ($_POST["logout"]) {
 					$totalDex += $charData["dex"];
 					$totalSpd += $charData["spd"];
 					$totalLuk += $charData["luk"];
-					if ($charData["gender"] === "0")
-						$totalMale++;
-					else if ($charData["gender"] === "1")
-						$totalFemale++;
-					$totalJob[$charData["job"]]++;
-					//print($charData["name"]."<br>");
+
+					if ($charData["gender"] === "0") $totalMale++;
+					else if ($charData["gender"] === "1") $totalFemale++;
+
+					$job = $charData["job"];
+					$totalJob[$job] = ($totalJob[$job] ?? 0) + 1;
 				}
+			}
+
+			// 添加检查防止除以零错误
+			if ($charAmount === 0) {
+				print("没有找到有效的角色数据");
+				return;
 			}
 			print("人物总数:" . $charAmount . "<br>\n");
 			print("平均等级 :" . $totalLevel / $charAmount . "<br>\n");
@@ -266,7 +298,7 @@ if ($_POST["logout"]) {
 			print("女 :{$totalFemale}(" . ($totalFemale / $charAmount * 100) . "%)<br>\n");
 			print("--- 职业<br>\n");
 			arsort($totalJob);
-			include(DATA_JOB);
+			include_once(DATA_JOB);
 			foreach ($totalJob as $job => $amount) {
 				$jobData = LoadJobData($job);
 				print($job . "({$jobData["name_male"]},{$jobData["name_female"]})" . " : " . $amount . "(" . ($amount / $charAmount * 100) . "%)<br>\n");
@@ -319,12 +351,15 @@ if ($_POST["logout"]) {
 			$userFileList = glob(USER . "*");
 			foreach ($userFileList as $user) {
 				$userDir = glob($user . "/*");
-				if (filesize($user . "/data.dat") < $baseSize)
-					print($user . "/data.dat" . "(" . filesize($user . "/data.dat") . ")" . "<br>\n");
+				$dataFile = $user . "/data.dat";
+				if (file_exists($dataFile) && filesize($dataFile) < $baseSize) {
+					print($dataFile . "(" . filesize($dataFile) . ")<br>\n");
+				}
 				foreach ($userDir as $fileName) {
 					if (!is_numeric(basename($fileName, ".dat"))) continue;
-					if (filesize($fileName) < $baseSize)
+					if (file_exists($fileName) && filesize($fileName) < $baseSize) {
 						print($fileName . "(" . filesize($fileName) . ")<br>\n");
+					}
 				}
 			}
 		}

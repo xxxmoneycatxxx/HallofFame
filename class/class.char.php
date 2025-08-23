@@ -1,5 +1,5 @@
 ﻿<?php
-include(DATA_JOB);
+include_once(DATA_JOB);
 /**
  * 角色核心类
  * 

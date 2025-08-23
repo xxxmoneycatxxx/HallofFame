@@ -1,7 +1,7 @@
 ﻿<?php
 require_once(__DIR__ . '/../setting.php');
-include(__DIR__ . '/data.enchant.php');
-// include(DATA_ENCHANT);
+include_once(__DIR__ . '/data.enchant.php');
+// include_once(DATA_ENCHANT);
 
 /**
  * 道具数据加载函数

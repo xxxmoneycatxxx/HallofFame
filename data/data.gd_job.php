@@ -120,7 +120,7 @@ include_once(DATA_JOB);
 			402 => array(2405, 2406, 3300),
 			403 => array(1200, 1207, 1204),
 		);
-		include(DATA_SKILL);
+		include_once(DATA_SKILL);
 		foreach ($job as $No => $exp) {
 			$flag	= $flag ^ 1;
 			$css	= $flag ? ' class="td6"' : ' style="padding:3px;"';

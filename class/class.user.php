@@ -74,6 +74,8 @@
  * 5. 使用fpCloseAll释放资源
  */
 
+require_once __DIR__ . '/global.php';
+
 class user
 {
 
@@ -136,15 +138,6 @@ class user
 			if (!$this->fp)
 				return false;
 			$data	= ParseFileFP($this->fp);
-			//$data	= ParseFile($file);// (2007/7/30 追加)
-			/*
-			$Array	= array("party_memo","party_rank");
-			foreach($Array as $val)
-			{
-				if(!$data["$val"]) continue;
-				$data["$val"]	= explode("<>",$data["$val"]);
-			}
-			*/
 			return $data;
 		} else {
 			return false;

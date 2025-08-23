@@ -75,8 +75,8 @@
 
 <body>
 	<?php
-	include("../data/data.job.php");
-	include("../data/data.skill.php");
+	include_once("../data/data.job.php");
+	include_once("../data/data.skill.php");
 
 	$det	= '<tr><td class="a">No</td>
 <td class="a">Name</td>

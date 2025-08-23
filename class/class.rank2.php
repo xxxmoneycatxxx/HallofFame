@@ -218,7 +218,7 @@ class Ranking
             return "DEFENDER_NO_PARTY"; //不战而胜とする
         }
 
-        include(CLASS_BATTLE);
+        include_once(CLASS_BATTLE);
         $battle    = new battle($Party_Challenger, $Party_Defender);
         $battle->SetBackGround("colosseum");
         $battle->SetResultType(1); // 決着つかない場合は生存者の数で決めるようにする

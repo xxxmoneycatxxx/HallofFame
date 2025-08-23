@@ -49,7 +49,7 @@
  * 3. 配置示例仅供参考，实际效果因角色属性而异
  */
 if (!function_exists("LoadSkillData"))
-	include(DATA_SKILL);
+	include_once(DATA_SKILL);
 ?>
 <div style="margin:15px">
 	<!-- ---------------------------------------------------------------- -->

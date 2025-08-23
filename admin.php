@@ -28,11 +28,11 @@
 * 不需要管理功能时
 * 可以安全删除此文件和admin目录
 */
-include("setting.php");  // 加载游戏全局配置
+include_once("setting.php");  // 加载游戏全局配置
 
 // 管理后台设置
 const ADMIN_DIR = "./admin/";  // 管理后台文件目录
 const ADMIN_PASSWORD = "123456";  // 管理后台密码（请务必修改）
 
 // 加载管理后台核心功能
-include(ADMIN_DIR . "admin.php");
+include_once(ADMIN_DIR . "admin.php");

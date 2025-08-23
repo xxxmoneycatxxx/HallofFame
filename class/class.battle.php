@@ -1,5 +1,5 @@
 ﻿<?php
-include(CLASS_SKILL_EFFECT);
+include_once(CLASS_SKILL_EFFECT);
 /**
  * 战斗系统核心类
  * 
@@ -106,7 +106,7 @@ class battle extends ClassSkillEffect
 	//各チームの配列を受けとる。
 	function __construct($team0, $team1)
 	{
-		include(DATA_JUDGE);
+		include_once(DATA_JUDGE);
 		include_once(DATA_SKILL);
 
 		//モンスターが参戦してなくても召喚される場合があるので
