@@ -110,7 +110,7 @@ class union extends char
 		if ($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">" . $this->Name(bold) . " 由于中毒受到 ");
+		print("<span class=\"spdmg\">" . $this->Name("bold") . " 由于中毒受到 ");
 		print("<span class=\"bold\">$poison</span> 伤害.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
@@ -137,16 +137,10 @@ class union extends char
 		if ($this->STATE === DEAD) { //死亡状態
 			// ユニオンは復活しない事とする。
 			return true;
-			/*
-			if($mes)
-				print($this->Name(bold).' <span class="recover">revived</span>!<br />'."\n");
-			$this->STATE = 0;
-			return true;
-			*/
 		}
 		if ($this->STATE === POISON) { //毒状態
 			if ($mes)
-				print($this->Name(bold) . " 的<span class=\"spdmg\">毒</span> 被治愈.<br />\n");
+				print($this->Name("bold") . " 的<span class=\"spdmg\">毒</span> 被治愈.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
@@ -265,20 +259,20 @@ class union extends char
 			//////////////////////////////////////////////////
 			function UpMAXHP($no)
 			{
-				print($this->Name(bold) . " MAXHP(????) extended to ");
+				print($this->Name("bold") . " MAXHP(????) extended to ");
 				$this->MAXHP	= round($this->MAXHP * (1 + $no / 100));
 				print("????<br />\n");
 			}
 			function UpMAXSP($no)
 			{
-				print($this->Name(bold) . " MAXSP(????) extended to ");
+				print($this->Name("bold") . " MAXSP(????) extended to ");
 				$this->MAXSP	= round($this->MAXSP * (1 + $no / 100));
 				print("????<br />\n");
 			}
 			function DownMAXHP($no)
 			{
 				$no	/= 2;
-				print($this->Name(bold) . " MAXHP(????) down to ");
+				print($this->Name("bold") . " MAXHP(????) down to ");
 				$this->MAXHP	= round($this->MAXHP * (1 - $no / 100));
 				if ($this->MAXHP < $this->HP)
 					$this->HP	= $this->MAXHP;
@@ -287,7 +281,7 @@ class union extends char
 			function DownMAXSP($no)
 			{
 				$no	/= 2;
-				print($this->Name(bold) . " MAXSP(????) down to ");
+				print($this->Name("bold") . " MAXSP(????) down to ");
 				$this->MAXSP	= round($this->MAXSP * (1 - $no / 100));
 				if ($this->MAXSP < $this->SP)
 					$this->SP	= $this->MAXSP;
@@ -297,25 +291,25 @@ class union extends char
 			{
 				$no	= round($no / 2);
 				$this->atk["0"]	= round($this->atk["0"] * (1 - $no / 100));
-				print($this->Name(bold) . " ATK down {$no}%<br />\n");
+				print($this->Name("bold") . " ATK down {$no}%<br />\n");
 			}
 			function DownMATK($no)
 			{
 				$no	= round($no / 2);
 				$this->atk["1"]	= round($this->atk["1"] * (1 - $no / 100));
-				print($this->Name(bold) . " MATK down {$no}%<br />\n");
+				print($this->Name("bold") . " MATK down {$no}%<br />\n");
 			}
 			function DownDEF($no)
 			{
 				$no	= round($no / 2);
 				$this->def["0"]	= round($this->def["0"] * (1 - $no / 100));
-				print($this->Name(bold) . " DEF down {$no}%<br />\n");
+				print($this->Name("bold") . " DEF down {$no}%<br />\n");
 			}
 			function DownMDEF($no)
 			{
 				$no	= round($no / 2);
 				$this->def["2"]	= round($this->def["2"] * (1 - $no / 100));
-				print($this->Name(bold) . " MDEF down {$no}%<br />\n");
+				print($this->Name("bold") . " MDEF down {$no}%<br />\n");
 			}
 			//////////////////////////////////////////////////
 			//	差分経験値

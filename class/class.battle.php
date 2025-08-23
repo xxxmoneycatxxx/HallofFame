@@ -590,7 +590,6 @@ HTML;
 				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"" . IMG_ICON . $skill["img"] . "\" class=\"vcent\"/>");
 				print($skill["name"] . "</span><br />\n");
-				//print($My->Name(bold)." Failed to use ".$skill["name"]."<br />\n");
 				print("(武器类型不符)<br />\n");
 				$My->DelayReset(); // 行動順をリセット
 				return true;
