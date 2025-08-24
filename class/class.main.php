@@ -121,20 +121,18 @@ class main extends user
 		switch (true) {
 			case (isset($_GET["menu"]) && $_GET["menu"] === "auction"):
 				include_once(CLASS_AUCTION);
-				$ItemAuction	= new Auction("item");
+				$ItemAuction = new Auction("item");
 				$ItemAuction->AuctionHttpQuery("auction");
-				$ItemAuction->ItemCheckSuccess(); // 检查拍卖结束的商品
-				$ItemAuction->UserSaveData(); // 结算拍卖成功的商品，并将商品和资金划归相应用户
+				$ItemAuction->ItemCheckSuccess();
+				$ItemAuction->UserSaveData();
 				break;
 
 			case (isset($_GET["menu"]) && $_GET["menu"] === "rank"):
 				include_once(CLASS_RANKING);
-				$Ranking	= new Ranking();
+				$Ranking = new Ranking();
 				break;
 		}
 		if (true === $message = $this->CheckLogin()):
-			//if( false ):
-			// 登录
 			include_once(DATA_ITEM);
 			include_once(CLASS_CHAR);
 			if ($this->FirstLogin())
@@ -145,7 +143,7 @@ class main extends user
 				case ($this->OptionOrder()):
 					return false;
 
-				case ($_POST["delete"]):
+				case (isset($_POST["delete"]) && $_POST["delete"]):
 					if ($this->DeleteMyData())
 						return 0;
 
@@ -153,92 +151,73 @@ class main extends user
 				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "setting"):
 					if ($this->SettingProcess())
 						$this->SaveData();
-
 					$this->fpCloseAll();
 					$this->SettingShow();
 					return 0;
 
 					// 拍卖行
-				case ($_GET["menu"] === "auction"):
-					$this->LoadUserItem(); //读取用户道具数据
+				case (isset($_GET["menu"]) && $_GET["menu"] === "auction"):
+					$this->LoadUserItem();
 					$this->AuctionHeader();
-
-					/*
-					* 调用拍卖行数据
-					* 显示复合要求的商品、
-					* 显示拍卖失败的商品。
-					*/
-					$ResultExhibit	= $this->AuctionItemExhibitProcess($ItemAuction);
-					$ResultBidding	= $this->AuctionItemBiddingProcess($ItemAuction);
-					$ItemAuction->ItemSaveData(); // 尽在数据更新时进行保存
-
-					// 显示商品列表
+					$ResultExhibit = $this->AuctionItemExhibitProcess($ItemAuction);
+					$ResultBidding = $this->AuctionItemBiddingProcess($ItemAuction);
+					$ItemAuction->ItemSaveData();
 					if ($_POST["ExhibitItemForm"]) {
 						$this->fpCloseAll();
 						$this->AuctionItemExhibitForm($ItemAuction);
-
-						// 显示或竞标成功时保存数据
 					} else if ($ResultExhibit !== false) {
-
 						if ($ResultExhibit === true || $ResultBidding === true)
 							$this->SaveData();
-
 						$this->fpCloseAll();
 						$this->AuctionItemBiddingForm($ItemAuction);
-
-						// 其他
 					} else {
 						$this->fpCloseAll();
 						$this->AuctionItemExhibitForm($ItemAuction);
 					}
-
 					$this->AuctionFoot($ItemAuction);
 					return 0;
 
 					// 战场
-				case ($_SERVER["QUERY_STRING"] === "hunt"):
-					$this->LoadUserItem(); //读取用户道具数据
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "hunt"):
+					$this->LoadUserItem();
 					$this->fpCloseAll();
 					$this->HuntShow();
 					return 0;
 
 					// 城镇
-				case ($_SERVER["QUERY_STRING"] === "town"):
-					$this->LoadUserItem(); //读取用户道具数据
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "town"):
+					$this->LoadUserItem();
 					$this->fpCloseAll();
 					$this->TownShow();
 					return 0;
 
 					// 模拟
-				case ($_SERVER["QUERY_STRING"] === "simulate"):
-					$this->CharDataLoadAll(); //读取角色数据
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "simulate"):
+					$this->CharDataLoadAll();
 					if ($this->SimuBattleProcess())
 						$this->SaveData();
-
 					$this->fpCloseAll();
 					$this->SimuBattleShow($result);
 					return 0;
 
 					// 队伍
-				case ($_GET["union"]):
-					$this->CharDataLoadAll(); //读取角色数据
+				case (isset($_GET["union"]) && $_GET["union"]):
+					$this->CharDataLoadAll();
 					include_once(CLASS_UNION);
 					include_once(DATA_MONSTER);
 					if ($this->UnionProcess()) {
-						// 战斗
 						$this->SaveData();
 						$this->fpCloseAll();
 					} else {
-						// 显示
 						$this->fpCloseAll();
 						$this->UnionShow();
 					}
 					return 0;
 
 					// 一般怪物
-				case ($_GET["common"]):
-					$this->CharDataLoadAll(); //读取角色数据
-					$this->LoadUserItem(); //读取用户道具数据
+				case (isset($_GET["common"]) && $_GET["common"]):
+					$this->CharDataLoadAll();
+					$this->LoadUserItem();
 					if ($this->MonsterBattle()) {
 						$this->SaveData();
 						$this->fpCloseAll();
@@ -249,57 +228,56 @@ class main extends user
 					return 0;
 
 					// 纸片人系统展示
-				case ($_GET["char"]):
-					$this->CharDataLoadAll(); //读取角色数据
+				case (isset($_GET["char"]) && $_GET["char"]):
+					$this->CharDataLoadAll();
 					include_once(DATA_SKILL);
 					include_once(DATA_JUDGE_SETUP);
-					$this->LoadUserItem(); //读取用户道具数据
+					$this->LoadUserItem();
 					$this->CharStatProcess();
 					$this->fpCloseAll();
 					$this->CharStatShow();
 					return 0;
 
 					// 道具一览
-				case ($_SERVER["QUERY_STRING"] === "item"):
-					$this->LoadUserItem(); //读取用户道具数据
-					//$this->ItemProcess();
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "item"):
+					$this->LoadUserItem();
 					$this->fpCloseAll();
 					$this->ItemShow();
 					return 0;
 
 					// 精炼
-				case ($_GET["menu"] === "refine"):
+				case (isset($_GET["menu"]) && $_GET["menu"] === "refine"):
 					$this->LoadUserItem();
 					$this->SmithyRefineHeader();
 					if ($this->SmithyRefineProcess())
 						$this->SaveData();
-
 					$this->fpCloseAll();
-					$result	= $this->SmithyRefineShow();
+					$result = $this->SmithyRefineShow();
 					return 0;
 
 					// 制作
-				case ($_GET["menu"] === "create"):
+				case (isset($_GET["menu"]) && $_GET["menu"] === "create"):
 					$this->LoadUserItem();
 					$this->SmithyCreateHeader();
-					include_once(DATA_CREATE); //读取制作图纸信息
+					include_once(DATA_CREATE);
 					if ($this->SmithyCreateProcess())
 						$this->SaveData();
-
 					$this->fpCloseAll();
 					$this->SmithyCreateShow();
 					return 0;
+
 					// 商店（买、卖、打工功能）
-				case ($_SERVER["QUERY_STRING"] === "shop"):
-					$this->LoadUserItem(); //读取用户道具数据
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "shop"):
+					$this->LoadUserItem();
 					if ($this->ShopProcess())
 						$this->SaveData();
 					$this->fpCloseAll();
 					$this->ShopShow();
 					return 0;
-					// 商店（买）
-				case ($_GET["menu"] === "buy"):
-					$this->LoadUserItem(); //读取用户道具数据
+
+					// shop-buy
+				case (isset($_GET["menu"]) && $_GET["menu"] === "buy"):
+					$this->LoadUserItem();
 					$this->ShopHeader();
 					if ($this->ShopBuyProcess())
 						$this->SaveData();
@@ -307,9 +285,9 @@ class main extends user
 					$this->ShopBuyShow();
 					return 0;
 
-					// 商店（卖）
-				case ($_GET["menu"] === "sell"):
-					$this->LoadUserItem(); //读取用户道具数据
+					// shop-sell
+				case (isset($_GET["menu"]) && $_GET["menu"] === "sell"):
+					$this->LoadUserItem();
 					$this->ShopHeader();
 					if ($this->ShopSellProcess())
 						$this->SaveData();
@@ -317,8 +295,8 @@ class main extends user
 					$this->ShopSellShow();
 					return 0;
 
-					// 商店（打工）
-				case ($_GET["menu"] === "work"):
+					// shop-work
+				case (isset($_GET["menu"]) && $_GET["menu"] === "work"):
 					$this->ShopHeader();
 					if ($this->WorkProcess())
 						$this->SaveData();
@@ -327,10 +305,9 @@ class main extends user
 					return 0;
 
 					// 排名
-				case ($_GET["menu"] === "rank"):
-					$this->CharDataLoadAll(); //读取角色数据
-					$RankProcess	= $this->RankProcess($Ranking);
-
+				case (isset($_GET["menu"]) && $_GET["menu"] === "rank"):
+					$this->CharDataLoadAll();
+					$RankProcess = $this->RankProcess($Ranking);
 					if ($RankProcess === "BATTLE") {
 						$this->SaveData();
 						$this->fpCloseAll();
@@ -345,17 +322,16 @@ class main extends user
 					return 0;
 
 					// 招募新队友
-				case ($_SERVER["QUERY_STRING"] === "recruit"):
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "recruit"):
 					if ($this->RecruitProcess())
 						$this->SaveData();
-
 					$this->fpCloseAll();
 					$this->RecruitShow($result);
 					return 0;
 
-					// 其他（顶级）
+					// OTHERS
 				default:
-					$this->CharDataLoadAll(); //读取角色数据
+					$this->CharDataLoadAll();
 					$this->fpCloseAll();
 					$this->LoginMain();
 					return 0;
@@ -392,9 +368,6 @@ class main extends user
 				return true;
 			case ($_SERVER["QUERY_STRING"] === "update"):
 				ShowUpDate();
-				return true;
-			case ($_SERVER["QUERY_STRING"] === "bbs"):
-				$this->bbs01();
 				return true;
 			case ($_SERVER["QUERY_STRING"] === "manual"):
 				ShowManual();
@@ -499,7 +472,7 @@ class main extends user
 		if (!$char) return false;
 		switch (true):
 				// ステータス上昇
-			case ($_POST["stup"]):
+			case (isset($_POST["stup"]) && $_POST["stup"]):
 				//ステータスポイント超過(ねんのための絶対値)
 				$Sum	= abs($_POST["upStr"]) + abs($_POST["upInt"]) + abs($_POST["upDex"]) + abs($_POST["upSpd"]) + abs($_POST["upLuk"]);
 				if ($char->statuspoint < $Sum) {
@@ -776,13 +749,13 @@ class main extends user
 			case ($_POST["rename"]):
 				$Name	= $char->Name();
 				$message = <<< EOD
-<form action="?char={$_GET[char]}" method="post" class="margin15">
-半角英数16文字 (全角1文字=半角2文字)<br />
-<input type="text" name="NewName" style="width:160px" class="text" />
-<input type="submit" class="btn" name="NameChange" value="Change" />
-<input type="submit" class="btn" value="Cancel" />
-</form>
-EOD;
+					<form action="?char={$_GET["char"]}" method="post" class="margin15">
+					半角英数16文字 (全角1文字=半角2文字)<br />
+					<input type="text" name="NewName" style="width:160px" class="text" />
+					<input type="submit" class="btn" name="NameChange" value="Change" />
+					<input type="submit" class="btn" value="Cancel" />
+					</form>
+					EOD;
 				print($message);
 				return false;
 				// 改名(処理)
@@ -1943,40 +1916,41 @@ HTML;
 				return true;
 			}
 			//////////////////////////////////////////////////
+			// 店铺卖出UI
 			function ShopSellShow()
 			{
 				print('<div style="margin:15px">' . "\n");
 				print("<h4>出售</h4>\n");
 
 				print <<< JS_HTML
-<script type="text/javascript">
-<!--
-function toggleCSS(id) {
-    // 切换四组元素的 CSS 类名
-    ['a','b','c','d'].forEach(suffix => {
-        const el = document.getElementById('i' + id + suffix);
-        if (el) el.classList.toggle('tdToggleBg');
-    });
-    // 聚焦输入框
-    const textField = document.getElementById('text_' + id);
-    if (textField) textField.focus();
-}
-function toggleCheckBox(id) {
-    const checkBox = document.getElementById('check_' + id);
-    if (!checkBox) return;
-    // 切换复选框状态
-    checkBox.checked = !checkBox.checked;
-    // 聚焦输入框（仅在勾选时）
-    if (checkBox.checked) {
-        const textField = document.getElementById('text_' + id);
-        if (textField) textField.focus();
-    }
-    // 更新样式
-    toggleCSS(id);
-}
-// -->
-</script>
-JS_HTML;
+					<script type="text/javascript">
+					<!--
+					function toggleCSS(id) {
+						// 切换四组元素的 CSS 类名
+						['a','b','c','d'].forEach(suffix => {
+							const el = document.getElementById('i' + id + suffix);
+							if (el) el.classList.toggle('tdToggleBg');
+						});
+						// 聚焦输入框
+						const textField = document.getElementById('text_' + id);
+						if (textField) textField.focus();
+					}
+					function toggleCheckBox(id) {
+						const checkBox = document.getElementById('check_' + id);
+						if (!checkBox) return;
+						// 切换复选框状态
+						checkBox.checked = !checkBox.checked;
+						// 聚焦输入框（仅在勾选时）
+						if (checkBox.checked) {
+							const textField = document.getElementById('text_' + id);
+							if (textField) textField.focus();
+						}
+						// 更新样式
+						toggleCSS(id);
+					}
+					// -->
+					</script>
+					JS_HTML;
 
 				print('<form action="?menu=sell" method="post">' . "\n");
 				print("<table cellspacing=\"0\">\n");
@@ -2147,7 +2121,7 @@ JS_HTML;
 				return false;
 			}
 			//////////////////////////////////////////////////
-			//	
+			//	排名展示
 			function RankShow($Ranking)
 			{
 
@@ -2193,18 +2167,6 @@ JS_HTML;
 						print("</div>\n");
 						print("<div style=\"clear:both\"></div>\n");
 						print("</div>\n");
-
-						// 旧ランク用
-						//$Rank->dump();
-						/*
-		print("<table><tbody><tr><td style=\"padding:0 50px 0 0\">\n");
-		print("<div class=\"bold u\">RANKING</div>");
-		$Rank->ShowRanking(0,10);
-		print("</td><td>");
-		print("<div class=\"bold u\">Nearly</div>");
-		$Rank->ShowNearlyRank($this->id);
-		print("</td></tr></tbody></table>\n");
-		*/
 						?>
 						<input type="submit" class="btn" value="挑战！" name="ChallengeRank" style="width:160px" <?php print $disableRB ?> />
 					</form>
@@ -2225,9 +2187,9 @@ JS_HTML;
 				<?php
 			}
 			//////////////////////////////////////////////////
+			//	雇用处理
 			function RecruitProcess()
 			{
-
 				// 雇用数限界
 				if (MAX_CHAR <= count($this->char))
 					return false;
@@ -2441,7 +2403,7 @@ JS_HTML;
 					}
 					// 道具を所持していない場合
 					if (!$this->item[$_POST["item_no"]]) {
-						ShowError("Item \"{$item[name]}\" doesn't exists.");
+						ShowError("Item \"{$item["name"]}\" doesn't exists.");
 						return false;
 					}
 					// 回数が指定されていない場合
@@ -2457,7 +2419,7 @@ JS_HTML;
 					$obj_item	= new Item($_POST["item_no"]);
 					// その道具が精錬できない場合
 					if (!$obj_item->CanRefine()) {
-						ShowError("Cant refine \"{$item[name]}\"");
+						ShowError("Cant refine \"{$item["name"]}\"");
 						return false;
 					}
 					// ここから精錬を始める処理
@@ -3104,6 +3066,7 @@ JS_HTML;
 							$UnionMob	= CreateMonster($Union->MonsterNumber);
 							$this->MemorizeParty(); //パーティー記憶
 							// 自分パーティー
+							$TotalLevel = 0;
 							foreach ($this->char as $key => $val) { //チェックされたやつリスト
 								if ($_POST["char_" . $key]) {
 									$MyParty[]	= $this->char[$key];
@@ -3315,7 +3278,7 @@ JS_HTML;
 						//////////////////////////////////////////////////
 						function SettingProcess()
 						{
-							if ($_POST["NewName"]) {
+							if (isset($_POST["NewName"]) && $_POST["NewName"]) {
 								$NewName	= $_POST["NewName"];
 								if (is_numeric(strpos($NewName, "\t"))) {
 									ShowError('error1');
@@ -3354,7 +3317,7 @@ JS_HTML;
 								}
 							}
 
-							if ($_POST["setting01"]) {
+							if (isset($_POST["setting01"]) && $_POST["setting01"]) {
 								if ($_POST["record_battle_log"])
 									$this->record_btl_log	= 1;
 								else
@@ -3365,7 +3328,7 @@ JS_HTML;
 								else
 									$this->no_JS_itemlist	= false;
 							}
-							if ($_POST["color"]) {
+							if (isset($_POST["color"]) && $_POST["color"]) {
 								if (
 									strlen($_POST["color"]) != 6 &&
 									!preg_match('/^[0369cf]{6}$/', $_POST["color"])
@@ -3710,15 +3673,17 @@ JS_HTML;
 							$width = floor(100 / $divide);
 
 							print('<table cellspacing="0" style="width:100%"><tbody><tr>');
+							$i = 0; // 初始化计数器
 							foreach ($this->char as $val) {
-								if ($i % CHAR_ROW == 0 && $i != 0)
-									print("\t</tr><tr>\n");
-								print("\t<td valign=\"bottom\" style=\"width:{$width}%\">"); //キャラ数に応じて%で各セル分割
+								if ($i % CHAR_ROW == 0 && $i != 0) {
+									print("</tr><tr>\n"); // 注意：这里原代码是"\t</tr><tr>\n"，但根据上下文，应关闭前一行的</tr>再开新行
+								}
+								print("<td valign=\"bottom\" style=\"width:{$width}%\">");
 								$val->ShowCharLink($array);
-								print("</td>\n");
+								print("</td>");
 								$i++;
 							}
-							print("</tr></tbody></table>");
+							print('</tr></tbody></table>');
 						}
 						//////////////////////////////////////////////////
 						//	キャラを表組みで表示する
@@ -3732,6 +3697,7 @@ JS_HTML;
 
 							$divide = ($charCount < CHAR_ROW) ? $charCount : CHAR_ROW;
 							$width = floor(100 / $divide);
+							$i = 0; // 初始化 $i 为0
 
 							if ($type == "CHECKBOX") {
 								print <<< HTML
@@ -3753,7 +3719,6 @@ JS_HTML;
 									print("\t</tr><tr>\n");
 								print("\t<td valign=\"bottom\" style=\"width:{$width}%\">"); //キャラ数に応じて%で各セル分割
 
-								/*-------------------*/
 								switch (1) {
 									case ($type === MONSTER):
 										$char->ShowCharWithLand($checked);
@@ -3770,7 +3735,7 @@ JS_HTML;
 								}
 
 								print("</td>\n");
-								$i++;
+								$i++; // $i 自增
 							}
 							print("</tr></tbody></table>");
 						}
@@ -3827,7 +3792,7 @@ JS_HTML;
 						//	ログインしたのか、しているのか、ログアウトしたのか。
 						function CheckLogin()
 						{
-							//logout
+							// 如果提交了logout，则执行注销
 							if (isset($_POST["logout"])) {
 								unset($_SESSION["pass"]);
 								return false;
@@ -3855,7 +3820,8 @@ JS_HTML;
 										$this->SetIp($_SERVER['REMOTE_ADDR']);
 									$this->RenewLoginTime();
 
-									$pass	= ($_POST["pass"]) ? $_POST["pass"] : $_GET["pass"];
+									// $pass	= ($_POST["pass"]) ? $_POST["pass"] : $_GET["pass"];
+									$pass = $_POST['pass'] ?? $_GET['pass'] ?? ($_SESSION['pass'] ?? '');
 									if ($pass) { //ちょうど今ログインするなら
 										$_SESSION["id"]	= $this->id;
 										$_SESSION["pass"]	= $pass;
@@ -3887,8 +3853,9 @@ JS_HTML;
 						//	设定pass和id
 						function Set_ID_PASS()
 						{
-							$this->id = $_POST['id'] ?? $_GET['id'] ?? (isset($_SESSION['id']) ? $_SESSION['id'] : '');
-							$pass = $_POST['pass'] ?? $_GET['pass'] ?? (isset($_SESSION['pass']) ? $_SESSION['pass'] : '');
+							// 使用空合并运算符提供默认值
+							$this->id = $_POST['id'] ?? $_GET['id'] ?? ($_SESSION['id'] ?? '');
+							$pass = $_POST['pass'] ?? $_GET['pass'] ?? ($_SESSION['pass'] ?? '');
 							if ($pass) {
 								$this->pass = $this->CryptPassword($pass);
 							}
@@ -4204,10 +4171,6 @@ JS_HTML;
 								<div style="clear: both;"></div>
 								<div id="foot">
 									<a href="?update">UpDate</a> -
-									<?php
-									if (BBS_BOTTOM_TOGGLE)
-										print('<a href="' . BBS_OUT . '" target="_blank">BBS</a> - ' . "\n");
-									?>
 									<a href="?manual">手册</a> -
 									<a href="?tutorial">教学</a> -
 									<a href="?gamedata=job">游戏数据</a> -
@@ -4384,47 +4347,8 @@ JS_HTML;
 							<input type="hidden" value="1" name="Done">
 							<input class="btn" style="width:160px" type="submit" value="logout" name="logout">
 						</form>
-					<?php
+				<?php
 								return true;
 							}
-							//////////////////////////////////////////////////
-							//	普通の1行掲示板
-							function bbs01()
-							{
-								if (!BBS_BOTTOM_TOGGLE)
-									return false;
-								$file	= BBS_BOTTOM;
-					?>
-						<div style="margin:15px">
-							<h4>one line bbs</h4>
-							错误报告或意见，对这里的开发建议
-							<form action="?bbs" method="post">
-								<input type="text" maxlength="60" name="message" class="text" style="width:300px" />
-								<input type="submit" value="post" class="btn" style="width:100px" />
-							</form>
-					<?php
-								if (!file_exists($file))
-									return false;
-								$log	= file($file);
-								if ($_POST["message"] && strlen($_POST["message"]) < 121) {
-									$_POST["message"]	= htmlspecialchars($_POST["message"], ENT_QUOTES);
-									$_POST["message"]	= stripslashes($_POST["message"]);
-
-									$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>" : "无名");
-									$message	= $name . " > " . $_POST["message"];
-									if ($this->UserColor)
-										$message	= "<span style=\"color:{$this->UserColor}\">" . $message . "</span>";
-									$message	.= " <span class=\"light\">(" . date("Mj G:i") . ")</span>\n";
-									array_unshift($log, $message);
-									while (150 < count($log)) // ログ保存行数あ
-										array_pop($log);
-									WriteFile($file, implode(null, $log));
-								}
-								foreach ($log as $mes)
-									print(nl2br($mes));
-								print('</div>');
-							}
-							//end of class
-							//////////////////////////////////////////////////////////////////////
 						}
-					?>
+				?>
