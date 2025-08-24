@@ -119,7 +119,7 @@ class main extends user
 		// 登录之前的数据处理
 		// 这里还没有读取用户数据
 		switch (true) {
-			case ($_GET["menu"] === "auction"):
+			case (isset($_GET["menu"]) && $_GET["menu"] === "auction"):
 				include_once(CLASS_AUCTION);
 				$ItemAuction	= new Auction("item");
 				$ItemAuction->AuctionHttpQuery("auction");
@@ -127,7 +127,7 @@ class main extends user
 				$ItemAuction->UserSaveData(); // 结算拍卖成功的商品，并将商品和资金划归相应用户
 				break;
 
-			case ($_GET["menu"] === "rank"):
+			case (isset($_GET["menu"]) && $_GET["menu"] === "rank"):
 				include_once(CLASS_RANKING);
 				$Ranking	= new Ranking();
 				break;
@@ -150,7 +150,7 @@ class main extends user
 						return 0;
 
 					// 設定
-				case ($_SERVER["QUERY_STRING"] === "setting"):
+				case (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] === "setting"):
 					if ($this->SettingProcess())
 						$this->SaveData();
 
@@ -366,7 +366,7 @@ class main extends user
 			switch (true) {
 				case ($this->OptionOrder()):
 					return false;
-				case ($_POST["Make"]):
+				case (isset($_POST["Make"])):
 					list($bool, $message) = $this->MakeNewData();
 					if (true === $bool) {
 						$this->LoginForm($message);
@@ -417,16 +417,16 @@ class main extends user
 			case ($_SERVER["QUERY_STRING"] === "rlog"):
 				LogShowRanking();
 				return true;
-			case ($_GET["gamedata"]):
+			case (isset($_GET['gamedata'])):
 				ShowGameData();
 				return true;
-			case ($_GET["log"]):
+			case (isset($_GET['log'])):
 				ShowBattleLog(intval($_GET["log"]));
 				return true;
-			case ($_GET["ulog"]):
+			case (isset($_GET['ulog'])):
 				ShowBattleLog(intval($_GET["ulog"]));
 				return true;
-			case ($_GET["rlog"]):
+			case (isset($_GET['rlog'])):
 				ShowBattleLog(intval($_GET["rlog"]));
 				return true;
 		}
@@ -3378,96 +3378,277 @@ JS_HTML;
 						}
 						//////////////////////////////////////////////////
 						//	設定表示画面
-						function SettingShow() {
+						function SettingShow()
+						{
 							print('<div style="margin:15px">');
 							$record_btl_log = $this->record_btl_log ? " checked" : "";
 							$no_JS_itemlist = $this->no_JS_itemlist ? " checked" : "";
 						?>
-							<h4>设置</h4>
-							<form action="?setting" method="post">
-								<table>
-									<tbody>
-										<tr>
-											<td><input type="checkbox" name="record_battle_log" value="1" <?= $record_btl_log ?>></td>
-											<td>战斗记录</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" name="no_JS_itemlist" value="1" <?= $no_JS_itemlist ?>></td>
-											<td>道具列表不使用javascript</td>
-										</tr>
-									</tbody>
-								</table>
-								用户名颜色设置(城镇BBS):
-								<SELECT class="bgcolor" name="color">
-									<?php
-									// 预定义所有颜色选项
-									$colors = [
-										'ffffff', 'ffffcc', 'ffff99', 'ffff66', 'ffff33', 'ffff00',
-										'ffccff', 'ffcccc', 'ffcc99', 'ffcc66', 'ffcc33', 'ffcc00',
-										'ff99ff', 'ff99cc', 'ff9999', 'ff9966', 'ff9933', 'ff9900',
-										'ff66ff', 'ff66cc', 'ff6699', 'ff6666', 'ff6633', 'ff6600',
-										'ff33ff', 'ff33cc', 'ff3399', 'ff3366', 'ff3333', 'ff3300',
-										'ff00ff', 'ff00cc', 'ff0099', 'ff0066', 'ff0033', 'ff0000',
-										'ccffff', 'ccffcc', 'ccff99', 'ccff66', 'ccff33', 'ccff00',
-										'ccccff', 'cccccc', 'cccc99', 'cccc66', 'cccc33', 'cccc00',
-										'cc99ff', 'cc99cc', 'cc9999', 'cc9966', 'cc9933', 'cc9900',
-										'cc66ff', 'cc66cc', 'cc6699', 'cc6666', 'cc6633', 'cc6600',
-										'cc33ff', 'cc33cc', 'cc3399', 'cc3366', 'cc3333', 'cc3300',
-										'cc00ff', 'cc00cc', 'cc0099', 'cc0066', 'cc0033', 'cc0000',
-										'99ffff', '99ffcc', '99ff99', '99ff66', '99ff33', '99ff00',
-										'99ccff', '99cccc', '99cc99', '99cc66', '99cc33', '99cc00',
-										'9999ff', '9999cc', '999999', '999966', '999933', '999900',
-										'9966ff', '9966cc', '996699', '996666', '996633', '996600',
-										'9933ff', '9933cc', '993399', '993366', '993333', '993300',
-										'9900ff', '9900cc', '990099', '990066', '990033', '990000',
-										'66ffff', '66ffcc', '66ff99', '66ff66', '66ff33', '66ff00',
-										'66ccff', '66cccc', '66cc99', '66cc66', '66cc33', '66cc00',
-										'6699ff', '6699cc', '669999', '669966', '669933', '669900',
-										'6666ff', '6666cc', '666699', '666666', '666633', '666600',
-										'6633ff', '6633cc', '663399', '663366', '663333', '663300',
-										'6600ff', '6600cc', '660099', '660066', '660033', '660000',
-										'33ffff', '33ffcc', '33ff99', '33ff66', '33ff33', '33ff00',
-										'33ccff', '33cccc', '33cc99', '33cc66', '33cc33', '33cc00',
-										'3399ff', '3399cc', '339999', '339966', '339933', '339900',
-										'3366ff', '3366cc', '336699', '336666', '336633', '336600',
-										'3333ff', '3333cc', '333399', '333366', '333333', '333300',
-										'3300ff', '3300cc', '330099', '330066', '330033', '330000',
-										'00ffff', '00ffcc', '00ff99', '00ff66', '00ff33', '00ff00',
-										'00ccff', '00cccc', '00cc99', '00cc66', '00cc33', '00cc00',
-										'0099ff', '0099cc', '009999', '009966', '009933', '009900',
-										'0066ff', '0066cc', '006699', '006666', '006633', '006600',
-										'0033ff', '0033cc', '003399', '003366', '003333', '003300',
-										'0000ff', '0000cc', '000099', '000066', '000033', '000000'
-									];
-									
-									foreach ($colors as $color) {
-										$selected = ($this->UserColor === $color) ? " selected" : "";
-										echo '<option value="' . $color . '"' . $selected . ' style="color:#' . $color . '">SampleColor</option>';
-									}
-									?>
-								</SELECT>
-								<input type="submit" class="btn" name="setting01" value="修改" style="width:100px">
-								<input type="hidden" name="setting01" value="1">
-							</form>
-							<h4>注销</h4>
-							<form action="<?= INDEX ?>" method="post">
-								<input type="submit" class="btn" name="logout" value="注销" style="width:100px">
-							</form>
-							<h4>变更队伍名</h4>
-							<form action="?setting" method="post">
-								費用 : <?= MoneyFormat(NEW_NAME_COST) ?><br />
-								16个字符(全角=2字符)<br />
-								新的名称 : <input type="text" class="text" name="NewName" size="20">
-								<input type="submit" class="btn" value="变更" style="width:100px">
-							</form>
-							<h4>世界尽头</h4>
-							<div class="u">※自杀用</div>
-							<form action="?setting" method="post">
-								PASSWORD : <input type="text" class="text" name="deletepass" size="20">
-								<input type="submit" class="btn" name="delete" value="我要自杀了..." style="width:100px">
-							</form>
-						</div>
-						<?php
+						<h4>设置</h4>
+						<form action="?setting" method="post">
+							<table>
+								<tbody>
+									<tr>
+										<td><input type="checkbox" name="record_battle_log" value="1" <?= $record_btl_log ?>></td>
+										<td>战斗记录</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="no_JS_itemlist" value="1" <?= $no_JS_itemlist ?>></td>
+										<td>道具列表不使用javascript</td>
+									</tr>
+								</tbody>
+							</table>
+							用户名颜色设置(城镇BBS):
+							<SELECT class="bgcolor" name="color">
+								<?php
+								// 预定义所有颜色选项
+								$colors = [
+									'ffffff',
+									'ffffcc',
+									'ffff99',
+									'ffff66',
+									'ffff33',
+									'ffff00',
+									'ffccff',
+									'ffcccc',
+									'ffcc99',
+									'ffcc66',
+									'ffcc33',
+									'ffcc00',
+									'ff99ff',
+									'ff99cc',
+									'ff9999',
+									'ff9966',
+									'ff9933',
+									'ff9900',
+									'ff66ff',
+									'ff66cc',
+									'ff6699',
+									'ff6666',
+									'ff6633',
+									'ff6600',
+									'ff33ff',
+									'ff33cc',
+									'ff3399',
+									'ff3366',
+									'ff3333',
+									'ff3300',
+									'ff00ff',
+									'ff00cc',
+									'ff0099',
+									'ff0066',
+									'ff0033',
+									'ff0000',
+									'ccffff',
+									'ccffcc',
+									'ccff99',
+									'ccff66',
+									'ccff33',
+									'ccff00',
+									'ccccff',
+									'cccccc',
+									'cccc99',
+									'cccc66',
+									'cccc33',
+									'cccc00',
+									'cc99ff',
+									'cc99cc',
+									'cc9999',
+									'cc9966',
+									'cc9933',
+									'cc9900',
+									'cc66ff',
+									'cc66cc',
+									'cc6699',
+									'cc6666',
+									'cc6633',
+									'cc6600',
+									'cc33ff',
+									'cc33cc',
+									'cc3399',
+									'cc3366',
+									'cc3333',
+									'cc3300',
+									'cc00ff',
+									'cc00cc',
+									'cc0099',
+									'cc0066',
+									'cc0033',
+									'cc0000',
+									'99ffff',
+									'99ffcc',
+									'99ff99',
+									'99ff66',
+									'99ff33',
+									'99ff00',
+									'99ccff',
+									'99cccc',
+									'99cc99',
+									'99cc66',
+									'99cc33',
+									'99cc00',
+									'9999ff',
+									'9999cc',
+									'999999',
+									'999966',
+									'999933',
+									'999900',
+									'9966ff',
+									'9966cc',
+									'996699',
+									'996666',
+									'996633',
+									'996600',
+									'9933ff',
+									'9933cc',
+									'993399',
+									'993366',
+									'993333',
+									'993300',
+									'9900ff',
+									'9900cc',
+									'990099',
+									'990066',
+									'990033',
+									'990000',
+									'66ffff',
+									'66ffcc',
+									'66ff99',
+									'66ff66',
+									'66ff33',
+									'66ff00',
+									'66ccff',
+									'66cccc',
+									'66cc99',
+									'66cc66',
+									'66cc33',
+									'66cc00',
+									'6699ff',
+									'6699cc',
+									'669999',
+									'669966',
+									'669933',
+									'669900',
+									'6666ff',
+									'6666cc',
+									'666699',
+									'666666',
+									'666633',
+									'666600',
+									'6633ff',
+									'6633cc',
+									'663399',
+									'663366',
+									'663333',
+									'663300',
+									'6600ff',
+									'6600cc',
+									'660099',
+									'660066',
+									'660033',
+									'660000',
+									'33ffff',
+									'33ffcc',
+									'33ff99',
+									'33ff66',
+									'33ff33',
+									'33ff00',
+									'33ccff',
+									'33cccc',
+									'33cc99',
+									'33cc66',
+									'33cc33',
+									'33cc00',
+									'3399ff',
+									'3399cc',
+									'339999',
+									'339966',
+									'339933',
+									'339900',
+									'3366ff',
+									'3366cc',
+									'336699',
+									'336666',
+									'336633',
+									'336600',
+									'3333ff',
+									'3333cc',
+									'333399',
+									'333366',
+									'333333',
+									'333300',
+									'3300ff',
+									'3300cc',
+									'330099',
+									'330066',
+									'330033',
+									'330000',
+									'00ffff',
+									'00ffcc',
+									'00ff99',
+									'00ff66',
+									'00ff33',
+									'00ff00',
+									'00ccff',
+									'00cccc',
+									'00cc99',
+									'00cc66',
+									'00cc33',
+									'00cc00',
+									'0099ff',
+									'0099cc',
+									'009999',
+									'009966',
+									'009933',
+									'009900',
+									'0066ff',
+									'0066cc',
+									'006699',
+									'006666',
+									'006633',
+									'006600',
+									'0033ff',
+									'0033cc',
+									'003399',
+									'003366',
+									'003333',
+									'003300',
+									'0000ff',
+									'0000cc',
+									'000099',
+									'000066',
+									'000033',
+									'000000'
+								];
+
+								foreach ($colors as $color) {
+									$selected = ($this->UserColor === $color) ? " selected" : "";
+									echo '<option value="' . $color . '"' . $selected . ' style="color:#' . $color . '">SampleColor</option>';
+								}
+								?>
+							</SELECT>
+							<input type="submit" class="btn" name="setting01" value="修改" style="width:100px">
+							<input type="hidden" name="setting01" value="1">
+						</form>
+						<h4>注销</h4>
+						<form action="<?= INDEX ?>" method="post">
+							<input type="submit" class="btn" name="logout" value="注销" style="width:100px">
+						</form>
+						<h4>变更队伍名</h4>
+						<form action="?setting" method="post">
+							費用 : <?= MoneyFormat(NEW_NAME_COST) ?><br />
+							16个字符(全角=2字符)<br />
+							新的名称 : <input type="text" class="text" name="NewName" size="20">
+							<input type="submit" class="btn" value="变更" style="width:100px">
+						</form>
+						<h4>世界尽头</h4>
+						<div class="u">※自杀用</div>
+						<form action="?setting" method="post">
+							PASSWORD : <input type="text" class="text" name="deletepass" size="20">
+							<input type="submit" class="btn" name="delete" value="我要自杀了..." style="width:100px">
+						</form>
+					</div>
+					<?php
 						}
 						//	戦闘時に選択したメンバーを記憶する
 						function MemorizeParty()
@@ -3652,6 +3833,14 @@ JS_HTML;
 								return false;
 							}
 
+							// 如果id为空，则无法加载数据，直接返回错误
+							if (empty($this->id)) {
+								if (isset($_POST["id"])) {
+									return "ID \"{$_POST['id']}\" 还没有被注册。";
+								}
+								return "请提供ID。";
+							}
+
 							//session
 							$file = USER . $this->id . "/" . DATA; //data.dat
 							if ($data = $this->LoadData()) {
@@ -3678,13 +3867,14 @@ JS_HTML;
 								} else
 									return "密码错误。";
 							} else {
-								if ($_POST["id"])
+								if (isset($_POST["id"])) {
 									return "ID \"{$this->id}\" 还没有被注册。";
+								}
 							}
 						}
 
 						//////////////////////////////////////////////////
-						//	$id を登録済みidとして記録する
+						//	将$id记录为已注册id
 						function RecordRegister($id)
 						{
 							$fp = fopen(REGISTER, "a");
@@ -3694,31 +3884,15 @@ JS_HTML;
 						}
 
 						//////////////////////////////////////////////////
-						//	pass と id を設定する
+						//	设定pass和id
 						function Set_ID_PASS()
 						{
-							$id	= ($_POST["id"]) ? $_POST["id"] : $_GET["id"];
-							//if($_POST["id"]) {
-							if ($id) {
-								$this->id	= $id; //$_POST["id"];
-								// ↓ログイン処理した時だけ
-								if (is_registered($_POST["id"])) {
-									$_SESSION["id"]	= $this->id;
-								}
-							} else if ($_SESSION["id"])
-								$this->id	= $_SESSION["id"];
-
-							$pass	= ($_POST["pass"]) ? $_POST["pass"] : $_GET["pass"];
-							//if($_POST["pass"])
-							if ($pass)
-								$this->pass	= $pass; //$_POST["pass"];
-							else if ($_SESSION["pass"])
-								$this->pass	= $_SESSION["pass"];
-
-							if ($this->pass)
-								$this->pass	= $this->CryptPassword($this->pass);
+							$this->id = $_POST['id'] ?? $_GET['id'] ?? (isset($_SESSION['id']) ? $_SESSION['id'] : '');
+							$pass = $_POST['pass'] ?? $_GET['pass'] ?? (isset($_SESSION['pass']) ? $_SESSION['pass'] : '');
+							if ($pass) {
+								$this->pass = $this->CryptPassword($pass);
+							}
 						}
-
 						//////////////////////////////////////////////////
 						//	保存されているセッション番号を変更する。[session会话？]
 						function SessionSwitch()
@@ -3823,7 +3997,7 @@ JS_HTML;
 					<?php
 								return false;
 							}
-							$idset = ($_POST["Newid"] ? " value=$_POST[Newid]" : NULL);
+							$idset = (isset($_POST["Newid"]) ? " value=\"{$_POST['Newid']}\"" : "");
 					?>
 					<div style="margin:15px">
 						<?php print ShowError($error); ?>
