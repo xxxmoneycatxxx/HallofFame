@@ -247,14 +247,32 @@ class char
 				</td>
 				<td valign="top">
 					<?php
-					if ($this->SPECIAL["PoisonResist"])
+					// 确保 SPECIAL 已初始化且为数组
+					if (!isset($this->SPECIAL) || !is_array($this->SPECIAL)) {
+						$this->SPECIAL = [];
+					}
+
+					// 检查 PoisonResist 并输出
+					if (isset($this->SPECIAL["PoisonResist"]) && $this->SPECIAL["PoisonResist"]) {
 						print("毒抵抗 +" . $this->SPECIAL["PoisonResist"] . "%<br />\n");
-					if ($this->SPECIAL["Pierce"]["0"])
-						print("无视物理防御伤害 +" . $this->SPECIAL["Pierce"]["0"] . "<br />\n");
-					if ($this->SPECIAL["Pierce"]["1"])
-						print("无视魔法防御伤害 +" . $this->SPECIAL["Pierce"]["1"] . "<br />\n");
-					if ($this->SPECIAL["Summon"])
+					}
+
+					// 检查 Pierce 数组及其元素
+					if (isset($this->SPECIAL["Pierce"]) && is_array($this->SPECIAL["Pierce"])) {
+						// 检查物理穿透
+						if (isset($this->SPECIAL["Pierce"][0]) && $this->SPECIAL["Pierce"][0]) {
+							print("无视物理防御伤害 +" . $this->SPECIAL["Pierce"][0] . "<br />\n");
+						}
+						// 检查魔法穿透
+						if (isset($this->SPECIAL["Pierce"][1]) && $this->SPECIAL["Pierce"][1]) {
+							print("无视魔法防御伤害 +" . $this->SPECIAL["Pierce"][1] . "<br />\n");
+						}
+					}
+
+					// 检查 Summon 并输出
+					if (isset($this->SPECIAL["Summon"]) && $this->SPECIAL["Summon"]) {
 						print("召喚力 +" . $this->SPECIAL["Summon"] . "%<br />\n");
+					}
 					?>
 				</td>
 			</tr>
@@ -1077,79 +1095,124 @@ class char
 		}
 	}
 	//////////////////////////////////////////////////
+	//	戦闘用の変数をセットする。
 	function SetBattleVariable($team = false)
 	{
-		// 再読み込みを防止できるか?
+		// 防止重复加载
 		if (isset($this->IMG))
 			return false;
 
 		$this->PatternExplode();
 		$this->CutPatterns();
 
-		// パッシブスキルを読む
+		// 读取被动技能
 		$this->LoadPassiveSkills();
 		$this->CalcEquips();
 
-		$this->team		= $team;
-		$this->IMG		= $this->img;
-		$maxhp	+= $this->maxhp * (1 + ($this->M_MAXHP / 100)) + $this->P_MAXHP;
-		$this->MAXHP	= round($maxhp);
-		$hp		+= $this->hp * (1 + ($this->M_MAXHP / 100)) + $this->P_MAXHP;
-		$this->HP		= round($hp);
-		$maxsp	+= $this->maxsp * (1 + ($this->M_MAXSP / 100)) + $this->P_MAXSP;
-		$this->MAXSP	= round($maxsp);
-		$sp		+= $this->sp * (1 + ($this->M_MAXSP / 100)) + $this->P_MAXSP;
-		$this->SP		= round($sp);
-		$this->STR		= $this->str + $this->P_STR;
-		$this->INT		= $this->int + $this->P_INT;
-		$this->DEX		= $this->dex + $this->P_DEX;
-		$this->SPD		= $this->spd + $this->P_SPD;
-		$this->LUK		= $this->luk + $this->P_LUK;
-		$this->POSITION	= $this->position;
-		$this->STATE	= 0; //生存状態にする
+		$this->team        = $team;
+		$this->IMG        = $this->img;
 
-		$this->expect	= false; //(数値=詠唱中 false=待機中)
-		$this->ActCount	= 0; //行動回数
-		$this->JdgCount	= array(); //決定した判断の回数
+		// 显式初始化所有局部变量
+		$maxhp = 0;
+		$hp = 0;
+		$maxsp = 0;
+		$sp = 0;
+
+		// 安全访问属性并计算HP/SP
+		$maxhp += $this->maxhp * (1 + ($this->M_MAXHP / 100)) + $this->P_MAXHP;
+		$this->MAXHP    = round($maxhp);
+		$hp    += $this->hp * (1 + ($this->M_MAXHP / 100)) + $this->P_MAXHP;
+		$this->HP        = round($hp);
+		$maxsp    += $this->maxsp * (1 + ($this->M_MAXSP / 100)) + $this->P_MAXSP;
+		$this->MAXSP    = round($maxsp);
+		$sp        += $this->sp * (1 + ($this->M_MAXSP / 100)) + $this->P_MAXSP;
+		$this->SP        = round($sp);
+
+		// 设置基础属性（确保安全访问）
+		$this->STR        = $this->str + ($this->P_STR ?? 0);
+		$this->INT        = $this->int + ($this->P_INT ?? 0);
+		$this->DEX        = $this->dex + ($this->P_DEX ?? 0);
+		$this->SPD        = $this->spd + ($this->P_SPD ?? 0);
+		$this->LUK        = $this->luk + ($this->P_LUK ?? 0);
+		$this->POSITION    = $this->position;
+		$this->STATE    = 0; // 生存状态
+
+		$this->expect        = false; // 咏唱状态
+		$this->expect_type    = false; // 咏唱类型
+		$this->expect_target    = false; // 咏唱目标
+		$this->ActCount    = 0; // 行动次数
+		$this->JdgCount    = array(); // 决策记录
 	}
 	//////////////////////////////////////////////////
 	//	キャラの攻撃力と防御力,装備性能を計算する
 	function CalcEquips()
 	{
-		if ($this->monster) return false; //mobは設定せんでいい
-		$equip	= array("weapon", "shield", "armor", "item"); //装備箇所
-		$this->atk	= array(0, 0);
-		$this->def	= array(0, 0, 0, 0);
+		if ($this->monster) return false; // mob不需要计算装备属性
+
+		// 初始化所有装备属性
+		$this->atk = [0, 0]; // 攻击力 (物理, 魔法)
+		$this->def = [0, 0, 0, 0]; // 防御力 (物理/, 物理-, 魔法/, 魔法-)
+		$this->P_MAXHP = 0; // HP加成（固定值）
+		$this->M_MAXHP = 0; // HP加成（百分比）
+		$this->P_MAXSP = 0; // SP加成（固定值）
+		$this->M_MAXSP = 0; // SP加成（百分比）
+		$this->P_STR = 0;   // 力量加成
+		$this->P_INT = 0;   // 智力加成
+		$this->P_DEX = 0;   // 敏捷加成
+		$this->P_SPD = 0;   // 速度加成
+		$this->P_LUK = 0;   // 幸运加成
+
+		$equip = ["weapon", "shield", "armor", "item"]; // 所有装备部位
+
 		foreach ($equip as $place) {
-			if (!$this->{$place}) continue;
-			// 武器タイプの記憶
+			if (!$this->{$place}) continue; // 跳过未装备的部位
 
-			$item	= LoadItemData($this->{$place});
-			if ($place == "weapon")
-				$this->WEAPON	= $item["type"];
-			$this->atk[0]	+= $item["atk"][0]; //物理攻撃力
-			$this->atk[1]	+= $item["atk"][1]; //魔法〃
-			$this->def[0]	+= $item["def"][0]; //物理防御(÷)
-			$this->def[1]	+= $item["def"][1]; //〃(－)
-			$this->def[2]	+= $item["def"][2]; //魔法防御(÷)
-			$this->def[3]	+= $item["def"][3]; //〃(－)
+			// 安全加载装备数据，处理可能的空值
+			$item = LoadItemData($this->{$place}) ?: [];
 
-			$this->P_MAXHP	+= $item["P_MAXHP"];
-			$this->M_MAXHP	+= $item["M_MAXHP"];
-			$this->P_MAXSP	+= $item["P_MAXSP"];
-			$this->M_MAXSP	+= $item["M_MAXSP"];
+			// 设置武器类型
+			if ($place == "weapon") {
+				$this->WEAPON = $item["type"] ?? '';
+			}
 
-			$this->P_STR	+= $item["P_STR"];
-			$this->P_INT	+= $item["P_INT"];
-			$this->P_DEX	+= $item["P_DEX"];
-			$this->P_SPD	+= $item["P_SPD"];
-			$this->P_LUK	+= $item["P_LUK"];
+			// 确保攻击属性数组存在
+			$item["atk"] = $item["atk"] ?? [0, 0];
 
-			if ($item["P_SUMMON"])
+			// 确保防御属性数组存在
+			$item["def"] = $item["def"] ?? [0, 0, 0, 0];
+
+			// 累加攻击属性
+			$this->atk[0] += $item["atk"][0]; // 物理攻击
+			$this->atk[1] += $item["atk"][1]; // 魔法攻击
+
+			// 累加防御属性
+			$this->def[0] += $item["def"][0]; // 物理防御(÷)
+			$this->def[1] += $item["def"][1]; // 物理防御(－)
+			$this->def[2] += $item["def"][2]; // 魔法防御(÷)
+			$this->def[3] += $item["def"][3]; // 魔法防御(－)
+
+			// 累加HP/SP加成属性（安全访问）
+			$this->P_MAXHP += $item["P_MAXHP"] ?? 0;
+			$this->M_MAXHP += $item["M_MAXHP"] ?? 0;
+			$this->P_MAXSP += $item["P_MAXSP"] ?? 0;
+			$this->M_MAXSP += $item["M_MAXSP"] ?? 0;
+
+			// 累加基础属性加成
+			$this->P_STR += $item["P_STR"] ?? 0;
+			$this->P_INT += $item["P_INT"] ?? 0;
+			$this->P_DEX += $item["P_DEX"] ?? 0;
+			$this->P_SPD += $item["P_SPD"] ?? 0;
+			$this->P_LUK += $item["P_LUK"] ?? 0;
+
+			// 特殊效果加成（安全访问）
+			if (isset($item["P_SUMMON"])) {
 				$this->GetSpecial("Summon", $item["P_SUMMON"]);
-			// 防御無視の攻撃力
-			if ($item["P_PIERCE"])
+			}
+
+			// 穿透效果加成（安全访问）
+			if (isset($item["P_PIERCE"])) {
 				$this->GetSpecial("Pierce", $item["P_PIERCE"]);
+			}
 		}
 	}
 	//////////////////////////////////////////////////
@@ -1481,83 +1544,75 @@ class char
 			//	キャラの変数をセットする。
 			function SetCharData($data)
 			{
-				$this->name	= $data["name"];
-				$this->gender	= $data["gender"];
-				$this->birth	= $data["birth"];
-				$this->level	= $data["level"];
-				$this->exp		= $data["exp"];
-				$this->statuspoint	= $data["statuspoint"];
-				$this->skillpoint	= $data["skillpoint"];
+				// 使用三元运算符提供默认值
+				$this->name         = isset($data["name"]) ? $data["name"] : '';
+				$this->gender       = isset($data["gender"]) ? $data["gender"] : 0;
+				$this->birth        = isset($data["birth"]) ? $data["birth"] : 0;
+				$this->level        = isset($data["level"]) ? $data["level"] : 1;
+				$this->exp          = isset($data["exp"]) ? $data["exp"] : 0;
+				$this->statuspoint  = isset($data["statuspoint"]) ? $data["statuspoint"] : 0;
+				$this->skillpoint   = isset($data["skillpoint"]) ? $data["skillpoint"] : 0;
 
-				$this->job		= $data["job"];
+				$this->job          = isset($data["job"]) ? $data["job"] : 0;
 				$this->SetJobData();
 
-				if ($data["img"])
-					$this->img		= $data["img"];
+				$this->img 			= isset($data["img"]) && $data["img"] ? $data["img"] : $this->img;
 
-				$this->str		= $data["str"];
-				$this->int		= $data["int"];
-				$this->dex		= $data["dex"];
-				$this->spd		= $data["spd"];
-				$this->luk		= $data["luk"];
+				// 基础属性
+				$this->str          = isset($data["str"]) ? $data["str"] : 0;
+				$this->int          = isset($data["int"]) ? $data["int"] : 0;
+				$this->dex          = isset($data["dex"]) ? $data["dex"] : 0;
+				$this->spd          = isset($data["spd"]) ? $data["spd"] : 0;
+				$this->luk          = isset($data["luk"]) ? $data["luk"] : 0;
 
+				// 处理HP/SP（兼容旧数据）
 				if (
-					isset($data["maxhp"]) &&
-					isset($data["hp"]) &&
-					isset($data["maxsp"]) &&
-					isset($data["sp"])
+					isset($data["maxhp"]) && isset($data["hp"]) &&
+					isset($data["maxsp"]) && isset($data["sp"])
 				) {
-					$this->maxhp	= $data["maxhp"];
-					$this->hp		= $data["hp"];
-					$this->maxsp	= $data["maxsp"];
-					$this->sp		= $data["sp"];
+					$this->maxhp    = $data["maxhp"];
+					$this->hp       = $data["hp"];
+					$this->maxsp    = $data["maxsp"];
+					$this->sp       = $data["sp"];
 				} else {
-					// HPSPを設定。HPSPを回復。そういうゲームだから…
 					$this->SetHpSp();
-					$this->hp		= $this->maxhp;
-					$this->sp		= $this->maxsp;
+					$this->hp       = $this->maxhp;
+					$this->sp       = $this->maxsp;
 				}
 
-				$this->weapon	= $data["weapon"];
-				$this->shield	= $data["shield"];
-				$this->armor	= $data["armor"];
-				$this->item		= $data["item"];
+				// 装备（提供空值保护）
+				$this->weapon       = isset($data["weapon"]) ? $data["weapon"] : 0;
+				$this->shield       = isset($data["shield"]) ? $data["shield"] : 0;
+				$this->armor        = isset($data["armor"]) ? $data["armor"] : 0;
+				$this->item         = isset($data["item"]) ? $data["item"] : 0;
 
-				$this->position	= $data["position"];
-				$this->guard	= $data["guard"];
+				$this->position     = isset($data["position"]) ? $data["position"] : 'front';
+				$this->guard        = isset($data["guard"]) ? $data["guard"] : 0;
 
-				$this->skill	= (is_array($data["skill"]) ? $data["skill"] : explode("<>", $data["skill"]));
+				// 技能（兼容数组和字符串格式）
+				$this->skill        = isset($data["skill"]) ?
+					(is_array($data["skill"]) ? $data["skill"] : explode("<>", $data["skill"]))
+					: [];
 
-				$this->Pattern	= $data["Pattern"];
+				$this->Pattern      = isset($data["Pattern"]) ? $data["Pattern"] : '';
 
-				if ($data["PatternMemo"])
-					$this->PatternMemo	= $data["PatternMemo"];
+				// 可选字段
+				$this->PatternMemo  = isset($data["PatternMemo"]) ? $data["PatternMemo"] : '';
+				$this->judge        = isset($data["judge"]) ? $data["judge"] : [];
+				$this->quantity     = isset($data["quantity"]) ? $data["quantity"] : [];
+				$this->action       = isset($data["action"]) ? $data["action"] : [];
 
-				// モンスターのため？
-				if (is_array($data["judge"]))
-					$this->judge	= $data["judge"];
-				//else
-				//	$this->judge	= explode("<>",$data["judge"]);
-				if (is_array($data["quantity"]))
-					$this->quantity	= $data["quantity"];
-				//else
-				//	$this->quantity	= explode("<>",$data["quantity"]);
-				if (is_array($data["action"]))
-					$this->action	= $data["action"];
-				//else
-				//	$this->action	= explode("<>",$data["action"]);
-
-				//モンスター専用
-				if ($this->monster	= $data["monster"]) {
-					$this->exphold		= $data["exphold"];
-					$this->moneyhold	= $data["moneyhold"];
-					$this->itemdrop		= $data["itemdrop"];
-					$this->atk	= $data["atk"];
-					$this->def	= $data["def"];
-					$this->SPECIAL	= $data["SPECIAL"];
+				// 怪物相关字段
+				$this->monster      = isset($data["monster"]) ? $data["monster"] : 0;
+				if ($this->monster) {
+					$this->exphold     = isset($data["exphold"]) ? $data["exphold"] : 0;
+					$this->moneyhold   = isset($data["moneyhold"]) ? $data["moneyhold"] : 0;
+					$this->itemdrop    = isset($data["itemdrop"]) ? $data["itemdrop"] : 0;
+					$this->atk         = isset($data["atk"]) ? $data["atk"] : [0, 0];
+					$this->def         = isset($data["def"]) ? $data["def"] : [0, 0, 0, 0];
+					$this->SPECIAL     = isset($data["SPECIAL"]) ? $data["SPECIAL"] : [];
 				}
-				if ($data["summon"])
-					$this->summon		= $data["summon"];
+				$this->summon       = isset($data["summon"]) ? $data["summon"] : 0;
 			}
 		}
 				?>

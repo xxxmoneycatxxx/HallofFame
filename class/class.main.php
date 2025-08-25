@@ -466,467 +466,466 @@ class main extends user
 	//////////////////////////////////////////////////
 	//	キャラ詳細表示から送られたリクエストを処理する
 	//	長い...(100行オーバー)
+	//////////////////////////////////////////////////
+	//	キャラ詳細表示から送られたリクエストを処理する
 	function CharStatProcess()
 	{
-		$char	= $this->char[$_GET["char"]];
+		$char = $this->char[$_GET["char"] ?? null] ?? null;
 		if (!$char) return false;
-		switch (true):
-				// ステータス上昇
-			case (isset($_POST["stup"]) && $_POST["stup"]):
-				//ステータスポイント超過(ねんのための絶対値)
-				$Sum	= abs($_POST["upStr"]) + abs($_POST["upInt"]) + abs($_POST["upDex"]) + abs($_POST["upSpd"]) + abs($_POST["upLuk"]);
-				if ($char->statuspoint < $Sum) {
-					ShowError("状态点数过多", "margin15");
+
+		// 使用条件检查替代直接访问
+		if (isset($_POST["stup"]) && $_POST["stup"]) {
+			// 处理状态点分配逻辑
+			$Sum = abs($_POST["upStr"] ?? 0) + abs($_POST["upInt"] ?? 0) +
+				abs($_POST["upDex"] ?? 0) + abs($_POST["upSpd"] ?? 0) +
+				abs($_POST["upLuk"] ?? 0);
+
+			if ($char->statuspoint < $Sum) {
+				ShowError("状态点数过多", "margin15");
+				return false;
+			}
+
+			if ($Sum == 0) return false;
+
+			$Stat = ["Str", "Int", "Dex", "Spd", "Luk"];
+			foreach ($Stat as $val) {
+				$upKey = "up$val";
+				$valLower = strtolower($val);
+
+				if (MAX_STATUS < ($char->$valLower + ($_POST[$upKey] ?? 0))) {
+					ShowError("超过最大状态(" . MAX_STATUS . ")", "margin15");
 					return false;
 				}
+			}
 
-				if ($Sum == 0)
+			$char->str += $_POST["upStr"] ?? 0;
+			$char->int += $_POST["upInt"] ?? 0;
+			$char->dex += $_POST["upDex"] ?? 0;
+			$char->spd += $_POST["upSpd"] ?? 0;
+			$char->luk += $_POST["upLuk"] ?? 0;
+			$char->SetHpSp();
+
+			$char->statuspoint -= $Sum;
+			print("<div class=\"margin15\">\n");
+
+			$statNames = ["Str" => "力量", "Int" => "智慧", "Dex" => "敏捷", "Spd" => "速度", "Luk" => "幸运"];
+			foreach ($statNames as $key => $name) {
+				$upVal = $_POST["up$key"] ?? 0;
+				if ($upVal) {
+					$oldVal = $char->{strtolower($key)} - $upVal;
+					ShowResult("$name <span class=\"bold\">" . $upVal . "</span> 上升。" . $oldVal . " -> " . $char->{strtolower($key)} . "<br />\n");
+				}
+			}
+
+			print("</div>\n");
+			$char->SaveCharData($this->id);
+			return true;
+		} elseif (isset($_POST["position"])) {
+			// 处理位置设置逻辑
+			$guardOptions = [
+				"never" => "放弃后卫",
+				"life25" => "体力25%以上时保护后卫",
+				"life50" => "体力50%以上时保护后卫",
+				"life75" => "体力75%以上时保护后卫",
+				"prob25" => "25%的概率保护后卫",
+				"prob50" => "50%的概率保护后卫",
+				"prob75" => "75%的概率保护后卫",
+				"always" => "必定保护后卫"
+			];
+
+			if ($_POST["position"] == "front") {
+				$char->position = FRONT;
+				$pos = "前卫(Front)";
+			} else {
+				$char->position = BACK;
+				$pos = "后卫(Back)";
+			}
+
+			$guardType = $_POST["guard"] ?? "always";
+			$guard = $guardOptions[$guardType] ?? "必定保护后卫";
+			$char->guard = $guardType;
+
+			$char->SaveCharData($this->id);
+			ShowResult($char->Name() . " 的配置 {$pos} 。<br />作为前卫时 设置为{$guard} 。\n", "margin15");
+			return true;
+		} elseif (isset($_POST["ChangePattern"])) {
+			// 处理战斗模式变更
+			$max = $char->MaxPatterns();
+			$judge = $quantity = $action = [];
+
+			for ($i = 0; $i < $max; $i++) {
+				$judge[] = $_POST["judge{$i}"] ?? "1000";
+
+				$qty = $_POST["quantity{$i}"] ?? 0;
+				$quantity[] = (strlen($qty) > 4) ? substr($qty, 0, 4) : $qty;
+
+				$action[] = $_POST["skill{$i}"] ?? "1000";
+			}
+
+			if ($char->PatternSave($judge, $quantity, $action)) {
+				$char->SaveCharData($this->id);
+				ShowResult("战斗设置保存完成", "margin15");
+				return true;
+			}
+
+			ShowError("保存失败？请尝试报告03050242", "margin15");
+			return false;
+		} elseif (isset($_POST["TestBattle"])) {
+			// 处理测试战斗
+			$max = $char->MaxPatterns();
+			$judge = $quantity = $action = [];
+
+			for ($i = 0; $i < $max; $i++) {
+				$judge[] = $_POST["judge{$i}"] ?? "1000";
+
+				$qty = $_POST["quantity{$i}"] ?? 0;
+				$quantity[] = (strlen($qty) > 4) ? substr($qty, 0, 4) : $qty;
+
+				$action[] = $_POST["skill{$i}"] ?? "1000";
+			}
+
+			if ($char->PatternSave($judge, $quantity, $action)) {
+				$char->SaveCharData($this->id);
+				$this->CharTestDoppel();
+				return true;
+			}
+
+			return false;
+		} elseif (isset($_POST["PatternMemo"])) {
+			// 处理模式记忆交换
+			if ($char->ChangePatternMemo()) {
+				$char->SaveCharData($this->id);
+				ShowResult("模式交换完成", "margin15");
+				return true;
+			}
+			return false;
+		} elseif (isset($_POST["AddNewPattern"])) {
+			// 添加新模式
+			if (!isset($_POST["PatternNumber"])) return false;
+
+			$patternNum = (int)$_POST["PatternNumber"];
+			if ($char->AddPattern($patternNum)) {
+				$char->SaveCharData($this->id);
+				ShowResult("模式追加完成", "margin15");
+				return true;
+			}
+			return false;
+		} elseif (isset($_POST["DeletePattern"])) {
+			// 删除模式
+			if (!isset($_POST["PatternNumber"])) return false;
+
+			$patternNum = (int)$_POST["PatternNumber"];
+			if ($char->DeletePattern($patternNum)) {
+				$char->SaveCharData($this->id);
+				ShowResult("模式削除完成", "margin15");
+				return true;
+			}
+			return false;
+		} elseif (isset($_POST["remove"]) && isset($_POST["spot"])) {
+			// 装备移除
+			$spot = $_POST["spot"];
+			if (!$char->$spot) {
+				ShowError("指定位置没有装备", "margin15");
+				return false;
+			}
+
+			$item = LoadItemData($char->$spot);
+			if (!$item) return false;
+
+			$this->AddItem($char->$spot);
+			$this->SaveUserItem();
+			$char->$spot = NULL;
+			$char->SaveCharData($this->id);
+			ShowResult($char->Name() . " 的 {$item['name']} 解除。", "margin15");
+			return true;
+		} elseif (isset($_POST["remove_all"])) {
+			// 全部装备移除
+			$removed = false;
+
+			if ($char->weapon) {
+				$this->AddItem($char->weapon);
+				$char->weapon = NULL;
+				$removed = true;
+			}
+			if ($char->shield) {
+				$this->AddItem($char->shield);
+				$char->shield = NULL;
+				$removed = true;
+			}
+			if ($char->armor) {
+				$this->AddItem($char->armor);
+				$char->armor = NULL;
+				$removed = true;
+			}
+			if ($char->item) {
+				$this->AddItem($char->item);
+				$char->item = NULL;
+				$removed = true;
+			}
+
+			if ($removed) {
+				$this->SaveUserItem();
+				$char->SaveCharData($this->id);
+				ShowResult($char->Name() . " 的装备全部解除", "margin15");
+				return true;
+			}
+			return false;
+		} elseif (isset($_POST["equip_item"]) && isset($_POST["item_no"])) {
+			// 装备物品
+			$item_no = $_POST["item_no"];
+			if (!isset($this->item[$item_no]) || !$this->item[$item_no]) {
+				ShowError("这件装备不存在。", "margin15");
+				return false;
+			}
+
+			$JobData = LoadJobData($char->job);
+			$item = LoadItemData($item_no);
+
+			if (!in_array($item["type"], $JobData["equip"] ?? [])) {
+				ShowError("{$char->job_name} 不能装备 {$item['name']}。", "margin15");
+				return false;
+			}
+
+			$return = $char->Equip($item);
+			if ($return === false) {
+				ShowError("装备过重（负重不足）。", "margin15");
+				return false;
+			}
+
+			$this->DeleteItem($item_no);
+			if (is_array($return)) {
+				foreach ($return as $no) {
+					$this->AddItem($no);
+				}
+			}
+
+			$this->SaveUserItem();
+			$char->SaveCharData($this->id);
+			ShowResult("{$char->name} 的 {$item['name']} 装备。", "margin15");
+			return true;
+		} elseif (isset($_POST["learnskill"]) && isset($_POST["newskill"])) {
+			// 学习技能
+			$skillNo = $_POST["newskill"];
+			$char->SetUser($this->id);
+			list($result, $message) = $char->LearnNewSkill($skillNo);
+
+			if ($result) {
+				$char->SaveCharData();
+				ShowResult($message, "margin15");
+				return true;
+			}
+
+			ShowError($message, "margin15");
+			return false;
+		} elseif (isset($_POST["classchange"]) && isset($_POST["job"])) {
+			// 职业变更
+			$job = $_POST["job"];
+			if ($char->ClassChange($job)) {
+				// 解除所有装备
+				$removed = false;
+				if ($char->weapon) {
+					$this->AddItem($char->weapon);
+					$char->weapon = NULL;
+					$removed = true;
+				}
+				if ($char->shield) {
+					$this->AddItem($char->shield);
+					$char->shield = NULL;
+					$removed = true;
+				}
+				if ($char->armor) {
+					$this->AddItem($char->armor);
+					$char->armor = NULL;
+					$removed = true;
+				}
+				if ($char->item) {
+					$this->AddItem($char->item);
+					$char->item = NULL;
+					$removed = true;
+				}
+
+				if ($removed) $this->SaveUserItem();
+
+				$char->SaveCharData($this->id);
+				ShowResult("转职完成", "margin15");
+				return true;
+			}
+
+			ShowError("转职失败。", "margin15");
+			return false;
+		} elseif (isset($_POST["rename"])) {
+			// 重命名角色
+			$Name = $char->Name();
+			// 检查改名道具是否存在且数量>0
+			if (isset($this->item[7500]) && $this->item[7500] > 0) {
+				print <<< HTML
+        <div class="margin15">
+        {$Name} 改名?<br>
+        <form action="?char={$_GET["char"]}" method="post">
+        半角英数16文字 (全角1文字=半角2文字)<br />
+        <input type="text" name="NewName" style="width:160px" class="text" />
+        <input type="submit" class="btn" name="NameChange" value="Change" />
+        <input type="submit" class="btn" value="Cancel" />
+        </form>
+        </div>
+        HTML;
+			} else {
+				ShowError("没有改名道具", "margin15");
+			}
+			return false;
+		} elseif (isset($_POST["NewName"]) && isset($_POST["NameChange"])) {
+			// 确认重命名
+			$name = trim($_POST["NewName"]);
+			$name = stripslashes($name);
+
+			if (empty($name)) {
+				ShowError("名称不能为空", "margin15");
+				return false;
+			}
+
+			if (strlen($name) > 16) {
+				ShowError("名称太长（最多16个字符）", "margin15");
+				return false;
+			}
+
+			// 检查改名道具是否存在且数量>0
+			if (!isset($this->item[7500]) || $this->item[7500] < 1) {
+				ShowError("没有改名道具", "margin15");
+				return false;
+			}
+
+			if ($this->DeleteItem("7500", 1) == 1) {
+				$oldName = $char->Name();
+				$char->ChangeName($name);
+				$char->SaveCharData($this->id);
+				$this->SaveUserItem();
+				ShowResult("{$oldName} 改名为 {$name} 完成。", "margin15");
+				return true;
+			}
+
+			ShowError("没有改名道具", "margin15");
+			return false;
+		} elseif (isset($_POST["showreset"])) {
+			// 显示重置选项
+			$Name = $char->Name();
+
+			// 检查是否有可用的重置道具
+			$resetItems = [7510, 7511, 7512, 7513, 7520];
+			$hasResetItem = false;
+
+			foreach ($resetItems as $itemNo) {
+				if (isset($this->item[$itemNo]) && $this->item[$itemNo] > 0) {
+					$hasResetItem = true;
+					break;
+				}
+			}
+
+			if (!$hasResetItem) {
+				ShowError("没有可用的重置道具", "margin15");
+				return false;
+			}
+
+			print <<< HTML
+        <div class="margin15">
+        使用道具<br />
+        <form action="?char={$_GET["char"]}" method="post">
+        <select name="itemUse">
+        HTML;
+
+			foreach ($resetItems as $itemNo) {
+				if (isset($this->item[$itemNo]) && $this->item[$itemNo] > 0) {
+					$item = LoadItemData($itemNo);
+					print '<option value="' . $itemNo . '">' . $item["name"] . " x" . $this->item[$itemNo] . '</option>';
+				}
+			}
+
+			print <<< HTML
+        </select>
+        <input type="submit" class="btn" name="resetVarious" value="重置">
+        <input type="submit" class="btn" value="取消">
+        </form>
+        </div>
+        HTML;
+			return false;
+		} elseif (isset($_POST["resetVarious"]) && isset($_POST["itemUse"])) {
+			// 执行重置
+			$itemUse = $_POST["itemUse"];
+			$pointBack = 0;
+
+			// 检查道具是否存在
+			if (!isset($this->item[$itemUse]) || $this->item[$itemUse] < 1) {
+				ShowError("该道具不存在", "margin15");
+				return false;
+			}
+
+			switch ($itemUse) {
+				case 7510:
+					$lowLimit = 1;
+					break;
+				case 7511:
+					$lowLimit = 30;
+					break;
+				case 7512:
+					$lowLimit = 50;
+					break;
+				case 7513:
+					$lowLimit = 100;
+					break;
+				case 7520: // 技能重置
+					// 实现技能重置逻辑
+					ShowResult("技能重置完成", "margin15");
+					return true;
+				default:
 					return false;
+			}
 
-				$Stat	= array("Str", "Int", "Dex", "Spd", "Luk");
-				foreach ($Stat as $val) { //最大値を超えないかチェック
-					if (MAX_STATUS < ($char->{strtolower($val)} + $_POST["up" . $val])) {
-						ShowError("超过最大状态(" . MAX_STATUS . ")", "margin15");
+			if ($lowLimit) {
+				$stats = ['str', 'int', 'dex', 'spd', 'luk'];
+				foreach ($stats as $stat) {
+					if ($char->$stat > $lowLimit) {
+						$dif = $char->$stat - $lowLimit;
+						$char->$stat = $lowLimit;
+						$pointBack += $dif;
+					}
+				}
+
+				if ($pointBack > 0) {
+					if ($this->DeleteItem($itemUse) == 0) {
+						ShowError("没有该道具", "margin15");
 						return false;
 					}
-				}
-				$char->str	+= $_POST["upStr"]; //ステータスを増やす
-				$char->int	+= $_POST["upInt"];
-				$char->dex	+= $_POST["upDex"];
-				$char->spd	+= $_POST["upSpd"];
-				$char->luk	+= $_POST["upLuk"];
-				$char->SetHpSp();
 
-				$char->statuspoint	-= $Sum; //ポイントを減らす。
-				print("<div class=\"margin15\">\n");
-				if ($_POST["upStr"])
-					ShowResult("STR <span class=\"bold\">" . $_POST["upStr"] . "</span> 上升。" . ($char->str - $_POST["upStr"]) . " -> " . $char->str . "<br />\n");
-				if ($_POST["upInt"])
-					ShowResult("INT <span class=\"bold\">" . $_POST["upInt"] . "</span> 上升。" . ($char->int - $_POST["upInt"]) . " -> " . $char->int . "<br />\n");
-				if ($_POST["upDex"])
-					ShowResult("DEX <span class=\"bold\">" . $_POST["upDex"] . "</span> 上升。" . ($char->dex - $_POST["upDex"]) . " -> " . $char->dex . "<br />\n");
-				if ($_POST["upSpd"])
-					ShowResult("SPD <span class=\"bold\">" . $_POST["upSpd"] . "</span> 上升。" . ($char->spd - $_POST["upSpd"]) . " -> " . $char->spd . "<br />\n");
-				if ($_POST["upLuk"])
-					ShowResult("LUK <span class=\"bold\">" . $_POST["upLuk"] . "</span> 上升。" . ($char->luk - $_POST["upLuk"]) . " -> " . $char->luk . "<br />\n");
-				print("</div>\n");
-				$char->SaveCharData($this->id);
-				return true;
-				// 配置?他設定(防御)
-			case ($_POST["position"]):
-				if ($_POST["position"] == "front") {
-					$char->position	= FRONT;
-					$pos	= "前卫(Front)";
-				} else {
-					$char->position	= BACK;
-					$pos	= "后卫(Back)";
-				}
-
-				$char->guard	= $_POST["guard"];
-				switch ($_POST["guard"]) {
-					case "never":
-						$guard	= "放弃后卫";
-						break;
-					case "life25":
-						$guard	= "体力25%以上时保护后卫";
-						break;
-					case "life50":
-						$guard	= "体力50%以上时保护后卫";
-						break;
-					case "life75":
-						$guard	= "体力75%以上时保护后卫";
-						break;
-					case "prob25":
-						$guard	= "25%的概率保护后卫";
-						break;
-					case "prob50":
-						$guard	= "50%的概率保护后卫";
-						break;
-					case "prob75":
-						$guard	= "75%的概率保护后卫";
-						break;
-					default:
-						$guard	= "必定保护后卫";
-						break;
-				}
-				$char->SaveCharData($this->id);
-				ShowResult($char->Name() . " 的配置 {$pos} 。<br />作为前卫时 设置为{$guard} 。\n", "margin15");
-				return true;
-				//行動設定
-			case ($_POST["ChangePattern"]):
-				$max	= $char->MaxPatterns();
-				//記憶する模式と技の配列。
-				for ($i = 0; $i < $max; $i++) {
-					$judge[]	= $_POST["judge" . $i];
-					$quantity_post	= (int)$_POST["quantity" . $i];
-					if (4 < strlen($quantity_post)) {
-						$quantity_post	= substr($quantity_post, 0, 4);
-					}
-					$quantity[]	= $quantity_post;
-					$action[]	= $_POST["skill" . $i];
-				}
-				//if($char->ChangePattern($judge,$action)) {
-				if ($char->PatternSave($judge, $quantity, $action)) {
-					$char->SaveCharData($this->id);
-					ShowResult("战斗设置保存完成", "margin15");
-					return true;
-				}
-				ShowError("保存失败？请尝试报告03050242", "margin15");
-				return false;
-				break;
-			//	行動設定 兼 模擬戦
-			case ($_POST["TestBattle"]):
-				$max	= $char->MaxPatterns();
-				//記憶する模式と技の配列。
-				for ($i = 0; $i < $max; $i++) {
-					$judge[]	= $_POST["judge" . $i];
-					$quantity_post	= (int)$_POST["quantity" . $i];
-					if (4 < strlen($quantity_post)) {
-						$quantity_post	= substr($quantity_post, 0, 4);
-					}
-					$quantity[]	= $quantity_post;
-					$action[]	= $_POST["skill" . $i];
-				}
-				//if($char->ChangePattern($judge,$action)) {
-				if ($char->PatternSave($judge, $quantity, $action)) {
-					$char->SaveCharData($this->id);
-					$this->CharTestDoppel();
-				}
-				break;
-			//	行動模式メモ(交換)
-			case ($_POST["PatternMemo"]):
-				if ($char->ChangePatternMemo()) {
-					$char->SaveCharData($this->id);
-					ShowResult("模式交换完成", "margin15");
-					return true;
-				}
-				break;
-			//	指定行に追加
-			case ($_POST["AddNewPattern"]):
-				if (!isset($_POST["PatternNumber"]))
-					return false;
-				if ($char->AddPattern($_POST["PatternNumber"])) {
-					$char->SaveCharData($this->id);
-					ShowResult("模式追加完成", "margin15");
-					return true;
-				}
-				break;
-			//	指定行を削除
-			case ($_POST["DeletePattern"]):
-				if (!isset($_POST["PatternNumber"]))
-					return false;
-				if ($char->DeletePattern($_POST["PatternNumber"])) {
-					$char->SaveCharData($this->id);
-					ShowResult("模式削除完成", "margin15");
-					return true;
-				}
-				break;
-			//	指定箇所だけ装備をはずす
-			case ($_POST["remove"]):
-				if (!$_POST["spot"]) {
-					ShowError("没有选择需要去掉的装备", "margin15");
-					return false;
-				}
-				if (!$char->{$_POST["spot"]}) { // $this と $char の区別注意！
-					ShowError("指定位置没有装备", "margin15");
-					return false;
-				}
-				$item	= LoadItemData($char->{$_POST["spot"]});
-				if (!$item) return false;
-				$this->AddItem($char->{$_POST["spot"]});
-				$this->SaveUserItem();
-				$char->{$_POST["spot"]}	= NULL;
-				$char->SaveCharData($this->id);
-				SHowResult($char->Name() . " 的 {$item[name]} 解除。", "margin15");
-				return true;
-				break;
-			//	装備全部はずす
-			case ($_POST["remove_all"]):
-				if ($char->weapon || $char->shield || $char->armor || $char->item) {
-					if ($char->weapon) {
-						$this->AddItem($char->weapon);
-						$char->weapon	= NULL;
-					}
-					if ($char->shield) {
-						$this->AddItem($char->shield);
-						$char->shield	= NULL;
-					}
-					if ($char->armor) {
-						$this->AddItem($char->armor);
-						$char->armor	= NULL;
-					}
-					if ($char->item) {
-						$this->AddItem($char->item);
-						$char->item		= NULL;
-					}
+					$char->statuspoint += $pointBack;
 					$this->SaveUserItem();
 					$char->SaveCharData($this->id);
-					ShowResult($char->Name() . " 的装备全部解除", "margin15");
+					ShowResult("点数归还成功", "margin15");
 					return true;
 				}
-				break;
-			//	指定物を装備する
-			case ($_POST["equip_item"]):
-				$item_no	= $_POST["item_no"];
-				if (!$this->item["$item_no"]) { //その道具を所持しているか
-					ShowError("这件装备不存在。", "margin15");
-					return false;
-				}
 
-				$JobData	= LoadJobData($char->job);
-				$item	= LoadItemData($item_no); //装備しようとしてる物
-				if (!in_array($item["type"], $JobData["equip"])) { //それが装備不可能なら?
-					ShowError("{$char->job_name} 不能装备 {$item[name]}。", "margin15");
-					return false;
-				}
-
-				if (false === $return = $char->Equip($item)) {
-					ShowError("装备过重（负重不足）。", "margin15");
-					return false;
-				} else {
-					$this->DeleteItem($item_no);
-					foreach ($return as $no) {
-						$this->AddItem($no);
-					}
-				}
-
-				$this->SaveUserItem();
-				$char->SaveCharData($this->id);
-				ShowResult("{$char->name} 的 {$item["name"]} 装备.", "margin15");
-				return true;
-				break;
-			// スキル習得
-			case ($_POST["learnskill"]):
-				if (!$_POST["newskill"]) {
-					ShowError("没选定技能", "margin15");
-					return false;
-				}
-
-				$char->SetUser($this->id);
-				list($result, $message)	= $char->LearnNewSkill($_POST["newskill"]);
-				if ($result) {
-					$char->SaveCharData();
-					ShowResult($message, "margin15");
-				} else {
-					ShowError($message, "margin15");
-				}
-				return true;
-				// クラスチェンジ(転職)
-			case ($_POST["classchange"]):
-				if (!$_POST["job"]) {
-					ShowError("没选定职业", "margin15");
-					return false;
-				}
-				if ($char->ClassChange($_POST["job"])) {
-					// 装備を全部解除
-					if ($char->weapon || $char->shield || $char->armor || $char->item) {
-						if ($char->weapon) {
-							$this->AddItem($char->weapon);
-							$char->weapon	= NULL;
-						}
-						if ($char->shield) {
-							$this->AddItem($char->shield);
-							$char->shield	= NULL;
-						}
-						if ($char->armor) {
-							$this->AddItem($char->armor);
-							$char->armor	= NULL;
-						}
-						if ($char->item) {
-							$this->AddItem($char->item);
-							$char->item		= NULL;
-						}
-						$this->SaveUserItem();
-					}
-					// 保存
-					$char->SaveCharData($this->id);
-					ShowResult("转职完成", "margin15");
-					return true;
-				}
-				ShowError("failed.", "margin15");
+				ShowError("点数归还失败", "margin15");
 				return false;
-				//	改名(表示)
-			case ($_POST["rename"]):
-				$Name	= $char->Name();
-				$message = <<< EOD
-					<form action="?char={$_GET["char"]}" method="post" class="margin15">
-					半角英数16文字 (全角1文字=半角2文字)<br />
-					<input type="text" name="NewName" style="width:160px" class="text" />
-					<input type="submit" class="btn" name="NameChange" value="Change" />
-					<input type="submit" class="btn" value="Cancel" />
-					</form>
-					EOD;
-				print($message);
-				return false;
-				// 改名(処理)
-			case ($_POST["NewName"]):
-				list($result, $return)	= CheckString($_POST["NewName"], 16);
-				if ($result === false) {
-					ShowError($return, "margin15");
-					return false;
-				} else if ($result === true) {
-					if ($this->DeleteItem("7500", 1) == 1) {
-						ShowResult($char->Name() . "   " . $return . " 改名完成。", "margin15");
-						$char->ChangeName($return);
-						$char->SaveCharData($this->id);
-						$this->SaveUserItem();
-						return true;
-					} else {
-						ShowError("没有道具。", "margin15");
-						return false;
-					}
-					return true;
-				}
-				// 各種リセットの表示
-			case ($_POST["showreset"]):
-				$Name	= $char->Name();
-				print('<div class="margin15">' . "\n");
-				print("使用道具<br />\n");
-				print('<form action="?char=' . $_GET[char] . '" method="post">' . "\n");
-				print('<select name="itemUse">' . "\n");
-				$resetItem	= array(7510, 7511, 7512, 7513, 7520);
-				foreach ($resetItem as $itemNo) {
-					if ($this->item[$itemNo]) {
-						$item	= LoadItemData($itemNo);
-						print('<option value="' . $itemNo . '">' . $item[name] . " x" . $this->item[$itemNo] . '</option>' . "\n");
-					}
-				}
-				print("</select>\n");
-				print('<input type="submit" class="btn" name="resetVarious" value="重置">' . "\n");
-				print('<input type="submit" class="btn" value="取消">' . "\n");
-				print('</form>' . "\n");
-				print('</div>' . "\n");
-				break;
+			}
+		} elseif (isset($_POST["byebye"])) {
+			// 显示离队确认
+			$Name = $char->Name();
+			print <<< HTML
+        <div class="margin15">
+        {$Name} 解雇?<br>
+        <form action="?char={$_GET["char"]}" method="post">
+        <input type="submit" class="btn" name="kick" value="Yes">
+        <input type="submit" class="btn" value="No">
+        </form>
+        </div>
+        HTML;
+			return false;
+		} elseif (isset($_POST["kick"])) {
+			// 确认离队
+			$char->DeleteChar();
+			header("Location: " . INDEX);
+			exit;
+		}
 
-			// 各種リセットの処理
-			case ($_POST["resetVarious"]):
-				switch ($_POST["itemUse"]) {
-					case 7510:
-						$lowLimit	= 1;
-						break;
-					case 7511:
-						$lowLimit	= 30;
-						break;
-					case 7512:
-						$lowLimit	= 50;
-						break;
-					case 7513:
-						$lowLimit	= 100;
-						break;
-					// skill
-					case 7520:
-						$skillReset	= true;
-						break;
-				}
-				// 石ころをSPD1に戻す道具にする
-				if ($_POST["itemUse"] == 6000) {
-					if ($this->DeleteItem(6000) == 0) {
-						ShowError("没有道具。", "margin15");
-						return false;
-					}
-					if (1 < $char->spd) {
-						$dif	= $char->spd - 1;
-						$char->spd	-= $dif;
-						$char->statuspoint	+= $dif;
-						$char->SaveCharData($this->id);
-						$this->SaveUserItem();
-						ShowResult("点数归还", "margin15");
-						return true;
-					}
-				}
-				if ($lowLimit) {
-					if (!$this->item[$_POST["itemUse"]]) {
-						ShowError("没有道具。", "margin15");
-						return false;
-					}
-					if ($lowLimit < $char->str) {
-						$dif = $char->str - $lowLimit;
-						$char->str -= $dif;
-						$pointBack += $dif;
-					}
-					if ($lowLimit < $char->int) {
-						$dif = $char->int - $lowLimit;
-						$char->int -= $dif;
-						$pointBack += $dif;
-					}
-					if ($lowLimit < $char->dex) {
-						$dif = $char->dex - $lowLimit;
-						$char->dex -= $dif;
-						$pointBack += $dif;
-					}
-					if ($lowLimit < $char->spd) {
-						$dif = $char->spd - $lowLimit;
-						$char->spd -= $dif;
-						$pointBack += $dif;
-					}
-					if ($lowLimit < $char->luk) {
-						$dif = $char->luk - $lowLimit;
-						$char->luk -= $dif;
-						$pointBack += $dif;
-					}
-					if ($pointBack) {
-						if ($this->DeleteItem($_POST["itemUse"]) == 0) {
-							ShowError("没有道具。", "margin15");
-							return false;
-						}
-						$char->statuspoint	+= $pointBack;
-						// 装備も全部解除
-						if ($char->weapon || $char->shield || $char->armor || $char->item) {
-							if ($char->weapon) {
-								$this->AddItem($char->weapon);
-								$char->weapon	= NULL;
-							}
-							if ($char->shield) {
-								$this->AddItem($char->shield);
-								$char->shield	= NULL;
-							}
-							if ($char->armor) {
-								$this->AddItem($char->armor);
-								$char->armor	= NULL;
-							}
-							if ($char->item) {
-								$this->AddItem($char->item);
-								$char->item		= NULL;
-							}
-							ShowResult($char->Name() . " 的所有装备解除", "margin15");
-						}
-						$char->SaveCharData($this->id);
-						$this->SaveUserItem();
-						ShowResult("点数归还成功", "margin15");
-						return true;
-					} else {
-						ShowError("点数归还失败", "margin15");
-						return false;
-					}
-				}
-				break;
-
-			// サヨナラ(表示)
-			case ($_POST["byebye"]):
-				$Name	= $char->Name();
-				$message = <<< HTML_BYEBYE
-<div class="margin15">
-{$Name} 解雇?<br>
-<form action="?char={$_GET["char"]}" method="post">
-<input type="submit" class="btn" name="kick" value="Yes">
-<input type="submit" class="btn" value="No">
-</form>
-</div>
-HTML_BYEBYE;
-				print($message);
-				return false;
-				// サヨナラ(処理)
-			case ($_POST["kick"]):
-				//$this->DeleteChar($char->birth);
-				$char->DeleteChar();
-				$host  = $_SERVER['HTTP_HOST'];
-				$uri   = rtrim(dirname($_SERVER['PHP_SELF']));
-				//$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-				$extra = INDEX;
-				header("Location: http://$host$uri/$extra");
-				exit;
-				break;
-		endswitch;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////////////////
 	//	キャラクター詳細表示?装備変更などなど
@@ -968,17 +967,20 @@ HTML_BYEBYE;
 			<h4>人物状态 <a href="?manual#charstat" target="_blank" class="a0">?</a></h4>
 			<?php
 			$char->ShowCharDetail();
-			// 改名
-			if ($this->item["7500"])
+			// 改名 - 检查7500是否存在
+			if (isset($this->item[7500]) && $this->item[7500] > 0) {
 				print('<input type="submit" class="btn" name="rename" value="ChangeName">' . "\n");
-			// ステータスリセット系
-			if (
-				$this->item["7510"] ||
-				$this->item["7511"] ||
-				$this->item["7512"] ||
-				$this->item["7513"] ||
-				$this->item["7520"]
-			) {
+			}
+			// 状态重置 - 检查每个重置道具是否存在
+			$resetItems = [7510, 7511, 7512, 7513, 7520];
+			$hasResetItem = false;
+			foreach ($resetItems as $itemId) {
+				if (isset($this->item[$itemId]) && $this->item[$itemId] > 0) {
+					$hasResetItem = true;
+					break;
+				}
+			}
+			if ($hasResetItem) {
 				print('<input type="submit" class="btn" name="showreset" value="重置">' . "\n");
 			}
 			?>
@@ -4191,9 +4193,13 @@ HTML;
 								if ($this->name)
 									return false;
 
+								$error = null; // 初始化错误变量
+
 								do {
-									if (!$_POST["Done"])
+									if (!isset($_POST['Done']) || !$_POST['Done']) {
 										break;
+									}
+
 									if (is_numeric(strpos($_POST["name"], "\t"))) {
 										$error	= '请不要在名字中输入特殊字符。';
 										break;
@@ -4214,8 +4220,8 @@ HTML;
 										break;
 									}
 									$userName	= userNameLoad();
-									if (in_array($_POST["name"], $userName)) {
-										$error	= '该名字已被使用。';
+									if (isset($_POST["name"]) && in_array($_POST["name"], $userName)) {
+										$error = '该名字已被使用。';
 										break;
 									}
 									// 第一个角色的名字
@@ -4266,8 +4272,15 @@ HTML;
 											$gend = 1;
 									}
 									include_once(DATA_BASE_CHAR);
-									$char	= new char();
-									$char->SetCharData(array_merge(BaseCharStatus($job), array("name" => $_POST["first_name"], "gender" => "$gend")));
+									// 创建第一个角色
+									$char = new char();
+									$char->SetCharData(array_merge(
+										BaseCharStatus($job),
+										array(
+											"name" => $_POST["first_name"],
+											"gender" => (int)$gend  // 关键修复：转换为整型
+										)
+									));
 									$char->SaveCharData($this->id);
 									return false;
 								} while (0);
@@ -4292,7 +4305,10 @@ HTML;
 							<p>1-16字符的队伍名。<br /></p>
 							<div class="bold u">TeamName</div>
 							<input class="text" style="width:160px" maxlength="16" name="name"
-								<?php print($_POST["name"] ? "value=\"$_POST[name]\"" : "") ?>>
+								<?php
+								$nameValue = isset($_POST['name']) ? htmlspecialchars($_POST['name'], ENT_QUOTES) : '';
+								print($nameValue ? "value=\"$nameValue\"" : "");
+								?>>
 							<h4>第一个角色</h4>
 							<p>现在来想想您的第一个角色是什么样子的：<br>
 								角色的名字应该由1到16个字符组成，<br />

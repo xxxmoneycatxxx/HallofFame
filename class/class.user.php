@@ -530,39 +530,45 @@ class user
 	//	データを保存する
 	function SaveData()
 	{
-		$dir	= USER . $this->id;
-		$file	= USER . $this->id . "/" . DATA;
+		$dir = USER . $this->id;
+		$file = USER . $this->id . "/" . DATA;
 
-		if (file_exists($this->file) && $this->fp) {
+		// 修复：先检查属性是否存在
+		$fpExists = property_exists($this, 'fp') && $this->fp;
+
+		if (file_exists($this->file) && $fpExists) {
 			WriteFileFP($this->fp, $this->DataSavingFormat());
 			fclose($this->fp);
 			unset($this->fp);
 		} else {
-			if (file_exists($file))
+			if (file_exists($file)) {
 				WriteFile($file, $this->DataSavingFormat());
+			}
 		}
 	}
 	/////////////////////////////////////////////////
 	//	データファイル兼キャラファイルのファイルポインタも全部閉じる
-	function fpCloseAll()
+	function fpCloseAll(): void
 	{
-		// 基本データ
-		if (is_resource($this->fp)) {
+		// 基本データ - 添加类型检查和资源验证
+		if (isset($this->fp) && is_resource($this->fp)) {
 			fclose($this->fp);
 			unset($this->fp);
 		}
 
-		// アイテムデータ
-		if (is_resource($this->fp_item)) {
+		// アイテムデータ - 添加类型检查和资源验证
+		if (isset($this->fp_item) && is_resource($this->fp_item)) {
 			fclose($this->fp_item);
 			unset($this->fp_item);
 		}
 
-		// キャラデータ
-		if ($this->char) {
-			foreach ($this->char as $key => $var) {
-				if (method_exists($this->char[$key], "fpclose"))
-					$this->char[$key]->fpclose();
+		// キャラデータ - 添加空值检查和类型验证
+		if (!empty($this->char) && is_array($this->char)) {
+			foreach ($this->char as $char) {
+				// 添加对象类型和方法存在性检查
+				if (is_object($char) && method_exists($char, "fpclose")) {
+					$char->fpclose();
+				}
 			}
 		}
 	}
@@ -601,14 +607,21 @@ class user
 		}
 	}
 	//////////////////////////////////////////////////
-	//	キャラデータを消す
+	//	角色删除
 	function DeleteChar($no)
 	{
-		$file	= USER . $this->id . "/" . $no . ".dat";
-		if ($this->char[$no]) {
+		$file = USER . $this->id . "/" . $no . ".dat";
+
+		// 检查角色是否已加载
+		if (isset($this->char[$no]) && is_object($this->char[$no])) {
 			$this->char[$no]->fpclose();
 		}
-		if (file_exists($file))
+
+		if (file_exists($file)) {
 			unlink($file);
+		}
+
+		// 清除内存中的角色引用
+		unset($this->char[$no]);
 	}
 }
