@@ -1387,7 +1387,7 @@ HTML;
 			list($land)	= LandInformation($map);
 			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land["name"]}</a>");
 			//print(" ({$land[proper]})");
-			print("</p>");
+			print("</p><br/>");
 		}
 
 		// Union

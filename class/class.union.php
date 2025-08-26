@@ -325,63 +325,68 @@ class union extends char
 			//	キャラの変数をセットする。
 			function SetCharData($data)
 			{
-				$this->MonsterNumber	= $data["MonsterNumber"];
-				$this->LastDefeated		= $data["LastDefeated"];
+				// 为所有数组键提供默认值
+				$this->MonsterNumber = $data["MonsterNumber"] ?? 0;
+				$this->LastDefeated = $data["LastDefeated"] ?? 0;
 
-				$monster	= CreateMonster($this->MonsterNumber);
+				$monster = CreateMonster($this->MonsterNumber);
 
-				$this->UnionName	= $monster["UnionName"];
+				$this->UnionName = $monster["UnionName"] ?? '未知联盟';
+				$this->name = $monster["name"] ?? '未知怪物';
+				$this->level = $monster["level"] ?? 1;
 
-				$this->name	= $monster["name"];
-				$this->level	= $monster["level"];
+				// 图像处理（允许空值）
+				$this->img = $monster["img"] ?? '';
 
-				if ($monster["img"])
-					$this->img		= $monster["img"];
+				// 基础属性
+				$this->str = $monster["str"] ?? 0;
+				$this->int = $monster["int"] ?? 0;
+				$this->dex = $monster["dex"] ?? 0;
+				$this->spd = $monster["spd"] ?? 0;
+				$this->luk = $monster["luk"] ?? 0;
 
-				$this->str		= $monster["str"];
-				$this->int		= $monster["int"];
-				$this->dex		= $monster["dex"];
-				$this->spd		= $monster["spd"];
-				$this->luk		= $monster["luk"];
+				// HP/SP 处理
+				$this->maxhp = $monster["maxhp"] ?? 100;
+				$this->hp = $data["HP"] ?? $this->maxhp;
+				$this->maxsp = $monster["maxsp"] ?? 50;
+				$this->sp = $data["SP"] ?? $this->maxsp;
 
-				$this->maxhp	= $monster["maxhp"];
-				$this->hp		= $data["HP"];
-				$this->maxsp	= $monster["maxsp"];
-				$this->sp		= $data["SP"];
+				// 战斗位置和防御
+				$this->position = $monster["position"] ?? 0;
+				$this->guard = $monster["guard"] ?? 0;
 
-				$this->position	= $monster["position"];
-				$this->guard	= $monster["guard"];
+				// 特殊数组字段处理
+				$this->judge = is_array($monster["judge"] ?? null)
+					? $monster["judge"]
+					: explode("<>", $monster["judge"] ?? "");
 
-				if (is_array($monster["judge"]))
-					$this->judge	= $monster["judge"];
-				//else
-				//	$this->judge	= explode("<>",$monster["judge"]);
-				if (is_array($monster["quantity"]))
-					$this->quantity	= $monster["quantity"];
-				if (is_array($monster["action"]))
-					$this->action	= $monster["action"];
+				$this->quantity = $monster["quantity"] ?? [];
+				$this->action = $monster["action"] ?? [];
 
-				//モンスター専用
-				$this->monster		= true;
-				$this->exphold		= $monster["exphold"];
-				$this->moneyhold	= $monster["moneyhold"];
-				$this->itemdrop		= $monster["itemdrop"];
-				$this->atk	= $monster["atk"];
-				$this->def	= $monster["def"];
-				$this->SPECIAL	= $monster["SPECIAL"];
+				// 怪物专属属性（关键修复）
+				$this->exphold = $monster["exphold"] ?? 0;
+				$this->moneyhold = $monster["moneyhold"] ?? 0;
+				$this->itemdrop = $monster["itemdrop"] ?? []; // 修复行
 
-				$this->Slave	= $monster["Slave"];
-				$this->UnionLand	= $monster["land"];
-				$this->LevelLimit	= $monster["LevelLimit"];
+				// 攻防属性
+				$this->atk = $monster["atk"] ?? ['0' => 0, '1' => 0]; // 物理/魔法攻击
+				$this->def = $monster["def"] ?? ['0' => 0, '2' => 0]; // 物理/魔法防御
+				$this->SPECIAL = $monster["SPECIAL"] ?? [];
 
-				// 時間が経過して復活する処理。
-				$Now	= time();
-				$Passed	= $this->LastDefeated + $monster["cycle"];
+				// 联盟专属
+				$this->Slave = $monster["Slave"] ?? [];
+				$this->UnionLand = $monster["land"] ?? 0;
+				$this->LevelLimit = $monster["LevelLimit"] ?? 0;
+
+				// 复活周期处理
+				$cycle = $monster["cycle"] ?? 86400; // 默认24小时
+				$Now = time();
+				$Passed = $this->LastDefeated + $cycle;
 				if ($Passed < $Now && !$this->hp) {
-					$this->hp	= $this->maxhp;
-					$this->sp	= $this->maxsp;
+					$this->hp = $this->maxhp;
+					$this->sp = $this->maxsp;
 				}
-				$this->LastHP	= $data["HP"]; //差分を取るためのHP。
+				$this->LastHP = $data["HP"] ?? $this->hp;
 			}
 
 			//////////////////////////////////////////////////

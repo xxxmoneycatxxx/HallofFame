@@ -63,7 +63,7 @@ function LandInformation($land)
 	switch ($land) {
 		case "gb0":
 			$land	= array(
-				"name"	=> "最弱的哥布林",
+				"name"	=> "最弱的哥布林 [LV1]",
 				"name0"	=> "Goblin Training",
 				"land"	=> "grass",
 				"proper"	=> "Lv1",
@@ -75,7 +75,7 @@ function LandInformation($land)
 			break;
 		case "gb1":
 			$land	= array(
-				"name"	=> "强一点的哥布林",
+				"name"	=> "强一点的哥布林 [LV1~LV10]",
 				"name0"	=> "The Goblins",
 				"land"	=> "grass",
 				"proper"	=> "Lv1-5",
@@ -93,7 +93,7 @@ function LandInformation($land)
 			break;
 		case "gb2":
 			$land	= array(
-				"name"	=> "哥布林战士",
+				"name"	=> "哥布林战士 [LV6~LV15]",
 				"name0"	=> "The Goblin Warriors",
 				"land"	=> "grass",
 				"proper"	=> "Lv3-8",
@@ -184,7 +184,7 @@ function LandInformation($land)
 
 		case "sea0":
 			$land	= array(
-				"name"	=> "海岸",
+				"name"	=> "海岸 [LV16~LV21]",
 				"name0"	=> "",
 				"land"	=> "sea",
 				"proper"	=> "99-99",
@@ -201,7 +201,7 @@ function LandInformation($land)
 			break;
 		case "sea1":
 			$land	= array(
-				"name"	=> "海(西海岸)",
+				"name"	=> "海(西海岸) [LV21]",
 				"name0"	=> "",
 				"land"	=> "sea",
 				"proper"	=> "99-99",
@@ -213,7 +213,7 @@ function LandInformation($land)
 
 		case "ocean0":
 			$land	= array(
-				"name"	=> "海洋",
+				"name"	=> "海洋 [LV33~LV39]",
 				"name0"	=> "",
 				"land"	=> "ocean",
 				"proper"	=> "99-99",
@@ -229,7 +229,7 @@ function LandInformation($land)
 
 		case "sand0":
 			$land	= array(
-				"name"	=> "沙漠",
+				"name"	=> "沙漠 [LV23~LV25]",
 				"name0"	=> "",
 				"land"	=> "sand",
 				"proper"	=> "99-99",
@@ -244,7 +244,7 @@ function LandInformation($land)
 			break;
 		case "mt0":
 			$land	= array(
-				"name"	=> "火入口",
+				"name"	=> "火山入口 [LV29~LV34]",
 				"name0"	=> "",
 				"land"	=> "mount",
 				"proper"	=> "Lv??",
@@ -258,7 +258,7 @@ function LandInformation($land)
 			break;
 		case "volc0":
 			$land	= array(
-				"name"	=> "火中腹",
+				"name"	=> "火山中腹 [LV34~LV41]",
 				"name0"	=> "",
 				"land"	=> "lava",
 				"proper"	=> "Lv??",
@@ -273,7 +273,7 @@ function LandInformation($land)
 			break;
 		case "volc1":
 			$land	= array(
-				"name"	=> "火顶上",
+				"name"	=> "火山顶上 [LV35~LV41]",
 				"name0"	=> "",
 				"land"	=> "lava",
 				"proper"	=> "Lv??",
@@ -289,7 +289,7 @@ function LandInformation($land)
 			break;
 		case "swamp0":
 			$land	= array(
-				"name"	=> "沼泽",
+				"name"	=> "沼泽 [LV29~LV36]",
 				"name0"	=> "",
 				"land"	=> "swamp",
 				"proper"	=> "Lv??",
@@ -305,7 +305,7 @@ function LandInformation($land)
 			break;
 		case "swamp1":
 			$land	= array(
-				"name"	=> "村庄",
+				"name"	=> "村庄 [LV36~LV42]",
 				"name0"	=> "",
 				"land"	=> "swamp",
 				"proper"	=> "Lv??",
@@ -320,7 +320,7 @@ function LandInformation($land)
 			break;
 		case "snow0":
 			$land	= array(
-				"name"	=> "滴冻入口",
+				"name"	=> "滴冻入口 [LV ??]",
 				"name0"	=> "FrostyMountain(foot)",
 				"land"	=> "snow",
 				"proper"	=> "Lv??",
@@ -334,7 +334,7 @@ function LandInformation($land)
 			break;
 		case "snow1":
 			$land	= array(
-				"name"	=> "滴冻中腹",
+				"name"	=> "滴冻中腹 [LV ??]",
 				"name0"	=> "FrostyMountain(HalfWay)",
 				"land"	=> "snow",
 				"proper"	=> "Lv??",
@@ -351,7 +351,7 @@ function LandInformation($land)
 			break;
 		case "snow2":
 			$land	= array(
-				"name"	=> "滴冻顶上",
+				"name"	=> "滴冻顶上 [LV ??]",
 				"name0"	=> "FrostyMountain(Top)",
 				"land"	=> "snow",
 				"proper"	=> "Lv??",
@@ -368,7 +368,7 @@ function LandInformation($land)
 			break;
 		case "des01":
 			$land	= array(
-				"name"	=> "掠夺者的沙漠",
+				"name"	=> "掠夺者的沙漠 [LV ??]",
 				"name0"	=> "Plunderer's Sandland",
 				"land"	=> "sand",
 				"proper"	=> "Lv5-10",
@@ -383,7 +383,7 @@ function LandInformation($land)
 			break;
 		case "plund01":
 			$land	= array(
-				"name"	=> "贼之巢穴",
+				"name"	=> "贼之巢穴 [LV ??]",
 				"name0"	=> "Plunderer's Nest",
 				"land"	=> "sand",
 				"proper"	=> "Lv10-15",
@@ -398,7 +398,7 @@ function LandInformation($land)
 			break;
 		case "blow01":
 			$land	= array(
-				"name"	=> "Blow山脉地区",
+				"name"	=> "Blow山脉地区 [LV ??]",
 				"name0"	=> "TheBlowHills",
 				"land"	=> "aband",
 				"proper"	=> "Lv20-30",
@@ -413,7 +413,7 @@ function LandInformation($land)
 			break;
 		case "horh":
 			$land	= array(
-				"name"	=> "天堂或地狱",
+				"name"	=> "天堂或地狱 [LV ??]",
 				"name0"	=> "Heaven or Hell",
 				"land"	=> "sea",
 				"proper"	=> "Lv99",

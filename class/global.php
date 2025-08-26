@@ -1013,53 +1013,75 @@ function ShowSkillDetail($skill, $radio = false)
 //	显示道具描述内容
 function ShowItemDetail($item, $amount = false, $text = false, $need = false)
 {
-	if (!$item) return false;
+    if (!$item || !is_array($item)) return false;
 
-	$html	= "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">";
+    $html = "<img src=\"" . IMG_ICON . $item["img"] . "\" class=\"vcent\">";
 
-	// 篮希猛
-	if ($item["refine"])
-		$html	.= "+{$item["refine"]} ";
-	if ($item["AddName"])
-		$html	.= "{$item["AddName"]} ";
-	$html	.= "{$item["base_name"]}"; // 叹涟
+    // 处理精炼等级（添加空值检查）
+    if (isset($item["refine"]) && $item["refine"] > 0) {
+        $html .= "+{$item["refine"]} ";
+    }
 
-	if ($item["type"])
-		$html	.= "<span class=\"light\"> ({$item["type"]})</span>";
-	if ($amount) { //眶翁
-		$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
-	}
-	if ($item["atk"]["0"]) //湿妄苟封
-		$html	.= ' / <span class="dmg">物理攻击：' . $item["atk"][0] . '</span>';
-	if ($item["atk"]["1"]) //蒜恕苟封
-		$html	.= ' / <span class="spdmg">魔法攻击：' . $item["atk"][1] . '</span>';
-	if ($item["def"]) {
-		$html	.= " / <span class=\"recover\">物理防御：{$item["def"][0]}+{$item["def"][1]}</span>";
-		$html	.= " / <span class=\"support\">魔法防御：{$item["def"][2]}+{$item["def"][3]}</span>";
-	}
-	if ($item["P_SUMMON"])
-		$html	.= ' / <span class="support">召唤 +' . $item["P_SUMMON"] . '%</span>';
-	if (isset($item["handle"]))
-		$html	.= ' / <span class="charge">重量：' . $item['handle'] . '</span>'; // FIXED: changed $item[handle] to $item['handle']
-	if ($item["option"])
-		$html	.= ' / <span style="font-size:80%">' . substr($item["option"], 0, -2) . "</span>";
+    // 处理附加名称（添加空值检查）
+    if (!empty($item["AddName"])) {
+        $html .= "{$item["AddName"]} ";
+    }
 
-	if ($need && $item["need"]) {
-		$html	.= " /";
-		foreach ($item["need"] as $M_itemNo => $M_amount) {
-			$M_item	= LoadItemData($M_itemNo);
-			$html	.= "";
-			$html	.= "{$M_item["base_name"]}"; // 叹涟
-			$html	.= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
-			if ($need["$M_itemNo"])
-				$html	.= "<span class=\"light\">(" . $need["$M_itemNo"] . ")</span>";
-		}
-	}
+    $html .= "{$item["base_name"]}"; // 基础名称
 
-	if ($text)
-		return $html;
+    // 处理类型
+    if (!empty($item["type"])) {
+        $html .= "<span class=\"light\"> ({$item["type"]})</span>";
+    }
 
-	print($html);
+    if ($amount) {
+        $html .= " x<span class=\"bold\" style=\"font-size:80%\">{$amount}</span>";
+    }
+
+    // 攻击力（添加防御性检查）
+    if (!empty($item["atk"][0])) {
+        $html .= ' / <span class="dmg">物理攻击：' . $item["atk"][0] . '</span>';
+    }
+    if (!empty($item["atk"][1])) {
+        $html .= ' / <span class="spdmg">魔法攻击：' . $item["atk"][1] . '</span>';
+    }
+
+    // 防御力（添加多层检查）
+    if (isset($item["def"]) && is_array($item["def"])) {
+        $def = $item["def"];
+        $html .= " / <span class=\"recover\">物理防御：" . ($def[0] ?? 0) . "+" . ($def[1] ?? 0) . "</span>";
+        $html .= " / <span class=\"support\">魔法防御：" . ($def[2] ?? 0) . "+" . ($def[3] ?? 0) . "</span>";
+    }
+
+    // 召唤概率（添加空值检查）
+    if (isset($item["P_SUMMON"])) {
+        $html .= ' / <span class="support">召唤 +' . $item["P_SUMMON"] . '%</span>';
+    }
+
+    // 重量（添加空值检查）
+    if (isset($item["handle"])) {
+        $html .= ' / <span class="charge">重量：' . $item['handle'] . '</span>';
+    }
+
+    // 附加选项（添加空值检查）
+    if (!empty($item["option"])) {
+        $html .= ' / <span style="font-size:80%">' . substr($item["option"], 0, -2) . "</span>";
+    }
+
+    // 合成需求（添加空值检查）
+    if ($need && !empty($item["need"]) && is_array($item["need"])) {
+        $html .= " /";
+        foreach ($item["need"] as $M_itemNo => $M_amount) {
+            $M_item = LoadItemData($M_itemNo);
+            $html .= "{$M_item["base_name"]}";
+            $html .= " x<span class=\"bold\" style=\"font-size:80%\">{$M_amount}</span>";
+            if ($need[$M_itemNo] ?? false) {
+                $html .= "<span class=\"light\">(" . $need[$M_itemNo] . ")</span>";
+            }
+        }
+    }
+
+    return $text ? $html : print($html);
 }
 
 //////////////////////////////////////////////////

@@ -1,4 +1,5 @@
 ﻿<?php
+
 /**
  * 可进入地图列表生成函数
  * 
@@ -38,40 +39,36 @@
  * 示例返回：
  *   ["gb0", "gb1", "gb2", "ac0", "snow0"]（当用户拥有道具8000和8009时）
  */
-function LoadMapAppear($user) {
-	$land	= array();
-	// 无条件的
-	array_push($land,"gb0","gb1","gb2");
-	// 需要携带地图道具或特殊条件才出现的
-	if($user->item["8000"])
-		array_push($land,"ac0");
-	if($user->item["8001"])
-		array_push($land,"ac1");
-	if($user->item["8002"])
-		array_push($land,"ac2");
-	if($user->item["8003"])
-		array_push($land,"ac3");
-	if($user->item["8004"])
-		array_push($land,"ac4");
-	if($user->item["8009"])
-		array_push($land,"snow0");
-	if($user->item["8010"])
-		array_push($land,"snow1");
-	if($user->item["8011"])
-		array_push($land,"snow2");
-	/*
-	array_push($land,"sea0");
-	array_push($land,"sea1");
-	array_push($land,"ocean0");
-	array_push($land,"sand0");
-	array_push($land,"swamp0");
-	array_push($land,"swamp1");
-	array_push($land,"mt0");
-	array_push($land,"volc0");
-	array_push($land,"volc1");
-	*/
-	if(date("H") == 2 && substr(date("i"),0,1)==5)
-		array_push($land,"horh");
+function LoadMapAppear($user)
+{
+	$land = array();
+	// 无条件地图
+	array_push($land, "gb0", "gb1", "gb2");
+
+	// 道具解锁地图（添加键存在性检查）
+	if (isset($user->item["8000"]) && $user->item["8000"] > 0)
+		array_push($land, "ac0");
+	if (isset($user->item["8001"]) && $user->item["8001"] > 0)
+		array_push($land, "ac1");
+	if (isset($user->item["8002"]) && $user->item["8002"] > 0)
+		array_push($land, "ac2");
+	if (isset($user->item["8003"]) && $user->item["8003"] > 0)
+		array_push($land, "ac3");
+	if (isset($user->item["8004"]) && $user->item["8004"] > 0)
+		array_push($land, "ac4");
+	if (isset($user->item["8009"]) && $user->item["8009"] > 0)
+		array_push($land, "snow0");
+	if (isset($user->item["8010"]) && $user->item["8010"] > 0)
+		array_push($land, "snow1");
+	if (isset($user->item["8011"]) && $user->item["8011"] > 0)
+		array_push($land, "snow2");
+
+	// 调试地图（保持原样）
+	array_push($land, "sea0", "sea1", "ocean0", "sand0", "swamp0", "swamp1", "mt0", "volc0", "volc1");
+
+	// 时间限定地图（保持原样）
+	if (date("H") == 2 && substr(date("i"), 0, 1) == 5)
+		array_push($land, "horh");
+
 	return $land;
 }
-?>
