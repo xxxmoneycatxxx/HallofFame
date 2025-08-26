@@ -116,26 +116,50 @@ if (!function_exists('initDatabase')) {
 				$db->exec("PRAGMA journal_mode = WAL;"); // 启用WAL模式提高并发性能
 
 				$db->exec("CREATE TABLE IF NOT EXISTS battle_logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                battle_time INTEGER NOT NULL,
-                team0_name TEXT NOT NULL,
-                team1_name TEXT NOT NULL,
-                team0_count INTEGER NOT NULL,
-                team1_count INTEGER NOT NULL,
-                team0_avg_level REAL NOT NULL,
-                team1_avg_level REAL NOT NULL,
-                winner INTEGER NOT NULL,
-                total_turns INTEGER NOT NULL,
-                battle_content TEXT NOT NULL,
-                battle_type TEXT NOT NULL CHECK(battle_type IN ('normal', 'union', 'rank'))
-            )");
+                id INTEGER PRIMARY KEY AUTOINCREMENT,		-- 战斗日志ID
+                battle_time INTEGER NOT NULL,				-- 
+                team0_name TEXT NOT NULL,					-- 
+                team1_name TEXT NOT NULL,					-- 
+                team0_count INTEGER NOT NULL,				-- 
+                team1_count INTEGER NOT NULL,				-- 
+                team0_avg_level REAL NOT NULL,				-- team0平均等级
+                team1_avg_level REAL NOT NULL,				-- team1平均等级
+                winner INTEGER NOT NULL,					-- 胜方
+                total_turns INTEGER NOT NULL,				-- 回合数
+                battle_content TEXT NOT NULL,				-- 日志内容
+                battle_type TEXT NOT NULL CHECK(battle_type IN ('normal', 'union', 'rank'))		-- 日志类型
+            	)");
 
 				$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_name TEXT NOT NULL,
-                message TEXT NOT NULL,
-                post_time INTEGER NOT NULL
-            )");
+                id INTEGER PRIMARY KEY AUTOINCREMENT,	-- 留言ID
+                user_name TEXT NOT NULL,				-- 用户名
+                message TEXT NOT NULL,					-- 具体信息
+                post_time INTEGER NOT NULL				-- 留言时间
+           		)");
+
+				$db->exec("CREATE TABLE IF NOT EXISTS skills (
+				id INTEGER PRIMARY KEY,     -- 技能ID
+				name TEXT NOT NULL,         -- 技能名称
+				img TEXT,                   -- 图标路径
+				exp TEXT,                   -- 技能描述
+				sp INTEGER DEFAULT 0,       -- 消耗SP
+				type INTEGER DEFAULT 0,     -- 类型(0=物理,1=魔法)
+				learn INTEGER DEFAULT 0,    -- 学习所需点数
+				target TEXT,                -- JSON数组格式的目标范围
+				pow INTEGER,                -- 基础威力
+				invalid BOOLEAN DEFAULT 0,  -- 是否无视位置
+				charge TEXT,                -- JSON数组格式的吟唱时间
+				support BOOLEAN DEFAULT 0,  -- 是否为支援技能
+				pierce BOOLEAN DEFAULT 0,  -- 是否无视防御
+				poison INTEGER,             -- 中毒概率
+				knockback INTEGER,          -- 击退概率
+				summon TEXT,                -- 召唤怪物ID
+				effects TEXT,               -- JSON格式的特殊效果
+				limits TEXT,                -- JSON格式的限制条件
+				passive BOOLEAN DEFAULT 0,  -- 是否被动技能
+				p_effects TEXT,             -- JSON格式的被动效果
+				category INTEGER            -- 技能分类
+				)");
 
 				// 添加索引优化查询性能
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_type ON battle_logs(battle_type)");
