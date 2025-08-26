@@ -16,7 +16,7 @@ admin/ *管理后台
                                 2. data.judge_setup.php - 技能判定数据
                                 3. data.skill.php - 技能效果数据
                                 4. data.item.php - 物品数据
-                                5. data.enchant.php - 装备附魔（精炼？）数据
+                                5. data.enchant.php - 装备效果
     list_skill.php *游戏技能百科全书，通过PHP脚本从data.skill.php加载所有技能信息
     set_action.php *怪物行动模式设置及生成工具
 
@@ -39,7 +39,7 @@ class/ *功能实现
 css/ *css资源
     global.css *全局页面css
 
-data/ *游戏数据（？）事实上不太好分类
+data/ *游戏数据
     data.base_char.php *角色基础职业生成函数
     data.class_change.php *角色转职资格验证函数
     data.create.php *可制作道具列表生成函数
@@ -57,12 +57,12 @@ data/ *游戏数据（？）事实上不太好分类
     data.manual0.php *游戏指南手册文档
     data.manual1.php *高级游戏指南文档
     data.monster.php *怪物数据创建函数
-    data.skill.php *技能数据加载函数
+    data.skill.php *技能数据加载函数（已改造为接口，数据已迁移至game.db）
     data.skilltree.php *角色技能树加载函数
     data.town_appear.php *城镇设施出现条件控制函数
     data.tutorial.php *游戏新手教程文档
 
-db/ *数据库？但这个项目是用写入文件的方式存数据。总之是放数据的地方
+db/ *数据库
     auction_log.dat
     auction.dat
     ctrltime.dat
@@ -71,7 +71,10 @@ db/ *数据库？但这个项目是用写入文件的方式存数据。总之是
     register.dat
     update.dat
     username.dat
-    game.db *战斗日志sqlite化改造
+    game.db *已进行sqlite化改造的功能：
+                1. 战斗日志
+                2. 城镇广场bbs
+                3. 技能skills
   
 image/ *image资源
     char/
