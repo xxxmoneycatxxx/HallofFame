@@ -1041,7 +1041,7 @@ HTML;
 				print("<select name=\"judge" . $i . "\">\n");
 				foreach ($list as $val) { //判断のoption
 					$exp	= LoadJudgeData($val);
-					print("<option value=\"{$val}\"" . ($char->judge[$i] == $val ? " selected" : NULL) . ($exp["css"] ? ' class="select0"' : NULL) . ">" . ($exp["css"] ? ' ' : '   ') . "{$exp[exp]}</option>\n");
+					print("<option value=\"{$val}\"" . ($char->judge[$i] == $val ? " selected" : NULL) . ($exp["css"] ? ' class="select0"' : NULL) . ">" . ($exp["css"] ? ' ' : '   ') . "{$exp["exp"]}</option>\n");
 				}
 				print("</select>\n");
 				print("</td><td>\n");
