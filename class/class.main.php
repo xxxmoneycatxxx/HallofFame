@@ -1880,7 +1880,7 @@ HTML;
 				if (!$_POST["ItemSell"])
 					return false;
 
-				$GetMoney	= 0;
+				$getMoney	= 0;
 				print("<div style=\"margin:15px\">");
 				print("<table cellspacing=\"0\">\n");
 				print('<tr><td class="td6" style="text-align:center">价格</td>' .
@@ -2904,13 +2904,13 @@ HTML;
 							}
 							// 道具を所持していない場合
 							if (!$this->item[$_POST["item_no"]]) {
-								ShowError("Item \"{$item[name]}\" doesn't exists.");
+								ShowError("Item \"{$item["name"]}\" doesn't exists.");
 								return false;
 							}
 							// その道具が出品できない場合
 							$possible	= CanExhibitType();
 							if (!$possible[$item["type"]]) {
-								ShowError("Cant put \"{$item[name]}\" to the Auction");
+								ShowError("Cant put \"{$item["name"]}\" to the Auction");
 								return false;
 							}
 							// 出品時間の確認
