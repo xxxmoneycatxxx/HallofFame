@@ -48,7 +48,6 @@ const MONEY_RATE = 1; //金钱倍数
 
 const NEW_NAME_COST = 100000; //改变队伍名称所需资金
 const BBS_OUT = 0; //论坛链接地址
-const BBS_BOTTOM_TOGGLE = 0; //底部论坛链接按钮(0=OFF 1=ON)
 const AUCTION_TOGGLE = 1; //是否开启拍卖会所(0=OFF 1=ON)
 const AUCTION_EXHIBIT_TOGGLE = 0; ////拍卖(0=暂停 1=开启)
 const JUDGE_LIST_AUTO_LOAD = 1; //条件判定列表自动取得 1=自动 0=手动操作

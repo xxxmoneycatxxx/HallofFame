@@ -8,7 +8,7 @@
 admin/ *管理后台
     admin.php *游戏管理后台主界面
     list_enchant.php *物品附魔(精炼？)效果测试脚本
-    list_item.php *游戏道具列表页面，通过PHP脚本从data.item.php数据文件加载道具信息
+    admin.list_item.php *游戏道具列表页面，通过PHP脚本从data.item.php数据文件加载道具信息
     list_job.php *游戏职业详情列表页面，通过PHP脚本从data.job.php和data.skill.php加载职业和技能信息
     list_judge.php *判定条件列表生成器
     list_monster.php *怪物列表，数据来源：

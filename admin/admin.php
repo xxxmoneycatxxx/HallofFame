@@ -51,18 +51,24 @@
 
 require_once __DIR__ . '/../class/global.php';
 
+$login = false; // 初始化变量
+
 if (!defined("ADMIN_PASSWORD"))
 	exit(1);
 
 // 登录
-if ($_POST["pass"] == ADMIN_PASSWORD || $_COOKIE["adminPass"] == ADMIN_PASSWORD) {
-	setcookie("adminPass", $_POST["pass"] ? $_POST["pass"] : $_COOKIE["adminPass"], time() + 60 * 30);
+if ((isset($_POST['pass']) && $_POST['pass'] == ADMIN_PASSWORD) ||
+	(isset($_COOKIE['adminPass']) && $_COOKIE['adminPass'] == ADMIN_PASSWORD)
+) {
+
+	$passValue = $_POST['pass'] ?? $_COOKIE['adminPass'];
+	setcookie("adminPass", $passValue, time() + 60 * 30);
 	$login = true;
 }
 
 // 注销
-if ($_POST["logout"]) {
-	setcookie("adminPass");
+if ($_POST['logout'] ?? false) {
+	setcookie("adminPass", "", time() - 3600); // 设置为过期
 	$login = false;
 }
 ?>
@@ -119,7 +125,7 @@ if ($_POST["logout"]) {
 				MENU;
 
 		// 用户列表
-		if ($_GET["menu"] === "user") {
+		if (isset($_GET['menu']) && $_GET['menu'] === "user") {
 			$userList = glob(USER . "*");
 			print("<p>全部用户</p>\n");
 			foreach ($userList as $user) {
@@ -132,7 +138,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户数据
-		else if ($_POST["UserData"]) {
+		else if (isset($_POST["UserData"]) && $_POST["UserData"]) {
 			$userFileList = glob(USER . $_POST["userID"] . "/*");
 			print("<p>USER :" . $_POST["userID"] . "</p>\n");
 			foreach ($userFileList as $file) {
@@ -151,7 +157,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户数据删除
-		else if ($_POST["deleteUser"]) {
+		else if (isset($_POST["deleteUser"]) && $_POST["deleteUser"]) {
 			if ($_POST["deletePass"] == ADMIN_PASSWORD) {
 				include_once(CLASS_USER);
 				$userD = new user($_POST["userID"]);
@@ -163,7 +169,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户数据(详细)
-		else if ($_POST["UserFileDet"]) {
+		else if (isset($_POST["UserFileDet"]) && $_POST["UserFileDet"]) {
 			$file = USER . $_POST["userID"] . "/" . $_POST["userFile"];
 
 			// 数据修改
@@ -205,7 +211,7 @@ if ($_POST["logout"]) {
 			print("</form>\n");
 		}
 		// 数据汇总
-		else if ($_GET["menu"] === "data") {
+		else if (isset($_GET['menu']) && $_GET['menu'] === "data") {
 			print <<< DATA
 					<br>
 					<form action="?" method="post">
@@ -232,9 +238,10 @@ if ($_POST["logout"]) {
 		}
 
 		// 数据汇总(用户数据)
-		else if ($_POST["UserDataDetail"]) {
+		else if (isset($_POST["UserDataDetail"]) && $_POST["UserDataDetail"]) {
 			include_once(CLASS_USER);
 			$userFileList = glob(USER . "*");
+			$totalMoney = 0;
 			foreach ($userFileList as $user) {
 				$user = new user(basename($user, ".dat"));
 				$totalMoney += $user->money;
@@ -245,7 +252,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 数据汇总(人物数据)
-		else if ($_POST["UserCharDetail"]) {
+		else if (isset($_POST["UserCharDetail"]) && $_POST["UserCharDetail"]) {
 			$userFileList = glob(USER . "*");
 			$charAmount = 0;
 			$totalLevel = 0;
@@ -306,7 +313,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 数据汇总(道具数据)
-		else if ($_POST["ItemDataDetail"]) {
+		else if (isset($_POST["ItemDataDetail"]) && $_POST["ItemDataDetail"]) {
 			$userFileList = glob(USER . "*");
 			$userAmount = count($userFileList);
 			$items = array();
@@ -322,9 +329,10 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户IP
-		else if ($_POST["UserIpShow"]) {
+		else if (isset($_POST["UserIpShow"]) && $_POST["UserIpShow"]) {
 			$userFileList = glob(USER . "*");
 			$ipList = array();
+			$html = '';
 			foreach ($userFileList as $user) {
 				$file = $user . "/data.dat";
 				if (!$data = ParseFile($file)) continue;
@@ -344,7 +352,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 有可能是已损坏的数据
-		else if ($_POST["searchBroken"]) {
+		else if (isset($_POST["searchBroken"]) && $_POST["searchBroken"]) {
 			print("<p>可能会损坏文件<br>\n");
 			$baseSize = $_POST["brokenSize"] ? (int)$_POST["brokenSize"] : 100;
 			print("※{$baseSize}byte 以下的文件搜索(道具数据除外).</p>");
@@ -365,22 +373,27 @@ if ($_POST["logout"]) {
 		}
 
 		// 战斗记录管理
-		else if ($_POST["adminBattleLog"]) {
+		else if (isset($_POST["adminBattleLog"]) && $_POST["adminBattleLog"]) {
 			$db = $GLOBALS['DB'];
 
-			if ($_POST["deleteLogCommon"]) {
+			// 检查删除普通战斗记录键是否存在
+			if (isset($_POST["deleteLogCommon"]) && $_POST["deleteLogCommon"]) {
 				// 删除普通战斗记录
 				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'normal'");
 				$stmt->execute();
 				$count = $stmt->rowCount();
 				print("<p>已删除普通战斗记录：{$count}条</p>\n");
-			} else if ($_POST["deleteLogUnion"]) {
+			}
+			// 检查删除BOSS战斗记录键是否存在
+			else if (isset($_POST["deleteLogUnion"]) && $_POST["deleteLogUnion"]) {
 				// 删除BOSS战斗记录
 				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'union'");
 				$stmt->execute();
 				$count = $stmt->rowCount();
 				print("<p>已删除BOSS战斗记录：{$count}条</p>\n");
-			} else if ($_POST["deleteLogRanking"]) {
+			}
+			// 检查删除排行战记录键是否存在
+			else if (isset($_POST["deleteLogRanking"]) && $_POST["deleteLogRanking"]) {
 				// 删除排行战记录
 				$stmt = $db->prepare("DELETE FROM battle_logs WHERE battle_type = 'rank'");
 				$stmt->execute();
@@ -419,7 +432,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 拍卖管理
-		else if ($_POST["adminAuction"]) {
+		else if (isset($_POST["adminAuction"]) && $_POST["adminAuction"]) {
 			$file = AUCTION_ITEM;
 			print("<p>拍卖管理</p>\n");
 			// 数据修改
@@ -437,7 +450,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 排名管理
-		else if ($_POST["adminRanking"]) {
+		else if (isset($_POST["adminRanking"]) && $_POST["adminRanking"]) {
 			$file = RANKING;
 			print("<p>排名管理</p>\n");
 			// 数据修改
@@ -455,7 +468,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 广场管理
-		else if ($_POST["adminTown"]) {
+		else if (isset($_POST["adminTown"]) && $_POST["adminTown"]) {
 			$db = $GLOBALS['DB'];
 
 			print("<p>广场管理</p>\n");
@@ -550,7 +563,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户登录数据管理
-		else if ($_POST["adminRegister"]) {
+		else if (isset($_POST["adminRegister"]) && $_POST["adminRegister"]) {
 			$file = REGISTER;
 			print("<p>用户登录数据管理</p>\n");
 			// 数据修正
@@ -568,7 +581,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 用户名管理
-		else if ($_POST["adminUserName"]) {
+		else if (isset($_POST["adminUserName"]) && $_POST["adminUserName"]) {
 			$file = USER_NAME;
 			print("<p>用户名管理</p>\n");
 			// 数据修改
@@ -586,7 +599,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 更新情報管理
-		else if ($_POST["adminUpDate"]) {
+		else if (isset($_POST["adminUpDate"]) && $_POST["adminUpDate"]) {
 			$file = UPDATE;
 			print("<p>更新情報管理</p>\n");
 			// 数据修改
@@ -604,7 +617,7 @@ if ($_POST["logout"]) {
 		}
 
 		// 自动管理记录
-		else if ($_POST["adminAutoControl"]) {
+		else if (isset($_POST["adminAutoControl"]) && $_POST["adminAutoControl"]) {
 			$file = MANAGE_LOG_FILE;
 			print("<p>自动管理记录</p>\n");
 			// 数据修改
@@ -622,11 +635,11 @@ if ($_POST["logout"]) {
 		}
 
 		// 其他-1
-		else if ($_GET["menu"] === "other") {
+		else if (isset($_GET['menu']) && $_GET['menu'] === "other") {
 			print("
 				<p>管理</p>\n
 				<ul>\n
-				<li><a href=\"" . ADMIN_DIR . "list_item.php\">道具列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "admin.list_item.php\">道具列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_enchant.php\">装备效果列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_job.php\">职业列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
@@ -663,7 +676,6 @@ if ($_POST["logout"]) {
 				<tr><td>MAX_BATTLE_LOG_RANK</td><td>战斗记录保存数(排名)</td><td>" . MAX_BATTLE_LOG_RANK . "</td></tr>\n
 				<tr><td>UNION_BATTLE_TIME</td><td>BOSS战消耗体力</td><td>" . UNION_BATTLE_TIME . "Time</td></tr>\n
 				<tr><td>UNION_BATTLE_NEXT</td><td>BOSS战再挑战时间</td><td>" . UNION_BATTLE_NEXT . "s</td></tr>\n
-				<tr><td>BBS_BOTTOM_TOGGLE</td><td>下边是否加上bbs链接(1=ON)</td><td>" . BBS_BOTTOM_TOGGLE . "</td></tr>\n
 				</table>\n
 				");
 		}
@@ -677,7 +689,7 @@ ADMIN;
 	} else {
 		print <<< LOGIN
 				<form action="?" method="post">
-				请输入管理密码:<input type="text" name="pass" />
+				请输入管理密码: <input type="text" name="pass" />
 				<input type="submit" value="进入后台" />
 				</form>
 				LOGIN;
