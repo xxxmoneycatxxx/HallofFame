@@ -3652,12 +3652,11 @@ HTML;
 							$start	= substr($this->start, 0, 10);
 							$term	= 60 * 60 * 1;
 							if (($last - $start) < $term) {
-					?>
-						<div style="margin:5px 15px">
-							<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
-						</div>
-
-					<?php
+								?>
+									<div style="margin:5px 15px">
+										<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+									</div>
+								<?php
 							}
 						}
 

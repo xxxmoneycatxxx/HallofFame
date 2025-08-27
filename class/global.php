@@ -128,14 +128,14 @@ if (!function_exists('initDatabase')) {
                 total_turns INTEGER NOT NULL,				-- 回合数
                 battle_content TEXT NOT NULL,				-- 日志内容
                 battle_type TEXT NOT NULL CHECK(battle_type IN ('normal', 'union', 'rank'))		-- 日志类型
-            	)");
+				)");
 
 				$db->exec("CREATE TABLE IF NOT EXISTS town_bbs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,	-- 留言ID
                 user_name TEXT NOT NULL,				-- 用户名
                 message TEXT NOT NULL,					-- 具体信息
                 post_time INTEGER NOT NULL				-- 留言时间
-           		)");
+				)");
 
 				$db->exec("CREATE TABLE IF NOT EXISTS skills (
 				id INTEGER PRIMARY KEY,     -- 技能ID
@@ -159,6 +159,13 @@ if (!function_exists('initDatabase')) {
 				passive BOOLEAN DEFAULT 0,  -- 是否被动技能
 				p_effects TEXT,             -- JSON格式的被动效果
 				category INTEGER            -- 技能分类
+				)");
+
+				$db->exec("CREATE TABLE IF NOT EXISTS maintenance_schedule (
+				task_name TEXT PRIMARY KEY,  -- 任务名称
+				next_run INTEGER NOT NULL,   -- 下次执行时间戳
+				last_run INTEGER,             -- 上次执行时间
+				interval_sec INTEGER         -- 执行间隔(秒)
 				)");
 
 				// 添加索引优化查询性能
@@ -332,48 +339,69 @@ function DeleteAbandonAccount()
 		$Ranking->SaveRanking();
 	else if ($RankChange === false)
 		$Ranking->fpclose();
-	//print("<pre>".print_r($list,1)."</pre>");
 }
 //////////////////////////////////////////////////
 //	定期自动管理相关
-function RegularControl($value = null)
+function RegularControl()
 {
-	/*
-			服务器负载过大则时间段推迟。
-			PM 7:00 - AM 2:00不处理。
-			※时间设置请慎重！
-		*/
-	if (19 <= date("H") || date("H") <= 1)
-		return false;
-	$now	= time();
-	$fp		= FileLock(CTRL_TIME_FILE, true);
-	if (!$fp)
-		return false;
-	//$ctrltime	= file_get_contents(CTRL_TIME_FILE);
-	$ctrltime	= trim(fgets($fp, 1024));
-	// 如果未到周期，则结束
-	if ($now < $ctrltime) {
-		fclose($fp);
-		unset($fp);
-		return false;
-	}
-	// 管理の処理
-	RecordManage(date("Y M d G:i:s", $now) . ": auto regular control by {$value}.");
-	DeleteAbandonAccount(); //设置为1 清除过期用户
-	// 定期管理结束后，写入下一个管理时间并结束。
-	WriteFileFP($fp, $now + CONTROL_PERIOD);
-	fclose($fp);
-	unset($fp);
-}
-//////////////////////////////////////////////////
-//	$id 是否登录过
-function is_registered($id)
-{
-	if ($registered = @file(REGISTER)) {
-		if (array_search($id . "\n", $registered) !== false && !preg_match("/[\.\/]+/", $id)) // 改行記号必須
+	// 使用全局配置的维护周期常量
+	$interval = CONTROL_PERIOD; // 从 setting.php 获取自动管理周期
+
+	$db = $GLOBALS['DB'];
+	$now = time();
+
+	try {
+		$db->beginTransaction();
+
+		// 原子获取任务状态
+		$stmt = $db->prepare("
+            SELECT * FROM maintenance_schedule 
+            WHERE task_name = 'account_cleanup' 
+            FOR UPDATE");
+		$stmt->execute();
+		$task = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		// 首次运行或记录不存在时初始化任务
+		if (!$task) {
+			// 插入新任务记录（使用CONTROL_PERIOD作为间隔）
+			$initNextRun = $now + $interval;
+			$db->prepare("
+                INSERT INTO maintenance_schedule 
+                (task_name, next_run, last_run, interval_sec) 
+                VALUES (?, ?, NULL, ?)
+            ")->execute(['account_cleanup', $initNextRun, $interval]);
+			$db->commit();
 			return true;
-		else
+		}
+
+		// 检查是否到达执行时间
+		if ($now < $task['next_run']) {
+			$db->rollBack();
 			return false;
+		}
+
+		// 执行维护任务
+		DeleteAbandonAccount();
+
+		// 使用CONTROL_PERIOD计算下次执行时间
+		$nextRun = $now + $interval;
+
+		// 更新任务状态（使用CONTROL_PERIOD作为间隔）
+		$db->prepare("
+            UPDATE maintenance_schedule 
+            SET next_run = ?, last_run = ?, interval_sec = ?
+            WHERE task_name = 'account_cleanup'")
+			->execute([$nextRun, $now, $interval]);
+
+		$db->commit();
+
+		// 记录审计日志
+		RecordManage(date("Y-m-d H:i:s") . ": 账户清理任务完成");
+		return true;
+	} catch (Exception $e) {
+		$db->rollBack();
+		error_log("维护任务失败: " . $e->getMessage());
+		return false;
 	}
 }
 //////////////////////////////////////////////////

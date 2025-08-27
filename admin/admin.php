@@ -229,6 +229,7 @@ if ($_POST['logout'] ?? false) {
 					<li><input type="submit" name="adminUserName" value=" 管理 ">用户名管理</li>
 					<li><input type="submit" name="adminUpDate" value=" 管理 ">更新数据管理</li>
 					<li><input type="submit" name="adminAutoControl" value=" 管理 ">自动管理记录</li>
+					<li><input type="submit" name="adminMaintenance" value=" 管理 ">维护任务管理</li>
 					</ul>
 					<p>(※1)将会比较消耗性能。<br>
 					甚至超过增加的数据处理。
@@ -634,6 +635,53 @@ if ($_POST['logout'] ?? false) {
 			print("</form>\n");
 		}
 
+		// 维护任务管理
+		else if (isset($_POST["adminMaintenance"])) {
+			$db = $GLOBALS['DB'];
+
+			// 先处理立即执行请求（避免先显示后处理的逻辑问题）
+			if (isset($_POST['runNow']) && $_POST['runNow']) {
+				$taskName = $_POST['task'] ?? '';
+				// 参数过滤
+				if (!preg_match('/^[a-z_]+$/', $taskName)) {
+					print '<div class="error">任务名称无效</div>';
+				} else {
+					// 使用预处理语句防止SQL注入
+					$stmt = $db->prepare("UPDATE maintenance_schedule SET next_run = ? WHERE task_name = ?");
+					$stmt->execute([time() - 1, $taskName]);
+					print '<div class="success">已触发任务执行</div>';
+				}
+			}
+
+			// 显示任务列表
+			$tasks = $db->query("SELECT * FROM maintenance_schedule")->fetchAll(PDO::FETCH_ASSOC);
+
+			print '<h3>维护任务计划</h3>';
+			print '<table border="1" cellpadding="5">';
+			print '<tr><th>任务</th><th>下次执行</th><th>间隔(秒)</th><th>操作</th></tr>';
+
+			foreach ($tasks as $task) {
+				// XSS防御：转义输出
+				$taskName = htmlspecialchars($task['task_name']);
+				$nextRun = $task['next_run'] ? date('Y-m-d H:i:s', $task['next_run']) : '未设置';
+				$interval = htmlspecialchars($task['interval_sec']);
+
+				print "<tr>
+            <td>{$taskName}</td>
+            <td>{$nextRun}</td>
+            <td>{$interval}</td>
+            <td>
+                <form method='post'>
+                    <input type='hidden' name='task' value='{$taskName}'>
+                    <input type='hidden' name='adminMaintenance' value='1'>
+                    <input type='submit' name='runNow' value='立即执行'>
+                </form>
+            </td>
+        </tr>";
+			}
+			print '</table>';
+		}
+
 		// 其他-1
 		else if (isset($_GET['menu']) && $_GET['menu'] === "other") {
 			print("
@@ -681,11 +729,11 @@ if ($_POST['logout'] ?? false) {
 		}
 
 		print <<< ADMIN
-<hr>
-<p>请不要频繁使用管理功能。<br>
-用户数或数据有可能导致错误。
-</p>
-ADMIN;
+				<hr>
+				<p>请不要频繁使用管理功能。<br>
+				用户数或数据有可能导致错误。
+				</p>
+				ADMIN;
 	} else {
 		print <<< LOGIN
 				<form action="?" method="post">

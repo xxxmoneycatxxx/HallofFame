@@ -22,7 +22,7 @@ const TIME_GAIN_DAY = 500; //每日所获得的体力
 const MAX_CHAR = 5; //最大角色数量
 const MAX_USERS = 500; //最大用户数量
 const ABANDONED = 60 * 60 * 24 * 14; //删除用户周期
-const CONTROL_PERIOD = 60 * 60 * 12; //自动管理周期
+const CONTROL_PERIOD = 60 * 60 * 24; //自动管理周期
 const RECORD_IP = 1; //IP记录(0=NO 1=YES)
 
 // 其他设置
@@ -139,7 +139,6 @@ const AUCTION_ITEM = DB_DIR . "auction.dat"; //アイテムオ〖クション脱
 const AUCTION_ITEM_LOG = DB_DIR . "auction_log.dat"; //アイテムオ〖クション脱のログファイル
 const REGISTER = DB_DIR . "register.dat";
 const UPDATE = DB_DIR . "update.dat";
-const CTRL_TIME_FILE = DB_DIR . "ctrltime.dat"; //年袋瓷妄のための箕粗淡脖ファイル
 const RANKING = DB_DIR . "ranking.dat";
 const MANAGE_LOG_FILE = DB_DIR . "managed.dat"; //年袋瓷妄淡峡ファイル
 const USER_NAME = DB_DIR . "username.dat"; //叹涟瘦赂ファイル

@@ -65,16 +65,16 @@ data/ *游戏数据
 db/ *数据库
     auction_log.dat
     auction.dat
-    ctrltime.dat
     managed.dat
     ranking.dat
     register.dat
     update.dat
     username.dat
     game.db *已进行sqlite化改造的功能：
-                1. 战斗日志
-                2. 城镇广场bbs
-                3. 技能skills
+                1. 战斗日志 - battle_logs
+                2. 城镇广场bbs - town_bbs
+                3. 技能 - skills
+                4. 自动维护管理 - maintenance_schedule
   
 image/ *image资源
     char/
@@ -151,6 +151,11 @@ skills
     p_effects TEXT,             -- JSON格式的被动效果
     category INTEGER            -- 技能分类
 
+maintenance_schedule
+    task_name TEXT PRIMARY KEY,  -- 任务名称
+    next_run INTEGER NOT NULL,   -- 下次执行时间戳
+    last_run INTEGER,             -- 上次执行时间
+    interval_sec INTEGER         -- 执行间隔(秒)
 ......
 
 ```
