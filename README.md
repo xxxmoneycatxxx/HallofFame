@@ -65,7 +65,6 @@ data/ *游戏数据
 db/ *数据库
     auction_log.dat
     auction.dat
-    managed.dat
     ranking.dat
     register.dat
     update.dat
