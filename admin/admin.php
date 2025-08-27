@@ -619,20 +619,56 @@ if ($_POST['logout'] ?? false) {
 
 		// 自动管理记录
 		else if (isset($_POST["adminAutoControl"]) && $_POST["adminAutoControl"]) {
-			$file = MANAGE_LOG_FILE;
-			print("<p>自动管理记录</p>\n");
-			// 数据修改
-			if ($_POST["changeData"]) {
-				changeData($file, $_POST["fileData"]);
+			// 添加数据库连接初始化
+			$db = $GLOBALS['DB'];
+			if (!$db) {
+				die("数据库连接不可用，请检查数据库配置");
 			}
-			print('<form action="?" method="post">');
-			print('<textarea name="fileData" style="width:800px;height:300px;">');
-			print(file_get_contents($file));
-			print("</textarea><br>\n");
-			print('<input type="submit" name="changeData" value="修改">');
-			print('<input type="submit" value="更新">');
-			print('<input type="hidden" name="adminAutoControl" value="1">');
-			print("</form>\n");
+
+			$page = $_GET['page'] ?? 1;
+			$limit = 50;
+			$offset = ($page - 1) * $limit;
+
+			// 使用预处理语句防止SQL注入
+			$stmt = $db->prepare("
+				SELECT * FROM manage_logs 
+				ORDER BY log_time DESC 
+				LIMIT :limit OFFSET :offset
+			");
+			$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+			$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+			$stmt->execute();
+			$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			// 显示表格
+			echo '<table class="log-table" border="1" cellpadding="5">';
+			echo '<tr><th>时间</th><th>类型</th><th>操作者</th><th>目标</th><th>详情</th></tr>';
+
+			foreach ($logs as $log) {
+				$time = date('Y-m-d H:i:s', $log['log_time']);
+				echo "<tr>
+            <td>{$time}</td>
+            <td>{$log['event_type']}</td>
+            <td>{$log['user_id']}</td>
+            <td>{$log['target_id']}</td>
+            <td>{$log['details']}</td>
+        </tr>";
+			}
+			echo '</table>';
+
+			// 添加分页导航
+			$total = $db->query("SELECT COUNT(*) FROM manage_logs")->fetchColumn();
+			$totalPages = ceil($total / $limit);
+
+			echo '<div class="pagination">';
+			for ($i = 1; $i <= $totalPages; $i++) {
+				if ($i == $page) {
+					echo "<span>$i</span>";
+				} else {
+					echo "<a href=\"?adminAutoControl=1&page=$i\">$i</a>";
+				}
+			}
+			echo '</div>';
 		}
 
 		// 维护任务管理

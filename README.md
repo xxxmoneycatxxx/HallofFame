@@ -75,6 +75,7 @@ db/ *数据库
                 2. 城镇广场bbs - town_bbs
                 3. 技能 - skills
                 4. 自动维护管理 - maintenance_schedule
+                5. 操作日志 -  manage_logs
   
 image/ *image资源
     char/
@@ -156,6 +157,15 @@ maintenance_schedule
     next_run INTEGER NOT NULL,   -- 下次执行时间戳
     last_run INTEGER,             -- 上次执行时间
     interval_sec INTEGER         -- 执行间隔(秒)
+
+manage_logs
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    log_time INTEGER NOT NULL,       -- 时间戳
+    event_type TEXT NOT NULL,        -- 事件类型
+    user_id TEXT,                    -- 操作用户ID
+    target_id TEXT,                  -- 目标ID
+    details TEXT NOT NULL,           -- 详情
+    ip_address TEXT                  -- 操作IP
 ......
 
 ```

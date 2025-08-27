@@ -168,6 +168,16 @@ if (!function_exists('initDatabase')) {
 				interval_sec INTEGER         -- 执行间隔(秒)
 				)");
 
+				$db->exec("CREATE TABLE IF NOT EXISTS CREATE TABLE manage_logs (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				log_time INTEGER NOT NULL,       -- 时间戳
+				event_type TEXT NOT NULL,        -- 事件类型
+				user_id TEXT,                    -- 操作用户ID
+				target_id TEXT,                  -- 目标ID
+				details TEXT NOT NULL,           -- 详情
+				ip_address TEXT                  -- 操作IP
+				)");
+
 				// 添加索引优化查询性能
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_type ON battle_logs(battle_type)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_battle_time ON battle_logs(battle_time DESC)");
@@ -325,7 +335,7 @@ function DeleteAbandonAccount()
 			if ($Ranking->DeleteRank($UserID)) {
 				$RankChange	= true; // 排行榜可以修改了
 			}
-			RecordManage(date("Y M d G:i:s", $now) . ": user " . $user->id . " deleted.");
+			LogEvent('ACCOUNT_CLEAN', "删除闲置账户: {$user->id}", $user->id);
 			$user->DeleteUser(false); //设置false则不可从排行榜删除
 		}
 		// 不可删除
@@ -396,7 +406,7 @@ function RegularControl()
 		$db->commit();
 
 		// 记录审计日志
-		RecordManage(date("Y-m-d H:i:s") . ": 账户清理任务完成");
+		LogEvent('MAINTENANCE', '账户清理任务完成');
 		return true;
 	} catch (Exception $e) {
 		$db->rollBack();
@@ -1131,28 +1141,28 @@ function ShowError($message, $add = false)
 		print('<div class="error' . $add . '">' . $message . '</div>' . "\n");
 }
 //////////////////////////////////////////////////
-//	マニュアルを山绩する
+//	显示教程
 function ShowManual()
 {
 	include_once(MANUAL);
 	return true;
 }
 //////////////////////////////////////////////////
-//	マニュアルを山绩する
+//	显示高级教程
 function ShowManual2()
 {
 	include_once(MANUAL_HIGH);
 	return true;
 }
 //////////////////////////////////////////////////
-//	チュ〖トリアルを山绩する
+// 显示教程
 function ShowTutorial()
 {
 	include_once(TUTORIAL);
 	return true;
 }
 //////////////////////////////////////////////////
-//	构糠柒推の山绩
+//
 function ShowUpDate()
 {
 	print('<div style="margin:15px">');
@@ -1191,7 +1201,7 @@ function ShowUpDate()
 	print("<p><a href=\"?\">Back</a></p></div>");
 }
 //////////////////////////////////////////////////
-//	げ〖むで〖た
+// 加载游戏数据
 function ShowGameData()
 {
 ?>
@@ -1222,7 +1232,7 @@ function ShowGameData()
 			}
 		}
 		//////////////////////////////////////////////////
-		//	
+		//
 		function userNameLoad()
 		{
 			$name	= @file(USER_NAME);
@@ -1238,7 +1248,7 @@ function ShowGameData()
 			}
 		}
 		//////////////////////////////////////////////////
-		//	
+		//
 		function userNameAdd($add)
 		{
 			// 修复：初始化 $string 变量
@@ -1285,7 +1295,7 @@ function ShowGameData()
 			fclose($fp);
 		}
 		//////////////////////////////////////////////////
-		//	链ランキングの山绩
+		// 
 		function RankAllShow()
 		{
 			print('<div style="margin:15px">' . "\n");
@@ -1296,24 +1306,49 @@ function ShowGameData()
 			print('</div>' . "\n");
 		}
 		//////////////////////////////////////////////////
-		//	
-		function RecordManage($string)
+		//	日志记录
+		function LogEvent($eventType, $details, $targetId = null)
 		{
-			$file	= MANAGE_LOG_FILE;
+			try {
+				$db = $GLOBALS['DB'];
+				$stmt = $db->prepare("
+					INSERT INTO manage_logs 
+					(log_time, event_type, user_id, target_id, details, ip_address)
+					VALUES (?, ?, ?, ?, ?, ?)
+					");
 
-			$fp	= @fopen($file, "r+") or die();
-			$text	= fread($fp, 2048);
-			ftruncate($fp, 0);
-			rewind($fp);
-			fwrite($fp, $string . "\n" . $text);
+				$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'system';
+				$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
+				$stmt->execute([
+					time(),
+					$eventType,
+					$userId,
+					$targetId,
+					$details,
+					$ip
+				]);
+
+				return true;
+			} catch (Exception $e) {
+				error_log("日志记录失败: " . $e->getMessage());
+				return false;
+			}
 		}
 
-		/*
-	*	掐蜗された矢机误を澄千する
-	*	手り猛
-	*	喇根 = array(true,恃垂($string));
-	*	己窃 = array(false,己窃妄统);
-	*/
+		//////////////////////////////////////////////////
+		//	$id 是否登录过
+		function is_registered($id)
+		{
+			if ($registered = @file(REGISTER)) {
+				if (array_search($id . "\n", $registered) !== false && !preg_match("/[\.\/]+/", $id)) // 改行記号必須
+					return true;
+				else
+					return false;
+			}
+		}
+		//////////////////////////////////////////////////
+		//	字符串检查
 		function CheckString($string, $maxLength = 16)
 		{
 			$string	= trim($string);

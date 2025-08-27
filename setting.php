@@ -140,7 +140,6 @@ const AUCTION_ITEM_LOG = DB_DIR . "auction_log.dat"; //アイテムオ〖クシ�
 const REGISTER = DB_DIR . "register.dat";
 const UPDATE = DB_DIR . "update.dat";
 const RANKING = DB_DIR . "ranking.dat";
-const MANAGE_LOG_FILE = DB_DIR . "managed.dat"; //年袋瓷妄淡峡ファイル
 const USER_NAME = DB_DIR . "username.dat"; //叹涟瘦赂ファイル
 
 // dir
