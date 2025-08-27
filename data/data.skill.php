@@ -1,5 +1,7 @@
 ﻿<?php
 
+class DatabaseException extends Exception {}
+
 /**
  * 技能数据加载函数
  * 
@@ -133,45 +135,63 @@ function LoadSkillData($no)
 	static $cache = [];
 
 	// 内存缓存优化
-	if (isset($cache[$no])) return $cache[$no];
+	if (isset($cache[$no])) {
+		return $cache[$no];
+	}
+
+	// 确保数据库连接存在
+	if (!isset($GLOBALS['DB']) || !($GLOBALS['DB'] instanceof PDO)) {
+		throw new DatabaseException('全局数据库连接未初始化');
+	}
 
 	$db = $GLOBALS['DB'];
 	$stmt = $db->prepare('SELECT * FROM skills WHERE id = ?');
 	$stmt->execute([$no]);
 	$data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-	if (!$data) return false;
+	if (!$data) {
+		return false;
+	}
+
+	// 安全解析JSON字段
+	$safeJsonDecode = function ($json, $default) {
+		$decoded = json_decode($json, true);
+		return ($decoded === null) ? $default : $decoded;
+	};
 
 	// 重构为原结构
 	$skill = [
-		"name" => $data['name'],
-		"img" => $data['img'],
-		"exp" => $data['exp'],
-		"sp" => $data['sp'],
-		"type" => $data['type'],
-		"learn" => $data['learn'],
-		"target" => json_decode($data['target'], true),
-		"pow" => $data['pow'],
-		"invalid" => (bool)$data['invalid'],
-		"charge" => json_decode($data['charge'], true),
-		"support" => (bool)$data['support'],
-		"pierce" => (bool)$data['pierce'],
-		"passive" => (bool)$data['passive']
+		"name"    => $data['name'] ?? '',
+		"img"     => $data['img'] ?? '',
+		"exp"     => $data['exp'] ?? '',
+		"sp"      => $data['sp'] ?? 0,
+		"type"    => $data['type'] ?? 0,
+		"learn"   => $data['learn'] ?? 0,
+		"target"  => $safeJsonDecode($data['target'] ?? '', ['enemy', 'individual', 1]),
+		"pow"     => $data['pow'] ?? 100,
+		"invalid" => (bool)($data['invalid'] ?? false),
+		"charge"  => $safeJsonDecode($data['charge'] ?? '', [0, 0]),
+		"support" => (bool)($data['support'] ?? false),
+		"pierce"  => (bool)($data['pierce'] ?? false),
+		"passive" => (bool)($data['passive'] ?? false)
 	];
 
 	// 可选字段处理
-	if ($data['poison']) $skill['poison'] = $data['poison'];
-	if ($data['knockback']) $skill['knockback'] = $data['knockback'];
-	if ($data['summon']) $skill['summon'] = $data['summon'];
+	$optionalFields = ['poison', 'knockback', 'summon'];
+	foreach ($optionalFields as $field) {
+		if (!empty($data[$field])) {
+			$skill[$field] = $data[$field];
+		}
+	}
 
 	// 特殊效果
-	$effects = json_decode($data['effects'], true);
+	$effects = $safeJsonDecode($data['effects'] ?? '', []);
 	foreach ($effects as $key => $value) {
 		$skill[$key] = $value;
 	}
 
 	// 限制条件
-	$limits = json_decode($data['limits'], true);
+	$limits = $safeJsonDecode($data['limits'] ?? '', []);
 	if ($limits) {
 		if (isset($limits['鞭'])) {
 			$skill['limit'] = $limits;

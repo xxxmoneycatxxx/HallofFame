@@ -645,7 +645,7 @@ if ($_POST['logout'] ?? false) {
 				<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_monster.php\">怪物列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_skill.php\">技能列表</a></li>\n
-				<li><a href=\"" . ADMIN_DIR . "set_action.php\">行动模式设定机</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "admin.set_action.php\">行动模式设定机</a></li>\n
 				</ul>\n
 				");
 		}
