@@ -106,7 +106,7 @@ index.php *项目入口
 setting.php *全局配置
 ```
 
-数据结构(game.db)
+### 数据结构(game.db)
 ```
 battle_logs
     id INTEGER PRIMARY KEY AUTOINCREMENT,		-- 战斗日志ID
