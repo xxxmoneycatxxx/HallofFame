@@ -434,7 +434,8 @@ class user
 	//////////////////////////////////////////////////
 	//	アイテムデータを保存する
 	function SaveUserItem()
-	{
+	{	
+		$text	= ''; // 添加初始化
 		$dir	= USER . $this->id;
 		if (!file_exists($dir))
 			return false;
@@ -497,7 +498,7 @@ class user
 	//	データを保存する形式に変換する。(テキスト)
 	function DataSavingFormat()
 	{
-
+		$text = ''; // 添加初始化
 		$Save	= array(
 			"id",
 			"pass",

@@ -1259,8 +1259,10 @@ class char
 			}
 
 			//////////////////////////////////////////////////
+			// 
 			function DataSavingFormat()
 			{
+				$text = ''; // 添加初始化
 				$Save	= array(
 					"name",
 					"gender",
