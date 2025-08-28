@@ -5,46 +5,46 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Monster List</title>
 	<link rel="stylesheet" href="../css/global.css" type="text/css">
-    <!--
-      游戏怪物百科全书
-      功能说明：
-      1. 展示游戏中所有怪物的详细数据
-      2. 显示怪物的属性、技能和掉落物品
-      3. 提供怪物数据的完整参考
+	<!--
+	游戏怪物百科全书
+	功能说明：
+	1. 展示游戏中所有怪物的详细数据
+	2. 显示怪物的属性、技能和掉落物品
+	3. 提供怪物数据的完整参考
 
-      页面结构：
-      1. 响应式表格展示怪物核心属性：
-         - 基础属性：ID、名称、等级、图标
-         - 战斗属性：经验值、金钱、HP/SP、攻击/防御
-         - 状态属性：力量、智力、敏捷等
-         - 位置和保护设置
-      2. 技能展示区：
-         - 显示怪物的所有技能及详细参数
-         - 技能效果可视化展示
-      3. 掉落物品展示区：
-         - 显示怪物掉落的物品及掉落概率
-         - 物品详情展示
+	页面结构：
+	1. 响应式表格展示怪物核心属性：
+		- 基础属性：ID、名称、等级、图标
+		- 战斗属性：经验值、金钱、HP/SP、攻击/防御
+		- 状态属性：力量、智力、敏捷等
+		- 位置和保护设置
+	2. 技能展示区：
+		- 显示怪物的所有技能及详细参数
+		- 技能效果可视化展示
+	3. 掉落物品展示区：
+		- 显示怪物掉落的物品及掉落概率
+		- 物品详情展示
 
-      样式特点：
-      1. 深色主题设计，减少长时间查看的视觉疲劳
-      2. 使用颜色编码区分属性类型：
-         - 攻击属性：红色系
-         - 防御属性：蓝色系
-         - 特殊效果：紫色系
-      3. 响应式布局适应不同屏幕尺寸
-      4. 层次化结构清晰展示复杂数据
+	样式特点：
+	1. 深色主题设计，减少长时间查看的视觉疲劳
+	2. 使用颜色编码区分属性类型：
+		- 攻击属性：红色系
+		- 防御属性：蓝色系
+		- 特殊效果：紫色系
+	3. 响应式布局适应不同屏幕尺寸
+	4. 层次化结构清晰展示复杂数据
 
-      数据来源：
-      1. data.monster.php - 怪物基础数据
-      2. data.judge_setup.php - 技能判定数据
-      3. data.skill.php - 技能效果数据
-      4. data.item.php - 物品数据
-      5. data.enchant.php - 装备附魔数据
+	数据来源：
+	1. data.monster.php - 怪物基础数据
+	2. data.judge_setup.php - 技能判定数据
+	3. data.skill.php - 技能效果数据
+	4. data.item.php - 物品数据
+	5. data.enchant.php - 装备附魔数据
 
-      技术实现：
-      1. PHP动态生成怪物数据表格
-      2. 自定义函数渲染技能和物品详情
-      3. 嵌套表格结构展示复杂关系
+	技术实现：
+	1. PHP动态生成怪物数据表格
+	2. 自定义函数渲染技能和物品详情
+	3. 嵌套表格结构展示复杂关系
     -->
 	<style type="text/css">
 		<!--
@@ -89,18 +89,18 @@
 	define("IMG_ICON", "../image/icon/");
 
 	$det	= '<tr><td class="a">ID</td>
-			   <td class="a">名称</td>
-			   <td class="a">Lv</td>
-			   <td class="a">图</td>
-			   <td class="a">经验值</td>
-			   <td class="a">钱</td>
-			   <td class="a">hp</td>
-			   <td class="a">sp</td>
-			   <td class="a">atk</td>
-			   <td class="a">def</td>
-			   <td class="a">str / int / dex / spd / luk</td>
-			   <td class="a">位置</td>
-			   <td class="a">保护</td>' . "\n";
+		<td class="a">名称</td>
+		<td class="a">Lv</td>
+		<td class="a">图</td>
+		<td class="a">经验值</td>
+		<td class="a">钱</td>
+		<td class="a">hp</td>
+		<td class="a">sp</td>
+		<td class="a">atk</td>
+		<td class="a">def</td>
+		<td class="a">str / int / dex / spd / luk</td>
+		<td class="a">位置</td>
+		<td class="a">保护</td>' . "\n";
 	$img_f	= "../image/char/";
 
 	print('<table border="0" cellspacing="1"><tbody>');
