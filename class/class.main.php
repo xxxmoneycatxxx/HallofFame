@@ -405,62 +405,105 @@ class main extends user
 		}
 	}
 
-	//////////////////////////////////////////////////
-	//	敵の数を返す	数～数+2(max:5)
-	function EnemyNumber($party)
+	/**
+	 * 根据玩家队伍规模生成随机敌人数量
+	 * 
+	 * @param array $party 玩家队伍数组（长度决定最小敌人数）
+	 * @return int 返回生成的敌人数量（范围：玩家数 ~ min(玩家数+2, 5)）
+	 */
+	function EnemyNumber(array $party): int
 	{
-		$min	= count($party); //プレイヤーのPT数
-		if ($min == 5) //5人なら5匹
+		// 最小敌人数 = 玩家队伍人数 [7](@ref)
+		$min = count($party);
+
+		// 若玩家为5人，则固定返回5个敌人（无需随机）
+		if ($min === 5) {
 			return 5;
-		$max	= $min + ENEMY_INCREASE; // つまり、+2なら[1人:1～3匹] [2人:2～4匹] [3:3-5] [4:4-5] [5:5]
-		if ($max > 5)
-			$max	= 5;
-		mt_srand();
-		return mt_rand($min, $max);
+		}
+
+		// 计算最大敌人数：玩家数 + 增量（常量 ENEMY_INCREASE 需预先定义）
+		$max = $min + ENEMY_INCREASE; // 例如 ENEMY_INCREASE=2 时：1人→1~3敌，4人→4~5敌
+		$max = min($max, 5);          // 敌人数上限为5 [7](@ref)
+
+		// 生成随机敌人数（范围：$min 到 $max）
+		// PHP 7.1+ 已自动初始化随机数生成器，无需 mt_srand() [2](@ref)
+		return mt_rand($min, $max); // 使用高性能随机数生成器 [7](@ref)
 	}
-	//////////////////////////////////////////////////
-	//	出現する確率から敵を選んで返す
-	function SelectMonster($monster)
+	/**
+	 * 根据概率权重随机选择一个怪物
+	 * 
+	 * @param array $monster 二维数组，格式为 [怪物索引 => [概率权重, ...其他字段]]
+	 * @return int 返回选中的怪物索引
+	 */
+	function SelectMonster(array $monster): int
 	{
-		foreach ($monster as $val)
-			$max	+= $val[0]; //確率の合計
-		$pos	= mt_rand(0, $max); //0～合計 の中で乱数を取る
+		$max = 0; // 概率权重总和（PHP 8 要求变量显式初始化）
+		$upp = 0; // 累计概率权重（显式初始化避免未定义警告）
+
+		// 计算总权重
+		foreach ($monster as $val) {
+			$max += $val[0]; // 累加每个怪物的权重值
+		}
+
+		// 生成随机数（范围：0 ~ 总权重）
+		$pos = mt_rand(0, $max);
+
+		// 遍历怪物数组，根据权重随机选择
 		foreach ($monster as $monster_no => $val) {
-			$upp	+= $val[0]; //その時点での確率の合計
-			if ($pos <= $upp) //合計より低ければ　敵が決定される
-				return $monster_no;
+			$upp += $val[0]; // 更新当前累计权重
+
+			// 若随机数落在当前累计区间，则选中该怪物
+			if ($pos <= $upp) {
+				return $monster_no; // 返回怪物索引
+			}
 		}
+
+		// 理论上不会执行到此处（循环内必返回）
+		throw new RuntimeException("怪物选择逻辑异常");
 	}
-	//////////////////////////////////////////////////
-	//	敵のPTを作成、返す
-	//	Specify=敵指定(配列)
-	function EnemyParty($Amount, $MonsterList, $Specify = false)
+	/**
+	 * 生成敌人队伍
+	 * 
+	 * @param int $Amount 需要生成的敌人数量
+	 * @param array $MonsterList 怪物数据列表（二维数组）
+	 * @param array|false $Specify 可选参数，指定怪物编号数组
+	 * @return array 返回 monster 对象数组
+	 */
+	function EnemyParty(int $Amount, array $MonsterList, array|false $Specify = false): array
 	{
+		$enemy = []; // 初始化敌人数组
+		$MonsterNumbers = []; // 存储怪物编号的数组
 
-		// 指定モンスター
-		if ($Specify) {
-			$MonsterNumbers	= $Specify;
-		}
-
-		// モンスターをとりあえず配列に全部入れる
-		$enemy	= array();
-		if (!$Amount)
+		// 数量为0时直接返回空数组
+		if ($Amount === 0) {
 			return $enemy;
-		mt_srand();
-		for ($i = 0; $i < $Amount; $i++)
-			$MonsterNumbers[]	= $this->SelectMonster($MonsterList);
-
-		// 重複しているモンスターを調べる
-		$overlap	= array_count_values($MonsterNumbers);
-
-		// 敵情報を読んで配列に入れる。
-		include_once(CLASS_MONSTER);
-		foreach ($MonsterNumbers as $Number) {
-			if (1 < $overlap[$Number]) //1匹以上出現するなら名前に記号をつける。
-				$enemy[]	= new monster(CreateMonster($Number, true));
-			else
-				$enemy[]	= new monster(CreateMonster($Number));
 		}
+
+		// 处理指定怪物逻辑
+		if ($Specify !== false) {
+			$MonsterNumbers = $Specify;
+		} else {
+			// 随机生成怪物编号 [5](@ref)
+			for ($i = 0; $i < $Amount; $i++) {
+				$MonsterNumbers[] = $this->SelectMonster($MonsterList);
+			}
+		}
+
+		// 统计怪物重复出现次数 [3](@ref)
+		$overlap = array_count_values($MonsterNumbers);
+
+		// 引入怪物类文件（PHP8支持联合类型声明）[7](@ref)
+		include_once(CLASS_MONSTER);
+
+		// 创建怪物对象
+		foreach ($MonsterNumbers as $Number) {
+			// 重复出现的怪物添加特殊标记 [4](@ref)
+			$isDuplicated = ($overlap[$Number] > 1);
+			$enemy[] = new Monster(
+				CreateMonster($Number, $isDuplicated)
+			);
+		}
+
 		return $enemy;
 	}
 	//////////////////////////////////////////////////
@@ -2124,12 +2167,6 @@ HTML;
 			//	排名展示
 			function RankShow($Ranking)
 			{
-
-				//$ProcessResult	= $this->RankProcess($Ranking);// array();
-
-				//戦闘が行われたので表示しない。
-				//if($ProcessResult === "BATTLE")
-				//	return true;
 
 				// チーム再設定の残り時間計算
 				$now	= time();
