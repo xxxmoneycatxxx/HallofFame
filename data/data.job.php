@@ -65,163 +65,149 @@
  * "coe"	=> array(HP系数 ,SP系数),
  * "change"	=> array(可以转的职),
  */
-function LoadJobData($no)
+function LoadJobData(string $no): array
 {
-	switch ($no) {
-		case "100":
-			$job	= array(
-				"name_male"		=> "战士",
-				"name_female"	=> "战士",
-				"img_male"		=> "mon_079.gif",
-				"img_female"	=> "mon_080r.gif",
-				"equip"			=> array("剑", "双手剑", "盾", "甲", "衣服", "长袍", "道具"),
-				"coe"			=> array(3, 0.5),
-				"change"		=> array(101, 102, 103),
-			);
-			break;
-		case "101":
-			$job	= array(
-				"name_male"		=> "皇家卫士",
-				"name_female"	=> "皇家卫士",
-				"img_male"		=> "mon_199r.gif",
-				"img_female"	=> "mon_234r.gif",
-				"equip"			=> array("剑", "双手剑", "盾", "甲", "衣服", "长袍", "道具"),
-				"coe"			=> array(4, 0.7),
-			);
-			break;
-		case "102":
-			$job	= array(
-				"name_male"		=> "狂战士",
-				"name_female"	=> "狂战士",
-				"img_male"		=> "mon_100r.gif",
-				"img_female"	=> "mon_012.gif",
-				"equip"			=> array("剑", "双手剑", "盾", "衣服", "长袍", "道具"),
-				"coe"			=> array(5.0, 0.2),
-			);
-			break;
-		case "103":
-			$job	= array(
-				"name_male"		=> "魔女狩",
-				"name_female"	=> "魔女狩",
-				"img_male"		=> "mon_150.gif",
-				"img_female"	=> "mon_234.gif",
-				"equip"			=> array("剑", "匕首", "盾", "甲", "衣服", "长袍", "道具"),
-				"coe"			=> array(3.7, 1),
-			);
-			break;
-		case "200":
-			$job	= array(
-				"name_male"		=> "巫师",
-				"name_female"	=> "巫师",
-				"img_male"		=> "mon_106.gif",
-				"img_female"	=> "mon_018.gif",
-				"equip"			=> array("魔杖", "杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(1.5, 1),
-				"change"		=> array(201, 202, 203),
-			);
-			break;
-		case "201":
-			$job	= array(
-				"name_male"		=> "术士",
-				"name_female"	=> "术士",
-				"img_male"		=> "mon_196z.gif",
-				"img_female"	=> "mon_246r.gif",
-				"equip"			=> array("魔杖", "杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(2.1, 2),
-			);
-			break;
-		case "202":
-			$job	= array(
-				"name_male"		=> "召唤师",
-				"name_female"	=> "召唤师",
-				"img_male"		=> "mon_196y.gif",
-				"img_female"	=> "mon_246z.gif",
-				"equip"			=> array("魔杖", "杖", "书", "长袍", "道具"),
-				"coe"			=> array(1.5, 2.5),
-			);
-			break;
-		case "203":
-			$job	= array(
-				"name_male"		=> "死灵法师",
-				"name_female"	=> "死灵法师",
-				"img_male"		=> "mon_196x.gif",
-				"img_female"	=> "mon_246y.gif",
-				"equip"			=> array("魔杖", "杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(2.1, 1.5),
-			);
-			break;
-		case "300":
-			$job	= array(
-				"name_male"		=> "牧师",
-				"name_female"	=> "女祭司",
-				"img_male"		=> "mon_213.gif",
-				"img_female"	=> "mon_214.gif",
-				"equip"			=> array("魔杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(2, 0.8),
-				"change"		=> array(301, 302),
-			);
-			break;
-		case "301":
-			$job	= array(
-				"name_male"		=> "主教",
-				"name_female"	=> "主教",
-				"img_male"		=> "mon_213r.gif",
-				"img_female"	=> "mon_214r.gif",
-				"equip"			=> array("魔杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(2.7, 1.4),
-			);
-			break;
-		case "302":
-			$job	= array(
-				"name_male"		=> " 德鲁伊",
-				"name_female"	=> " 德鲁伊",
-				"img_male"		=> "mon_213rz.gif",
-				"img_female"	=> "mon_214rz.gif",
-				"equip"			=> array("魔杖", "书", "衣服", "长袍", "道具"),
-				"coe"			=> array(2.5, 1.2),
-			);
-			break;
-		case "400":
-			$job	= array(
-				"name_male"		=> " 猎人",
-				"name_female"	=> " 猎人",
-				"img_male"		=> "mon_219rr.gif",
-				"img_female"	=> "mon_219r.gif",
-				"equip"			=> array("弓", "衣服", "长袍", "道具"),
-				"coe"			=> array(2.2, 0.7),
-				"change"		=> array(401, 402, 403),
-			);
-			break;
-		case "401":
-			$job	= array(
-				"name_male"		=> "神射手",
-				"name_female"	=> "神射手",
-				"img_male"		=> "mon_076z.gif",
-				"img_female"	=> "mon_042z.gif",
-				"equip"			=> array("弓", "衣服", "长袍", "道具"),
-				"coe"			=> array(3.0, 0.8),
-			);
-			break;
-		case "402":
-			$job	= array(
-				"name_male"		=> "驯兽师",
-				"name_female"	=> "驯兽师",
-				"img_male"		=> "mon_216z.gif",
-				"img_female"	=> "mon_217z.gif",
-				"equip"			=> array("弓", "鞭", "衣服", "长袍", "道具"),
-				"coe"			=> array(3.2, 1.0),
-			);
-			break;
-		case "403":
-			$job	= array(
-				"name_male"		=> "刺客",
-				"name_female"	=> "刺客",
-				"img_male"		=> "mon_216y.gif",
-				"img_female"	=> "mon_217rz.gif",
-				"equip"			=> array("匕首", "弓", "甲", "衣服", "道具"),
-				"coe"			=> array(3.6, 0.7),
-			);
-			break;
+	static $JOB_DATA = null;
+
+	if ($JOB_DATA === null) {
+		$JOB_DATA = [
+			"100" => [
+				"name_male"   => "战士",
+				"name_female" => "战士",
+				"img_male"    => "mon_079.gif",
+				"img_female"  => "mon_080r.gif",
+				"equip"       => ["剑", "双手剑", "盾", "甲", "衣服", "长袍", "道具"],
+				"coe"         => [3, 0.5],
+				"change"      => [101, 102, 103],
+			],
+			"101" => [
+				"name_male"   => "皇家卫士",
+				"name_female" => "皇家卫士",
+				"img_male"    => "mon_199r.gif",
+				"img_female"  => "mon_234r.gif",
+				"equip"       => ["剑", "双手剑", "盾", "甲", "衣服", "长袍", "道具"],
+				"coe"         => [4, 0.7],
+				"change"      => [],
+			],
+			"102" => [
+				"name_male"   => "狂战士",
+				"name_female" => "狂战士",
+				"img_male"    => "mon_100r.gif",
+				"img_female"  => "mon_012.gif",
+				"equip"       => ["剑", "双手剑", "盾", "衣服", "长袍", "道具"],
+				"coe"         => [5.0, 0.2],
+				"change"      => [],
+			],
+			"103" => [
+				"name_male"   => "魔女狩",
+				"name_female" => "魔女狩",
+				"img_male"    => "mon_150.gif",
+				"img_female"  => "mon_234.gif",
+				"equip"       => ["剑", "匕首", "盾", "甲", "衣服", "长袍", "道具"],
+				"coe"         => [3.7, 1],
+				"change"      => [],
+			],
+			"200" => [
+				"name_male"   => "巫师",
+				"name_female" => "巫师",
+				"img_male"    => "mon_106.gif",
+				"img_female"  => "mon_018.gif",
+				"equip"       => ["魔杖", "杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [1.5, 1],
+				"change"      => [201, 202, 203],
+			],
+			"201" => [
+				"name_male"   => "术士",
+				"name_female" => "术士",
+				"img_male"    => "mon_196z.gif",
+				"img_female"  => "mon_246r.gif",
+				"equip"       => ["魔杖", "杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [2.1, 2],
+				"change"      => [],
+			],
+			"202" => [
+				"name_male"   => "召唤师",
+				"name_female" => "召唤师",
+				"img_male"    => "mon_196y.gif",
+				"img_female"  => "mon_246z.gif",
+				"equip"       => ["魔杖", "杖", "书", "长袍", "道具"],
+				"coe"         => [1.5, 2.5],
+				"change"      => [],
+			],
+			"203" => [
+				"name_male"   => "死灵法师",
+				"name_female" => "死灵法师",
+				"img_male"    => "mon_196x.gif",
+				"img_female"  => "mon_246y.gif",
+				"equip"       => ["魔杖", "杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [2.1, 1.5],
+				"change"      => [],
+			],
+			"300" => [
+				"name_male"   => "牧师",
+				"name_female" => "女祭司",
+				"img_male"    => "mon_213.gif",
+				"img_female"  => "mon_214.gif",
+				"equip"       => ["魔杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [2, 0.8],
+				"change"      => [301, 302],
+			],
+			"301" => [
+				"name_male"   => "主教",
+				"name_female" => "主教",
+				"img_male"    => "mon_213r.gif",
+				"img_female"  => "mon_214r.gif",
+				"equip"       => ["魔杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [2.7, 1.4],
+				"change"      => [],
+			],
+			"302" => [
+				"name_male"   => "德鲁伊",
+				"name_female" => "德鲁伊",
+				"img_male"    => "mon_213rz.gif",
+				"img_female"  => "mon_214rz.gif",
+				"equip"       => ["魔杖", "书", "衣服", "长袍", "道具"],
+				"coe"         => [2.5, 1.2],
+				"change"      => [],
+			],
+			"400" => [
+				"name_male"   => "猎人",
+				"name_female" => "猎人",
+				"img_male"    => "mon_219rr.gif",
+				"img_female"  => "mon_219r.gif",
+				"equip"       => ["弓", "衣服", "长袍", "道具"],
+				"coe"         => [2.2, 0.7],
+				"change"      => [401, 402, 403],
+			],
+			"401" => [
+				"name_male"   => "神射手",
+				"name_female" => "神射手",
+				"img_male"    => "mon_076z.gif",
+				"img_female"  => "mon_042z.gif",
+				"equip"       => ["弓", "衣服", "长袍", "道具"],
+				"coe"         => [3.0, 0.8],
+				"change"      => [],
+			],
+			"402" => [
+				"name_male"   => "驯兽师",
+				"name_female" => "驯兽师",
+				"img_male"    => "mon_216z.gif",
+				"img_female"  => "mon_217z.gif",
+				"equip"       => ["弓", "鞭", "衣服", "长袍", "道具"],
+				"coe"         => [3.2, 1.0],
+				"change"      => [],
+			],
+			"403" => [
+				"name_male"   => "刺客",
+				"name_female" => "刺客",
+				"img_male"    => "mon_216y.gif",
+				"img_female"  => "mon_217rz.gif",
+				"equip"       => ["匕首", "弓", "甲", "衣服", "道具"],
+				"coe"         => [3.6, 0.7],
+				"change"      => [],
+			],
+		];
 	}
-	return $job;
+
+	return $JOB_DATA[$no] ?? [];
 }

@@ -725,7 +725,7 @@ if ($_POST['logout'] ?? false) {
 				<ul>\n
 				<li><a href=\"" . ADMIN_DIR . "admin.list_item.php\">道具列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "admin.list_enchant.php\">装备效果列表</a></li>\n
-				<li><a href=\"" . ADMIN_DIR . "list_job.php\">职业列表</a></li>\n
+				<li><a href=\"" . ADMIN_DIR . "admin.list_job.php\">职业列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_judge.php\">判定列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "list_monster.php\">怪物列表</a></li>\n
 				<li><a href=\"" . ADMIN_DIR . "admin.list_skill.php\">技能列表</a></li>\n
