@@ -17,7 +17,7 @@ admin/ *管理后台
                                 3. data.skill.php - 技能效果数据
                                 4. data.item.php - 物品数据
                                 5. data.enchant.php - 装备效果
-    list_skill.php *游戏技能百科全书，通过PHP脚本从data.skill.php加载所有技能信息
+    admin.list_skill.php *游戏技能百科全书，通过PHP脚本从data.skill.php加载所有技能信息
     admin.set_action.php *怪物行动模式设置及生成工具
 
 class/ *功能实现

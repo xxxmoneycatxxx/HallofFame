@@ -48,7 +48,7 @@
 	include_once('../setting.php');
 	include_once('../data/data.skill.php');
 	include_once("../class/global.php");
-	define("IMG_ICON", "../image/icon/");
+	// define("IMG_ICON", "../image/icon/");
 
 
 	print("<div style=\"text-align:left;padding:5px\" class=\"bgcolor\">\n");
