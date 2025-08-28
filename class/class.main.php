@@ -1378,56 +1378,53 @@ HTML;
 	{
 		include_once(DATA_LAND);
 		include_once(DATA_LAND_APPEAR);
-		print('<div style="margin:15px">');
+		print('<div style="margin:15px">'); // 主容器开始
 		print('<h4>普通怪物</h4>');
 		print('<div style="margin:0 20px">');
 
-		$mapList	= LoadMapAppear($this);
+		$mapList = LoadMapAppear($this);
 		foreach ($mapList as $map) {
-			list($land)	= LandInformation($map);
-			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land["name"]}</a>");
-			//print(" ({$land[proper]})");
-			print("</p><br/>");
+			list($land) = LandInformation($map);
+			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land["name"]}</a></p><br/>");
 		}
+		print("</div>"); // 关闭地图列表容器
 
-		// Union
-		print("</div>\n");
-		$files	= glob(UNION . "*");
+		// Union BOSS部分
+		$files = glob(UNION . "*");
 		if ($files) {
 			include_once(CLASS_UNION);
 			include_once(DATA_MONSTER);
 			foreach ($files as $file) {
-				$UnionMons	= new union($file);
+				$UnionMons = new union($file);
 				if ($UnionMons->is_Alive())
-					$Union[]	= $UnionMons;
+					$Union[] = $UnionMons;
 			}
 		}
+
 		if ($Union) {
 			print('<h4>BOSS</h4>');
 			$result = $this->CanUnionBattle();
 			if ($result !== true) {
-				$left_minute	= floor($result / 60);
-				$left_second	= $result % 60;
+				$left_minute = floor($result / 60);
+				$left_second = $result % 60;
 				print('<div style="margin:0 20px">');
-				print('离下次战斗还需要 : <span class="bold">' . $left_minute . ":" . sprintf("%02d", $left_second) . "</span>");
+				print('离下次战斗还需要: <span class="bold">' . $left_minute . ":" . sprintf("%02d", $left_second) . "</span>");
 				print("</div>");
 			}
-			print("</div>");
 			$this->ShowCharacters($Union);
-		} else {
-			print("</div>");
 		}
 
-		// union
-		print("<h4>BOSS战记录 <a href=\"?ulog\">全显示</a></h4>\n");
-		print("<div style=\"margin:0 20px\">\n");
+		// BOSS战记录部分 - 修复开始
+		print('<div style="margin-top:20px">'); // 新容器确保正确布局
+		print("<h4>BOSS战记录 <a href=\"?ulog\">全显示</a></h4>");
+		print("<div style=\"margin:0 20px\">");
 
 		try {
 			$db = $GLOBALS['DB'];
 			$stmt = $db->prepare("SELECT * FROM battle_logs 
-                             WHERE battle_type = 'union' 
-                             ORDER BY battle_time DESC 
-                             LIMIT 15");
+							WHERE battle_type = 'union' 
+							ORDER BY battle_time DESC 
+							LIMIT 15");
 			$stmt->execute();
 			$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1442,8 +1439,9 @@ HTML;
 			error_log("数据库查询错误: " . $e->getMessage());
 			print("<p class='error'>无法加载战斗记录</p>\n");
 		}
+		print("</div></div>"); // 关闭记录容器和新增容器
 
-		print("</div></div>\n");
+		print('</div>'); // 关闭主容器
 	}
 	//////////////////////////////////////////////////
 	//	モンスターの表示
@@ -3652,11 +3650,11 @@ HTML;
 							$start	= substr($this->start, 0, 10);
 							$term	= 60 * 60 * 1;
 							if (($last - $start) < $term) {
-								?>
-									<div style="margin:5px 15px">
-										<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
-									</div>
-								<?php
+					?>
+						<div style="margin:5px 15px">
+							<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
+						</div>
+					<?php
 							}
 						}
 
