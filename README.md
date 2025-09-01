@@ -5,78 +5,80 @@
 
 ### 项目结构
 ```
-admin/ *管理后台
-    admin.php *游戏管理后台主界面
-    admin.list_enchant.php *装备效果列表
-    admin.list_item.php *游戏道具列表页面，通过PHP脚本从data.item.php数据文件加载道具信息
-    admin.list_job.php *游戏职业详情列表页面，通过PHP脚本从data.job.php和data.skill.php加载职业和技能信息
-    list_judge.php *判定条件列表生成器
-    list_monster.php *怪物列表，数据来源：
-                                1. data.monster.php - 怪物基础数据
-                                2. data.judge_setup.php - 技能判定数据
-                                3. data.skill.php - 技能效果数据
-                                4. data.item.php - 物品数据
-                                5. data.enchant.php - 装备效果
-    admin.list_skill.php *游戏技能百科全书，通过PHP脚本从data.skill.php加载所有技能信息
-    admin.set_action.php *怪物行动模式设置及生成工具
+admin/                                  *管理后台
+    archive/                            *弃用或过时的脚本
+        migrate.skills.php              *技能sqlite迁移脚本
+    admin.php                           *游戏管理后台主界面
+    admin.list_enchant.php              *装备效果列表
+    admin.list_item.php                 *游戏道具列表页面，数据来源：data.item.php
+    admin.list_job.php                  *游戏职业详情列表页面，数据来源：data.job.php、data.skill.php
+    list_judge.php                      *判定条件列表生成器
+    list_monster.php                    *怪物列表，数据来源：
+                                            1. data.monster.php - 怪物基础数据
+                                            2. data.judge_setup.php - 技能判定数据
+                                            3. data.skill.php - 技能效果数据
+                                            4. data.item.php - 物品数据
+                                            5. data.enchant.php - 装备效果
+    admin.list_skill.php                *游戏技能百科全书，通过PHP脚本从data.skill.php加载所有技能信息
+    admin.set_action.php                *怪物行动模式设置及生成工具
 
-class/ *功能实现
-    class.auction.php *拍卖系统核心类
-    class.battle.php *战斗系统核心类
-    class.char.php *角色核心类
-    class.css_btl_image.php *CSS战斗画面渲染类
-    class.JS_item_list.php *JavaScript动态道具列表类
-    class.main.php *主控制器类
-    class.monster.php *怪物角色类
-    class.rank.php *排名系统类
-    class.rank2.php *高级排名系统类
-    class.skill_effect.php *战斗技能效果处理类
-    class.smithy.php *物品锻造系统类
-    class.union.php *BOSS怪物系统类
-    class.user.php *用户管理系统类
-    global.php *全局核心功能库
+class/                                  *功能实现
+    class.auction.php                   *拍卖系统核心类
+    class.battle.php                    *战斗系统核心类
+    class.char.php                      *角色核心类
+    class.css_btl_image.php             *CSS战斗画面渲染类
+    class.JS_item_list.php              *JavaScript动态道具列表类
+    class.main.php                      *主控制器类
+    class.monster.php                   *怪物角色类
+    class.rank.php                      *排名系统类
+    class.rank2.php                     *高级排名系统类
+    class.skill_effect.php              *战斗技能效果处理类
+    class.smithy.php                    *物品锻造系统类
+    class.union.php                     *BOSS怪物系统类
+    class.user.php                      *用户管理系统类
+    global.php                          *全局核心功能库
 
-css/ *css资源
-    global.css *全局页面css
+css/                                    *css资源
+    global.css                          *全局页面css
 
-data/ *游戏数据
-    data.base_char.php *角色基础职业生成函数
-    data.class_change.php *角色转职资格验证函数
-    data.create.php *可制作道具列表生成函数
-    data.enchant.php *道具附魔效果添加函数
-    data.gd_item.php *道具分类展示页面
-    data.gd_job.php *职业信息展示页面
-    data.gd_judge.php *游戏判定条件说明页面
-    data.gd_monster.php *怪物信息展示页面
-    data.item.php *道具数据加载函数
-    data.job.php *职业数据加载函数
-    data.judge_setup.php *判定条件数据加载函数
-    data.judge.php *战斗判定决策函数
-    data.land_appear.php *可进入地图列表生成函数
-    data.land_info.php *地图信息加载函数
-    data.manual0.php *游戏指南手册文档
-    data.manual1.php *高级游戏指南文档
-    data.monster.php *怪物数据创建函数
-    data.skill.php *技能数据加载函数（已改造为接口，数据已迁移至game.db）
-    data.skilltree.php *角色技能树加载函数
-    data.town_appear.php *城镇设施出现条件控制函数
-    data.tutorial.php *游戏新手教程文档
+data/                                   *游戏数据
+    data.base_char.php                  *角色基础职业生成函数
+    data.class_change.php               *角色转职资格验证函数
+    data.create.php                     *可制作道具列表生成函数
+    data.enchant.php                    *道具附魔效果添加函数
+    data.gd_item.php                    *道具分类展示页面
+    data.gd_job.php                     *职业信息展示页面
+    data.gd_judge.php                   *游戏判定条件说明页面
+    data.gd_monster.php                 *怪物信息展示页面
+    data.item.php                       *道具数据加载函数
+    data.job.php                        *职业数据加载函数
+    data.judge_setup.php                *判定条件数据加载函数
+    data.judge.php                      *战斗判定决策函数
+    data.land_appear.php                *可进入地图列表生成函数
+    data.land_info.php                  *地图信息加载函数
+    data.manual0.php                    *游戏指南手册文档
+    data.manual1.php                    *高级游戏指南文档
+    data.monster.php                    *怪物数据创建函数
+    data.skill.php                      *技能数据加载函数（已改造为接口，数据已迁移至game.db）
+    data.skilltree.php                  *角色技能树加载函数
+    data.town_appear.php                *城镇设施出现条件控制函数
+    data.tutorial.php                   *游戏新手教程文档
 
-db/ *数据库
+db/                                     *数据库
     auction_log.dat
     auction.dat
     ranking.dat
     register.dat
     update.dat
     username.dat
-    game.db *已进行sqlite化改造的功能：
-                1. 战斗日志 - battle_logs
-                2. 城镇广场bbs - town_bbs
-                3. 技能 - skills
-                4. 自动维护管理 - maintenance_schedule
-                5. 操作日志 -  manage_logs
+    game.db                             *已进行sqlite化改造的功能：
+                                            1. 战斗日志 - battle_logs
+                                            2. 城镇广场bbs - town_bbs
+                                            3. 技能 - skills
+                                            4. 自动维护管理 - maintenance_schedule
+                                            5. 操作日志 -  manage_logs
   
-image/ *image资源
+image/                                  *image资源
     char/
         *.gif(s)
     char_rev/
@@ -89,21 +91,21 @@ image/ *image资源
         *.gif(s)
     *.gif(s)
 
-union/ *BOSS数据
-    *.dat(s) *格式为（例）：
-                MonsterNumber=2007
-                LastDefeated=120025074
-                HP=3420
-                SP=122
+union/                                  *BOSS数据
+    *.dat(s)                            *格式（例）：
+                                            MonsterNumber=2007
+                                            LastDefeated=120025074
+                                            HP=3420
+                                            SP=122
 
-user/
+user/                                   *用户数据
     {username}/
-        *.dat(s) *主要为角色（编号.dat）+ data.dat + item.dat
+        *.dat(s)                        *主要为角色（编号.dat）+ data.dat + item.dat
 
-admin.php *管理入口
-image.php *战斗场景图像生成
-index.php *项目入口
-setting.php *全局配置
+admin.php                               *管理入口
+image.php                               *战斗场景图像生成
+index.php                               *项目入口
+setting.php                             *全局配置
 ```
 
 ### 数据结构(game.db)
